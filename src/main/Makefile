@@ -1,4 +1,4 @@
-SUBDIRS = common server
+SUBDIRS = common server agent_test
 
 all: $(SUBDIRS)
 

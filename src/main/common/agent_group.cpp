@@ -30,6 +30,8 @@ CAgentGroup::CAgentGroup(struct sAgentInitStruct agent_init_struct, struct sAgen
   #ifdef _DEBUG_COMMON_
   printf("%lu : agent group created\n", (unsigned long int)this);
   #endif
+
+  rt_timer_set_period(50.0);
 }
 
 CAgentGroup::CAgentGroup(struct sAgentInitStruct agent_init_struct, char *file_name)
@@ -53,20 +55,21 @@ CAgentGroup::~CAgentGroup()
 
 void CAgentGroup::set_input(std::vector<struct sAgentGroupInput> *input)
 {
-  (void)input;
+  this->input = input;
 }
 
-float timer_get_time()
+void CAgentGroup::rt_timer_callback()
 {
-  std::chrono::milliseconds ms = std::chrono::duration_cast< std::chrono::milliseconds >(std::chrono::system_clock::now().time_since_epoch());
-  float res = ms.count();
-  return res;
+  unsigned int i;
+  for (i = 0; i < agents.size(); i++)
+    agents[i]->agent_set_input(&(*(this->input)[i]));
+
+  for (i = 0; i < agents.size(); i++)
+    agents[i]->agent_process();
+
+  printf("%lu processing agents\n", (unsigned int long)this);
 }
 
-void sleep_ms(float x)
-{
-  usleep(x*1000);
-}
 
 int CAgentGroup::main()
 {
@@ -74,27 +77,14 @@ int CAgentGroup::main()
   printf("%lu agent group main loop started, press ESC to end\n", (unsigned int long)this);
   #endif
 
+  rt_timer_start();
+
   while (getch() != 27)
   {
-    float time_start = timer_get_time();
-
-    //TODO - process agents here
-
-    float time_stop = timer_get_time();
-    float delay_time = agent_init_struct.dt - (time_stop - time_start);
-
-    #ifdef _DEBUG_COMMON_
-    if (delay_time < 0.0)
-      printf("%lu agent group RT warning %6.3f\n", (unsigned long int)this, delay_time);
-    #endif
-
-    sleep_ms(delay_time);
+    rt_timer_delay_ms(100.0);
   }
 
-
-  #ifdef _DEBUG_COMMON_
-  printf("%lu agent group main loop ENDED\n", (unsigned int long)this);
-  #endif
+  rt_timer_stop();
 
   return 0;
 }

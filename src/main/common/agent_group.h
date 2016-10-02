@@ -2,6 +2,7 @@
 #define _AGENT_GROUP_H_
 
 #include <agent.h>
+#include <rt_timer.h>
 
 struct sAgentGroupInitStruct
 {
@@ -20,7 +21,9 @@ struct sAgentGroupInput
   unsigned int robot_id;                    //target robot id
 };
 
-class CAgentGroup
+
+
+class CAgentGroup : public CRT_Timer
 {
   private:
     struct sAgentGroupInitStruct agent_group_init_struct;
@@ -28,14 +31,20 @@ class CAgentGroup
 
     std::vector<class CAgent*> agents;
 
+    std::vector<struct sAgentGroupInput> *input;
+
   public:
     CAgentGroup(struct sAgentInitStruct agent_init_struct, struct sAgentGroupInitStruct agent_group_init_struct);
     CAgentGroup(struct sAgentInitStruct agent_init_struct, char *file_name);
-    ~CAgentGroup();
+    virtual ~CAgentGroup();
 
     void set_input(std::vector<struct sAgentGroupInput> *input);
+    void get_output(std::vector<struct sAgentOutput> *output);
 
-    int main();
+    virtual int main();
+
+  protected:
+    void rt_timer_callback();
 };
 
 
