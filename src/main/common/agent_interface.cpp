@@ -5,6 +5,7 @@
 #include <unique_id.h>
 #include <ms_time.h>
 #include <stdio.h>
+#include <string.h>
 
 
 
@@ -24,7 +25,6 @@ CAgentInterface::CAgentInterface( struct sAgentInterface agent_interface,
   }
 
 
-
   #ifdef _DEBUG_COMMON_
   printf("%lu : agent interface created\n", (unsigned long int)this);
   #endif
@@ -33,7 +33,12 @@ CAgentInterface::CAgentInterface( struct sAgentInterface agent_interface,
 
 CAgentInterface::~CAgentInterface()
 {
-
+  if (serialized != NULL)
+  {
+    free(serialized);
+    serialized = NULL;
+    serialized_size = 0;
+  }
 }
 
 

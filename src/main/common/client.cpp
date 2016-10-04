@@ -9,6 +9,13 @@
 #include <netinet/in.h>
 #include <netdb.h>
 
+
+#include <boost/archive/binary_oarchive.hpp>
+#include <boost/archive/binary_iarchive.hpp>
+
+#include <sstream>
+#include <fstream>
+
 #include <configure.h>
 extern class CConfigure g_configure;
 
@@ -50,10 +57,29 @@ int CClient::main()
   return 0;
 }
 
-
 int CClient::connect()
 {
-  printf("struct size : %lu\n", sizeof(agent_interface));
+  unsigned int i;
+
+  std::stringstream ofs;
+  boost::archive::binary_oarchive ar_in(ofs);
+
+  for (i = 0; i < agent_interface.size(); i++)
+      ar_in & agent_interface[i];
+
+
+//  std::stringstream ifs;
+  boost::archive::binary_oarchive ar_out(ofs);
+
+  for (i = 0; i < agent_interface.size(); i++)
+      ar_out & agent_interface[i];
+
+  /*
+  boost::archive::text_oarchive archive;
+
+  agent_group_save(archive, 1);
+  */
+
   /*
   struct sAgentInterface agent_interface_tmp;
 
