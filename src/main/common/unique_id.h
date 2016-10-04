@@ -2,6 +2,6 @@
 #define _UNIQUE_ID_H_
 
 
-unsigned int get_unique_id();
+unsigned long int get_unique_id();
 
 #endif

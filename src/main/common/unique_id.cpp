@@ -6,13 +6,20 @@
 #include <thread>
 
 
-unsigned int get_unique_id()
+unsigned long int get_unique_id()
 {
-  time_t time_id = time(0);
+  unsigned long int res = 0;
 
-  std::stringstream ss;
-  ss << std::this_thread::get_id();
-  unsigned long int thread_id = std::stoull(ss.str());
+  while (res == 0)
+  {
+    time_t time_id = time(0);
 
-  return (unsigned int)thread_id + time_id + rand();
+    std::stringstream ss;
+    ss << std::this_thread::get_id();
+    unsigned long int thread_id = std::stoull(ss.str());
+
+    res = thread_id + time_id + rand();
+  }
+
+  return res;
 }

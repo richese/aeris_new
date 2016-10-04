@@ -67,10 +67,15 @@ void CAgentGroup::rt_timer_callback()
   for (i = 0; i < agents.size(); i++)
     agents[i]->agent_process();
 
-  connect();
+  int res = connect_to_server();
 
   #ifdef _DEBUG_COMMON_
   printf("%lu : processing agents\n", (unsigned int long)this);
+  #endif
+
+  #ifdef _ERROR_COMMON_
+  if (res < 0)
+    printf("%lu : connecting to %s:%i error with %i\n", (unsigned int long)this, g_configure.get_server_ip(), g_configure.get_server_port(), res);
   #endif
 }
 
@@ -144,12 +149,11 @@ struct sAgentInterface CAgentGroup::get_agent_struct_idx(unsigned int idx)
   return agent_interface[idx];
 }
 
-int CAgentGroup::connect()
+int CAgentGroup::connect_to_server()
 {
-  (void)agent_interface;
-
   #ifdef _DEBUG_COMMON_
   printf("%lu : agent group connect to %s %i - not implemented\n", (unsigned int long)this, agent_group_init_struct.server_ip, agent_group_init_struct.server_port);
   #endif
+
   return 0;
 }

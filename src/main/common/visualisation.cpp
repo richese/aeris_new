@@ -47,11 +47,20 @@ CVisualisation::CVisualisation()
     gluPerspective(45, (float) window_width / window_height, 0.1, 2000);
     glMatrixMode(GL_MODELVIEW);
   }
+
+
+  unsigned int j;
+  for (j = 0; j < AGENT_BODY_TYPE_COUNT; j++)
+    agent_body.push_back(new CAgentBody(j));
 }
 
 
 CVisualisation::~CVisualisation()
 {
+  unsigned int j;
+  for (j = 0; j < agent_body.size(); j++)
+    delete agent_body[j];
+
   #ifdef _DEBUG_COMMON_
   printf("%lu : visualisation destroyed\n", (unsigned int long)this);
   #endif
@@ -143,6 +152,8 @@ void CVisualisation::paint_agent(struct sAgentInterface *agent_interface)
 {
   unsigned int i, j;
 
+  unsigned int body_id = agent_interface->body_type;
+
   float x_ofs = agent_interface->position.x;
   float y_ofs = agent_interface->position.y;
   float z_ofs = agent_interface->position.z;
@@ -161,19 +172,19 @@ void CVisualisation::paint_agent(struct sAgentInterface *agent_interface)
   glRotatef(pitch, 1.0, 0.0, 0.0);
   glRotatef(yaw, 0.0, 0.0, 1.0);
 
-  for (j = 0; j < agent_interface->body.polygons.size(); j++)
+  for (j = 0; j < agent_body[body_id]->body_polygons.size(); j++)
   {
-    glColor3f( agent_interface->body.polygons[j].r,
-               agent_interface->body.polygons[j].g,
-               agent_interface->body.polygons[j].b);
+    glColor3f(  agent_body[body_id]->body_polygons[j].r,
+                agent_body[body_id]->body_polygons[j].g,
+                agent_body[body_id]->body_polygons[j].b);
 
     glBegin(GL_POLYGON);
 
-    for (i = 0; i < agent_interface->body.polygons[j].points.size(); i++)
+    for (i = 0; i < agent_body[body_id]->body_polygons[j].points.size(); i++)
     {
-      glVertex3f( agent_interface->body.polygons[j].points[i].x,
-                  agent_interface->body.polygons[j].points[i].y,
-                  agent_interface->body.polygons[j].points[i].z);
+      glVertex3f( agent_body[body_id]->body_polygons[j].points[i].x,
+                  agent_body[body_id]->body_polygons[j].points[i].y,
+                  agent_body[body_id]->body_polygons[j].points[i].z);
 
                   /*
       printf("%f %f %f\n", agent_interface->body.polygons[j].points[i].x,

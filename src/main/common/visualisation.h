@@ -9,6 +9,8 @@ class CVisualisation
     bool opengl_enabled;
     float cm_size;
 
+    std::vector<class CAgentBody*> agent_body;
+
   public:
     CVisualisation();
     ~CVisualisation();

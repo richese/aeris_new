@@ -26,7 +26,7 @@ class CClient:public CAgentGroup
     ~CClient();
 
     int main();
-    int connect();
+    int connect_to_server();
 
 
 };
