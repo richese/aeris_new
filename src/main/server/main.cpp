@@ -1,7 +1,7 @@
 #include "../common/common.h"
 
 int main()
-{
+{/*
   struct sAgentGroupInitStruct agent_group_init_struct;
   agent_group_init_struct.count = 10;
   agent_group_init_struct.random_positions = true;
@@ -16,7 +16,7 @@ int main()
 
 
   delete agent_group;
-
+*/
   printf("program done\n");
   return 0;
 }

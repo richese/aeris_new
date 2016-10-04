@@ -11,40 +11,34 @@ struct sAgentGroupInitStruct
 
   char server_ip[16];
   unsigned int server_port;
+
+  unsigned int agent_type;
+  double dt;
 };
-
-
-
-struct sAgentGroupInput
-{
-  std::vector<struct sAgentInput> input;
-  unsigned int robot_id;                    //target robot id
-};
-
 
 
 class CAgentGroup : public CRT_Timer
 {
-  private:
+  protected:
     struct sAgentGroupInitStruct agent_group_init_struct;
-    struct sAgentInitStruct agent_init_struct;
 
+    std::vector<struct sAgentInterface> agent_interface;
     std::vector<class CAgent*> agents;
 
-    std::vector<struct sAgentGroupInput> *input;
-
   public:
-    CAgentGroup(struct sAgentInitStruct agent_init_struct, struct sAgentGroupInitStruct agent_group_init_struct);
-    CAgentGroup(struct sAgentInitStruct agent_init_struct, char *file_name);
+    CAgentGroup(struct sAgentGroupInitStruct agent_group_init_struct);
     virtual ~CAgentGroup();
-
-    void set_input(std::vector<struct sAgentGroupInput> *input);
-    void get_output(std::vector<struct sAgentOutput> *output);
 
     virtual int main();
 
+    unsigned int get_agents_count();
+    int set_agent_struct(struct sAgentInterface *value);
+    int get_agent_struct(struct sAgentInterface *value);
+    struct sAgentInterface get_agent_struct_idx(unsigned int idx);
+
   protected:
     void rt_timer_callback();
+    virtual int connect();
 };
 
 

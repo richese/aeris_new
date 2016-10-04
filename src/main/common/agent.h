@@ -1,33 +1,26 @@
 #ifndef _AGENT_H_
 #define _AGENT_H_
 
-#include <agent_input.h>
-#include <agent_output.h>
-#include <unique_id.h>
-#include <math_robot.h>
+
+#include <agent_interface.h>
+#include <agent_group.h>
 
 
-struct sAgentInitStruct
-{
-  float dt;
-  unsigned int agent_type;
-  struct sPoint initial_position;
-};
-
-
-class CAgent: public CAgentInput, public CAgentOutput
+class CAgent: public CAgentInterface
 {
   protected:
-      struct sAgentInitStruct agent_init_struct;
-      float life_time;
-      unsigned int id;
+    unsigned int state;
+    float dx, dy, dz;
+    float droll, dpitch, dyaw;
 
   public:
-    CAgent(struct sAgentInitStruct agent_init_struct);
-    virtual ~CAgent();
+    CAgent( struct sAgentInterface agent_interface,
+            class CAgentGroup *agent_group = NULL
+          );
 
+
+    virtual ~CAgent();
     virtual void agent_process();
-    virtual void init_body();
 };
 
 

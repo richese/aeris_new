@@ -1,44 +1,51 @@
-#include "agent_group.h"
-#include "debug.h"
+#include <agent_group.h>
+#include <debug.h>
 
 #include <math_robot.h>
 #include <getch.h>
 
-#include <thread>
-#include <chrono>
-#include <unistd.h>
+#include <configure.h>
 
-CAgentGroup::CAgentGroup(struct sAgentInitStruct agent_init_struct, struct sAgentGroupInitStruct agent_group_init_struct)
+extern class CConfigure g_configure;
+
+CAgentGroup::CAgentGroup(struct sAgentGroupInitStruct agent_group_init_struct)
 {
   unsigned int i;
 
   this->agent_group_init_struct = agent_group_init_struct;
-  this->agent_init_struct = agent_init_struct;
+
+  struct sAgentInterface agent_interface_;
+
+  agent_interface_.position.x = 0.0;
+  agent_interface_.position.y = 0.0;
+  agent_interface_.position.z = 0.0;
+
+  agent_interface_.position.roll = 0.0;
+  agent_interface_.position.pitch = 0.0;
+  agent_interface_.position.yaw = 0.0;
+
+  agent_interface_.agent_type = agent_group_init_struct.agent_type;
+  agent_interface_.body_type = AGENT_BODY_TYPE_RANDOM;
+  agent_interface_.state = 0;
+  agent_interface_.id = 0;
+  agent_interface_.robot_time = 0.0;
+  agent_interface_.dt = agent_group_init_struct.dt;
 
   for (i = 0; i < agent_group_init_struct.count; i++)
   {
-    if (agent_group_init_struct.random_positions == true)
-    {
-      agent_init_struct.initial_position.x = m_rnd();
-      agent_init_struct.initial_position.y = m_rnd();
-      agent_init_struct.initial_position.z = 0.0*m_rnd();
-    }
+    agent_interface_.position.x = m_rnd()*g_configure.get_width_cm();
+    agent_interface_.position.y = m_rnd()*g_configure.get_height_cm();
+    agent_interface_.position.z = 0.0*m_rnd()*g_configure.get_depth_cm();
 
-    agents.push_back(new CAgent(agent_init_struct));
+    agents.push_back(new CAgent(agent_interface_, this));
   }
+
 
   #ifdef _DEBUG_COMMON_
   printf("%lu : agent group created\n", (unsigned long int)this);
   #endif
 
-  rt_timer_set_period(50.0);
-}
-
-CAgentGroup::CAgentGroup(struct sAgentInitStruct agent_init_struct, char *file_name)
-{
-  //TODO - load from file
-  (void)agent_init_struct;
-  (void)file_name;
+  rt_timer_set_period(agent_group_init_struct.dt);
 }
 
 
@@ -53,38 +60,96 @@ CAgentGroup::~CAgentGroup()
   #endif
 }
 
-void CAgentGroup::set_input(std::vector<struct sAgentGroupInput> *input)
-{
-  this->input = input;
-}
-
 void CAgentGroup::rt_timer_callback()
 {
   unsigned int i;
-  for (i = 0; i < agents.size(); i++)
-    agents[i]->agent_set_input(&(*(this->input)[i]));
 
   for (i = 0; i < agents.size(); i++)
     agents[i]->agent_process();
 
-  printf("%lu processing agents\n", (unsigned int long)this);
+  connect();
+
+  #ifdef _DEBUG_COMMON_
+  printf("%lu : processing agents\n", (unsigned int long)this);
+  #endif
 }
 
 
 int CAgentGroup::main()
 {
   #ifdef _DEBUG_COMMON_
-  printf("%lu agent group main loop started, press ESC to end\n", (unsigned int long)this);
+  printf("%lu : agent group main loop started, press ESC to end\n", (unsigned int long)this);
   #endif
+
 
   rt_timer_start();
 
   while (getch() != 27)
   {
     rt_timer_delay_ms(100.0);
+    #ifdef _DEBUG_COMMON_
+    printf("%lu : agent group main loop running, press ESC to end\n", (unsigned int long)this);
+    #endif
   }
 
   rt_timer_stop();
 
+  return 0;
+}
+
+
+unsigned int CAgentGroup::get_agents_count()
+{
+  return agent_interface.size();
+}
+
+int CAgentGroup::set_agent_struct(struct sAgentInterface *value)
+{
+  unsigned int i;
+  int res = -1;
+  for (i = 0; i < agent_interface.size(); i++)
+    if (value->id == agent_interface[i].id)
+    {
+      agent_interface[i] = *value;
+      res = 1;
+      break;
+    }
+
+  if (res == -1)
+  {
+    agent_interface.push_back(*value);
+  }
+
+  return res;
+}
+
+
+int CAgentGroup::get_agent_struct(struct sAgentInterface *value)
+{
+  unsigned int i;
+  int res = -1;
+  for (i = 0; i < agent_interface.size(); i++)
+    if (value->id == agent_interface[i].id)
+    {
+      *value = agent_interface[i];
+      res = 1;
+      break;
+    }
+
+  return res;
+}
+
+struct sAgentInterface CAgentGroup::get_agent_struct_idx(unsigned int idx)
+{
+  return agent_interface[idx];
+}
+
+int CAgentGroup::connect()
+{
+  (void)agent_interface;
+
+  #ifdef _DEBUG_COMMON_
+  printf("%lu : agent group connect to %s %i - not implemented\n", (unsigned int long)this, agent_group_init_struct.server_ip, agent_group_init_struct.server_port);
+  #endif
   return 0;
 }

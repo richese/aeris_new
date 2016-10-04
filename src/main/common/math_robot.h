@@ -2,11 +2,11 @@
 #define _MATH_ROBOT_H_
 
 
-float m_rnd();
-float m_abs(float x);
-float m_sgn(float x);
-float m_saturate(float value_min, float value_max, float x);
-float m_map_to(float source_min, float source_max, float dest_min, float dest_max, float value);
-float m_mix(float a, float b, float ratio);
+double m_rnd();
+double m_abs(double x);
+double m_sgn(double x);
+double m_saturate(double value_min, double value_max, double x);
+double m_map_to(double source_min, double source_max, double dest_min, double dest_max, double value);
+double m_mix(double a, double b, double ratio);
 
 #endif

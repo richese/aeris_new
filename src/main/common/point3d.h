@@ -15,6 +15,10 @@ struct sPolygone
 };
 
 
+struct sAgentBody
+{
+  std::vector<struct sPolygone> polygons;
+};
 
 struct sAgentPosition
 {

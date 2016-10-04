@@ -1,18 +1,30 @@
-#include "agent.h"
-#include "debug.h"
+#include <agent.h>
+#include <debug.h>
 
+#include <math_robot.h>
 
-CAgent::CAgent(struct sAgentInitStruct agent_init_struct)
+#include <configure.h>
+
+extern class CConfigure g_configure;
+
+CAgent::CAgent( struct sAgentInterface agent_interface,
+                class CAgentGroup *agent_group
+              ):CAgentInterface(agent_interface, agent_group)
 {
-  this->agent_init_struct = agent_init_struct;
-  this->life_time = 0.0;
-  this->id = get_unique_id();
-
-  init_body();
-
   #ifdef _DEBUG_COMMON_
   printf("%lu : agent created\n", (unsigned long int)this);
   #endif
+
+
+  agent_group->set_agent_struct(&this->agent_interface);
+
+  dx = 0.0;
+  dy = 0.0;
+  dz = 0.0;
+
+  droll = 0.0;
+  dpitch = 0.0;
+  dyaw = 0.0;
 }
 
 
@@ -25,41 +37,40 @@ CAgent::~CAgent()
 
 void CAgent::agent_process()
 {
-  life_time+= agent_init_struct.dt;
-}
+  int res_rx = agent_group->get_agent_struct(&agent_interface);
 
-void CAgent::init_body()
-{
-  #ifdef _DEBUG_COMMON_
-  printf("%lu : agent init body called\n", (unsigned long int)this);
-  #endif
-
-  unsigned int j, i;
-
-  float size = 0.01;
-
-  unsigned polygons_count = 10;
-
-  for (j = 0; j < polygons_count; j++)
+  if ((rand()%100) < 2)
   {
-    struct sPolygone polygone;
+    double dt = 0.1*agent_interface.dt;
 
-    for (i = 0; i < 4; i++)
-    {
-      struct sPoint point;
+    dx = m_rnd()*dt;
+    dy = m_rnd()*dt;
+    dz = m_rnd()*dt;
 
-      point.x = m_rnd()*size;
-      point.y = m_rnd()*size;
-      point.z = m_rnd()*size;
-      polygone.points.push_back(point);
-    }
+    droll = m_rnd()*dt;
+    dpitch = m_rnd()*dt;
+    dyaw = m_rnd()*dt;
 
-    polygone.r = m_abs(m_rnd());
-    polygone.g = m_abs(m_rnd());
-    polygone.b = m_abs(m_rnd());
-
-
-    polygons.polygons.push_back(polygone);
   }
 
+  agent_interface.position.x+= dx;
+  agent_interface.position.y+= dy;
+  agent_interface.position.z+= dz;
+
+  agent_interface.position.roll+= droll;
+  agent_interface.position.pitch+= dpitch;
+  agent_interface.position.yaw+= dyaw;
+
+
+  agent_interface.position.x = m_saturate(-g_configure.get_width_cm(), g_configure.get_width_cm(), agent_interface.position.x);
+  agent_interface.position.y = m_saturate(-g_configure.get_height_cm(), g_configure.get_height_cm(), agent_interface.position.y);
+  agent_interface.position.z = m_saturate(-g_configure.get_depth_cm(), g_configure.get_depth_cm(), agent_interface.position.z);
+
+  //process AI here
+
+  int res_tx = agent_group->set_agent_struct(&agent_interface);
+
+  #ifdef _DEBUG_COMMON_
+  printf("%lu : processing agent with %u id %i %i\n", (unsigned long int)this, agent_interface.id, res_rx, res_tx);
+  #endif
 }
