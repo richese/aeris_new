@@ -16,13 +16,13 @@ int main()
   agent_group_init_struct.agent_type = AGENT_TYPE_NULL;
   agent_group_init_struct.dt = 5.0;
 
-  class CClientLocal *client_local;
+  class CClient *client;
 
-  client_local = new CClientLocal(agent_group_init_struct);
+  client = new CClient(agent_group_init_struct);
 
-  client_local->main();
+  client->main();
 
-  delete client_local;
+  delete client;
 
   printf("program done\n");
   return 0;

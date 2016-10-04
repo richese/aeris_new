@@ -2,13 +2,28 @@
 #define _CLIENT_H_
 
 
-class CClient
+#include <agent_group.h>
+#include <visualisation.h>
+
+
+#define CLIENT_CONNECTION_STATE_NO_CONNECTED    ((unsigned int)0)
+#define CLIENT_CONNECTION_STATE_CONNECTED       ((unsigned int)1)
+
+class CClient:public CAgentGroup
 {
+  private:
+    class CVisualisation *visualisation;
+
+    unsigned int connection_state;
+
   public:
-    CClient(char *server_ip, int port);
+    CClient(struct sAgentGroupInitStruct agent_group_init_struct);
     ~CClient();
 
-    void process(char *tx_buffer, unsigned int tx_buffer_size, char *rx_buffer, unsigned int rx_buffer_size);
+    int main();
+    int connect();
+
+
 };
 
 
