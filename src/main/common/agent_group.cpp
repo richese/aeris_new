@@ -28,7 +28,7 @@ CAgentGroup::CAgentGroup(struct sAgentGroupInitStruct agent_group_init_struct)
   agent_interface_.position.yaw = 0.0;
 
   agent_interface_.agent_type = agent_group_init_struct.agent_type;
-  agent_interface_.body_type = AGENT_BODY_TYPE_RANDOM;
+  agent_interface_.body_type = AGENT_BODY_TYPE_CUSTOM; //AGENT_BODY_TYPE_RANDOM;
   agent_interface_.state = 0;
   agent_interface_.id = 0;
   agent_interface_.robot_time = 0.0;

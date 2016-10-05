@@ -5,7 +5,7 @@ OBJCOPY = objcopy
 OBJDUMP = objdump
 SIZE = size
 
-CFLAGS = -O2 -Os -s -Wall -Wextra -pedantic -std=c++11
+CFLAGS = -O2 -Os -s -Wall -Wextra -pedantic -std=c++11 -DGL_GLEXT_PROTOTYPES
 LDFLAGS = -lm -lpthread -pthread -std=c++11
 
 

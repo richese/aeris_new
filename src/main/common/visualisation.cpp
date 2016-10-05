@@ -9,6 +9,9 @@
 #include <GL/glu.h>
 #include <GL/freeglut.h>
 #include <GL/glut.h>
+#include <GL/glext.h>
+#include <glm/glm.hpp>
+
 
 #include <configure.h>
 
@@ -49,6 +52,7 @@ CVisualisation::CVisualisation()
   unsigned int j;
   for (j = 0; j < AGENT_BODY_TYPE_COUNT; j++)
     agent_body.push_back(new CAgentBody(j));
+
 }
 
 
@@ -169,6 +173,23 @@ void CVisualisation::paint_agent(struct sAgentInterface *agent_interface)
   glRotatef(pitch, 1.0, 0.0, 0.0);
   glRotatef(yaw, 0.0, 0.0, 1.0);
 
+
+  if (agent_body[body_id]->vertices.size() != 0)
+  {
+    glColor3f(  1.0, 1.0, 1.0);
+
+    //TODO speed test
+    // glBufferData(GL_ARRAY_BUFFER, agent_body[body_id]->vertices.size() * sizeof(glm::vec3), &agent_body[body_id]->vertices[0], GL_STATIC_DRAW);
+
+    glBegin(GL_TRIANGLES);
+    for (j = 0; j < agent_body[body_id]->vertices.size(); j++)
+    {
+      glVertex3f(agent_body[body_id]->vertices[j].x, agent_body[body_id]->vertices[j].y, agent_body[body_id]->vertices[j].z);
+    }
+    glEnd();
+
+  }
+  else
   for (j = 0; j < agent_body[body_id]->body_polygons.size(); j++)
   {
     glColor3f(  agent_body[body_id]->body_polygons[j].r,
