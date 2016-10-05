@@ -20,7 +20,7 @@ CConfigure::CConfigure()
   cm_size = 10.0*100.0/81.0;
 
   sprintf(server_ip,"127.0.0.1");
-  server_port = 2007;
+  server_port = 2001;
 }
 
 CConfigure::~CConfigure()

@@ -14,7 +14,7 @@ int main()
   sprintf(agent_group_init_struct.server_ip,"127.0.0.1");
   agent_group_init_struct.server_port = 2000;
   agent_group_init_struct.agent_type = AGENT_TYPE_NULL;
-  agent_group_init_struct.dt = 20.0;
+  agent_group_init_struct.dt = 100.0;
 
   class CClient *client;
 
