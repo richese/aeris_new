@@ -1,5 +1,7 @@
 #include <agent_body.h>
 #include <math_robot.h>
+#include <stdio.h>
+#include <string.h>
 
 CAgentBody::CAgentBody(unsigned int body_type)
 {
@@ -11,6 +13,58 @@ CAgentBody::CAgentBody(unsigned int body_type)
     case AGENT_BODY_TYPE_RANDOM: agent_body_random(); break;
   }
 }
+
+CAgentBody::CAgentBody(char* body_filename)
+{
+  struct sPolygone triangle;
+  struct sPoint point_temp;
+  std::vector<struct sPoint> raw_data;
+  point_temp.x = 0;
+  point_temp.y = 0;
+  point_temp.z = 0;
+  triangle.r = 1;
+  triangle.g = 1;
+  triangle.b = 1;
+
+  for (unsigned int i = 0; i < 3; i++)
+  {
+    triangle.points.push_back(point_temp);
+  }
+
+  FILE * file = fopen(body_filename, "r");
+    if( file == NULL ){
+      printf("Impossible to open the file !\n");
+    }
+
+  while(1)
+  {
+   char lineHeader[128];
+    // read the first word of the line
+   int res = fscanf(file, "%s", lineHeader);
+   if (res == EOF)
+     break; // EOF = End Of File. Quit the loop.
+     // else : parse lineHeader
+
+   if ( strcmp( lineHeader, "v" ) == 0 )
+   {
+    struct sPoint point;
+    res = fscanf(file, "%f %f %f\n", &point.x, &point.y, &point.z );
+    raw_data.push_back(point);
+   }
+  }
+
+  fclose(file);
+
+  for (unsigned int i = 0; i < (raw_data.size()-3); i++)
+  {
+    for (unsigned int j = i; j < (i+3); j++)
+    {
+      triangle.points[j-i] = raw_data[j];
+    }
+    body_polygons.push_back(triangle);
+  }
+}
+
 
 CAgentBody::~CAgentBody()
 {

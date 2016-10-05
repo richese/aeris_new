@@ -21,6 +21,7 @@ class CAgentBody
 
   public:
     CAgentBody(unsigned int body_type);
+    CAgentBody(char* body_filename);
     ~CAgentBody();
 
   private:
