@@ -26,6 +26,9 @@ CClient::CClient(struct sAgentGroupInitStruct agent_group_init_struct):CAgentGro
 
 CClient::~CClient()
 {
+  if (connection_state == CLIENT_CONNECTION_STATE_CONNECTED)
+    close(sockfd);
+
   delete visualisation;
 }
 
@@ -56,24 +59,28 @@ int CClient::main()
 int CClient::connect_to_server()
 {
   struct sAgentInterface agent_interface_tmp;
-  do
-  {
+
     unsigned int j;
     for (j = 0; j < agent_interface.size(); j++)
     {
-      agent_interface_tmp = agent_interface[j];
-
       if (connection_state == CLIENT_CONNECTION_STATE_NO_CONNECTED)
       {
         sockfd = 0;
         sockaddr_in serv_addr;
 
+        //printf("opening\n");
+
         if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-            return -1;
+        {
+          connection_state = CLIENT_CONNECTION_STATE_NO_CONNECTED;
+          return -1;
+        }
 
         serv_addr.sin_addr.s_addr = inet_addr(g_configure.get_server_ip());
         serv_addr.sin_family = AF_INET;
         serv_addr.sin_port = htons(g_configure.get_server_port());
+
+        //printf("connecting\n");
 
         if( connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
         {
@@ -85,12 +92,18 @@ int CClient::connect_to_server()
         connection_state = CLIENT_CONNECTION_STATE_CONNECTED;
       }
 
+      //printf("sending\n");
+
+      agent_interface_tmp = agent_interface[j];
+
       if( send(sockfd, (char*)(&agent_interface_tmp), sizeof(struct sAgentInterface), 0) < 0)
       {
         close(sockfd);
         connection_state = CLIENT_CONNECTION_STATE_NO_CONNECTED;
         return -3;
       }
+
+      //printf("receiving\n");
 
       agent_interface_tmp.id = 0;
       if( recv(sockfd, (char*)(&agent_interface_tmp), sizeof(struct sAgentInterface), 0) < 0)
@@ -100,15 +113,33 @@ int CClient::connect_to_server()
         return -4;
       }
 
+      // printf("readed agent with id %u\n", agent_interface_tmp.id);
+
+
       unsigned int i;
       bool done = false;
       for (i = 0; i < agent_interface.size(); i++)
       {
         if (agent_interface_tmp.id == agent_interface[i].id)
         {
-          agent_interface[i] = agent_interface_tmp;
           done = true;
-          break;
+
+          /*
+          if (agent_interface_tmp.group_id == agent_interface[i].group_id)
+          {
+            if (agent_interface_tmp.robot_time > agent_interface[i].robot_time)
+            {
+              agent_interface[i] = agent_interface_tmp;
+              break;
+            }
+          }
+          else
+          {
+            agent_interface[i] = agent_interface_tmp;
+          }
+          */
+
+          agent_interface[i] = agent_interface_tmp;
         }
       }
 
@@ -118,8 +149,6 @@ int CClient::connect_to_server()
       }
 
     }
-  }
-  while (agent_interface_tmp.id != 0);
 
 
   return 0;

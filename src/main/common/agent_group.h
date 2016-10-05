@@ -20,6 +20,7 @@ struct sAgentGroupInitStruct
 class CAgentGroup : public CRT_Timer
 {
   protected:
+    unsigned long int group_id;
     struct sAgentGroupInitStruct agent_group_init_struct;
 
     std::vector<struct sAgentInterface> agent_interface;
@@ -35,6 +36,8 @@ class CAgentGroup : public CRT_Timer
     int set_agent_struct(struct sAgentInterface *value);
     int get_agent_struct(struct sAgentInterface *value);
     struct sAgentInterface get_agent_struct_idx(unsigned int idx);
+
+    unsigned long int get_group_id();
 
   protected:
     void rt_timer_callback();

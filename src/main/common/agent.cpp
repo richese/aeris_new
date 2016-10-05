@@ -8,8 +8,9 @@
 extern class CConfigure g_configure;
 
 CAgent::CAgent( struct sAgentInterface agent_interface,
-                class CAgentGroup *agent_group
-              ):CAgentInterface(agent_interface, agent_group)
+                class CAgentGroup *agent_group,
+                unsigned long int group_id
+              ):CAgentInterface(agent_interface, agent_group, group_id)
 {
   #ifdef _DEBUG_COMMON_
   printf("%lu : agent created\n", (unsigned long int)this);
@@ -71,6 +72,9 @@ void CAgent::agent_process()
   int res_tx = agent_group->set_agent_struct(&agent_interface);
 
   #ifdef _DEBUG_COMMON_
-  printf("%lu : processing agent with %u id %i %i\n", (unsigned long int)this, agent_interface.id, res_rx, res_tx);
+  printf("%lu : processing agent with %lu id %i %i\n", (unsigned long int)this, agent_interface.id, res_rx, res_tx);
   #endif
+
+  (void)res_rx;
+  (void)res_tx;
 }

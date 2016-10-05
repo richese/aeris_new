@@ -7,7 +7,8 @@
 
 struct sAgentInterface
 {
-  unsigned int agent_type, body_type, state, id, body_id;
+  unsigned long int id, group_id;
+  unsigned int agent_type, body_type, state, body_id;
   double robot_time, dt;
   struct sAgentPosition position;
 };
@@ -29,7 +30,8 @@ class CAgentInterface:public CAgentBody
 
   public:
     CAgentInterface(struct sAgentInterface agent_interface,
-                    class CAgentGroup *agent_group = NULL);
+                    class CAgentGroup *agent_group = NULL,
+                    unsigned long int group_id = 0);
     ~CAgentInterface();
 
     unsigned int get_id();

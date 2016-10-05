@@ -10,13 +10,15 @@
 
 
 CAgentInterface::CAgentInterface( struct sAgentInterface agent_interface,
-                                  class CAgentGroup *agent_group):CAgentBody(agent_interface.body_id)
+                                  class CAgentGroup *agent_group, unsigned long int group_id):CAgentBody(agent_interface.body_id)
 {
   this->agent_interface = agent_interface;
   this->agent_group = agent_group;
 
+
   this->agent_interface.state = 0;
   this->agent_interface.id = get_unique_id();
+  this->agent_interface.group_id = group_id;
   this->agent_interface.robot_time = get_ms_time();
 
 

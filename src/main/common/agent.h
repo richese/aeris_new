@@ -15,7 +15,8 @@ class CAgent: public CAgentInterface
 
   public:
     CAgent( struct sAgentInterface agent_interface,
-            class CAgentGroup *agent_group = NULL
+            class CAgentGroup *agent_group = NULL,
+            unsigned long int group_id = 0
           );
 
 

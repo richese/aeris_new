@@ -76,74 +76,74 @@ void CVisualisation::refresh(std::vector<struct sAgentInterface> *agent_interfac
 
   if (opengl_enabled)
   {
-    glMatrixMode(GL_PROJECTION);
-    glShadeModel(GL_SMOOTH);
-    glEnable(GL_DEPTH_TEST);
-    glMatrixMode(GL_MODELVIEW);
+      glMatrixMode(GL_PROJECTION);
+      glShadeModel(GL_SMOOTH);
+      glEnable(GL_DEPTH_TEST);
+      glMatrixMode(GL_MODELVIEW);
 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glLoadIdentity();
+      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+      glLoadIdentity();
 
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LEQUAL);
+      glEnable(GL_DEPTH_TEST);
+      glDepthFunc(GL_LEQUAL);
 
-    glMatrixMode(GL_MODELVIEW);
+      glMatrixMode(GL_MODELVIEW);
 
-    unsigned int g_view_state = 2;
+      unsigned int g_view_state = 2;
 
-    switch (g_view_state)
-    {
-      case 0:
-            glTranslatef(0.0, 0.0, -800.0);
-            glRotatef(0.0, 0.0, 0.0, 0.0);
-            break;
-
-      case 1:
-            glTranslatef(0.0, 0.0, -4.0);
-            glRotatef(0.0, 0.0, 0.0, 0.0);
-            break;
-
-
-      case 2:
-            glTranslatef(0.0, 0.0, -1000.0);
-            glRotatef(-70.0, 1.0, 0.0, 0.0);
-            break;
-
-    }
-
-    glClearColor(0.0, 0.0, 0.0, 0.0);
-
-    unsigned int max_y = 100;
-    unsigned int max_x = (max_y*16.0)/9.0;
-    unsigned int j, i;
-
-    for (j = 0; j < max_y; j++)
-      for (i = 0; i < max_x; i++)
+      switch (g_view_state)
       {
-        if ((j%2) == (i%2))
-          glColor3f(0.05, 0.05, 0.05);
-        else
-          glColor3f(0.0, 0.0, 0.0);
+        case 0:
+              glTranslatef(0.0, 0.0, -800.0);
+              glRotatef(0.0, 0.0, 0.0, 0.0);
+              break;
 
-        float size = cm_size;
-        float x = size*(i - max_x/2.0);
-        float y = size*(j - max_y/2.0);
+        case 1:
+              glTranslatef(0.0, 0.0, -4.0);
+              glRotatef(0.0, 0.0, 0.0, 0.0);
+              break;
 
 
-        glBegin(GL_QUADS);
-        glVertex3f(x - 0.5*size, y - 0.5*size, 0.0);
-        glVertex3f(x + 0.5*size, y - 0.5*size, 0.0);
-        glVertex3f(x + 0.5*size, y + 0.5*size, 0.0);
-        glVertex3f(x - 0.5*size, y + 0.5*size, 0.0);
-        glEnd();
+        case 2:
+              glTranslatef(0.0, 0.0, -1000.0);
+              glRotatef(-70.0, 1.0, 0.0, 0.0);
+              break;
       }
 
-    for (j = 0; j < agent_interface->size(); j++)
-    {
-      paint_agent(&(*agent_interface)[j]);
-    }
+      glClearColor(0.0, 0.0, 0.0, 0.0);
 
-    glutSwapBuffers();
+      unsigned int max_y = 100;
+      unsigned int max_x = (max_y*16.0)/9.0;
+      unsigned int j, i;
+
+      /*
+      for (j = 0; j < max_y; j++)
+        for (i = 0; i < max_x; i++)
+        {
+          if ((j%2) == (i%2))
+            glColor3f(0.05, 0.05, 0.05);
+          else
+            glColor3f(0.0, 0.0, 0.0);
+
+          float size = cm_size;
+          float x = size*(i - max_x/2.0);
+          float y = size*(j - max_y/2.0);
+
+
+          glBegin(GL_QUADS);
+          glVertex3f(x - 0.5*size, y - 0.5*size, 0.0);
+          glVertex3f(x + 0.5*size, y - 0.5*size, 0.0);
+          glVertex3f(x + 0.5*size, y + 0.5*size, 0.0);
+          glVertex3f(x - 0.5*size, y + 0.5*size, 0.0);
+          glEnd();
+        }
+        */
+      for (j = 0; j < agent_interface->size(); j++)
+      {
+        paint_agent(&(*agent_interface)[j]);
+      }
+
+      glutSwapBuffers();
   }
 }
 

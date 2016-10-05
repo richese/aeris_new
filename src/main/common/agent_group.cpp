@@ -3,8 +3,10 @@
 
 #include <math_robot.h>
 #include <getch.h>
+#include <unique_id.h>
 
 #include <configure.h>
+
 
 extern class CConfigure g_configure;
 
@@ -13,6 +15,7 @@ CAgentGroup::CAgentGroup(struct sAgentGroupInitStruct agent_group_init_struct)
   unsigned int i;
 
   this->agent_group_init_struct = agent_group_init_struct;
+  group_id = get_unique_id();
 
   struct sAgentInterface agent_interface_;
 
@@ -31,13 +34,15 @@ CAgentGroup::CAgentGroup(struct sAgentGroupInitStruct agent_group_init_struct)
   agent_interface_.robot_time = 0.0;
   agent_interface_.dt = agent_group_init_struct.dt;
 
+
+
   for (i = 0; i < agent_group_init_struct.count; i++)
   {
     agent_interface_.position.x = m_rnd()*g_configure.get_width_cm();
     agent_interface_.position.y = m_rnd()*g_configure.get_height_cm();
     agent_interface_.position.z = 0.0*m_rnd()*g_configure.get_depth_cm();
 
-    agents.push_back(new CAgent(agent_interface_, this));
+    agents.push_back(new CAgent(agent_interface_, this, get_group_id()));
   }
 
 
@@ -64,14 +69,20 @@ void CAgentGroup::rt_timer_callback()
 {
   unsigned int i;
 
-  for (i = 0; i < agents.size(); i++)
-    agents[i]->agent_process();
-
-  int res = connect_to_server();
-
   #ifdef _DEBUG_COMMON_
   printf("%lu : processing agents\n", (unsigned int long)this);
   #endif
+
+  for (i = 0; i < agents.size(); i++)
+    if (agent_interface[i].group_id == group_id)
+      agents[i]->agent_process();
+
+  int res = connect_to_server();
+
+  /*
+  if (res < 0)
+    res = connect_to_server();
+    */
 
   #ifdef _ERROR_COMMON_
   if (res < 0)
@@ -113,6 +124,7 @@ int CAgentGroup::set_agent_struct(struct sAgentInterface *value)
   unsigned int i;
   int res = -1;
   for (i = 0; i < agent_interface.size(); i++)
+    if (value->group_id == agent_interface[i].group_id)
     if (value->id == agent_interface[i].id)
     {
       agent_interface[i] = *value;
@@ -156,4 +168,9 @@ int CAgentGroup::connect_to_server()
   #endif
 
   return 0;
+}
+
+unsigned long int CAgentGroup::get_group_id()
+{
+  return group_id;
 }
