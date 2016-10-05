@@ -124,22 +124,13 @@ int CClient::connect_to_server()
         {
           done = true;
 
-          /*
-          if (agent_interface_tmp.group_id == agent_interface[i].group_id)
-          {
-            if (agent_interface_tmp.robot_time > agent_interface[i].robot_time)
-            {
-              agent_interface[i] = agent_interface_tmp;
-              break;
-            }
-          }
-          else
+          if (agent_interface_tmp.robot_time > agent_interface[i].robot_time)
           {
             agent_interface[i] = agent_interface_tmp;
+            break;
           }
-          */
 
-          agent_interface[i] = agent_interface_tmp;
+          // agent_interface[i] = agent_interface_tmp;
         }
       }
 
