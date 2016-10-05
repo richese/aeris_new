@@ -25,8 +25,6 @@ CVisualisation::CVisualisation()
   opengl_enabled = true;
   if (opengl_enabled == true)
   {
-
-
     unsigned int window_width = g_configure.get_width_pixel();
     unsigned int window_height = g_configure.get_height_pixel();
 
@@ -36,7 +34,6 @@ CVisualisation::CVisualisation()
     glutInitWindowSize(window_width, window_height);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
     glutCreateWindow("robot visualisation");
-
 
     //glutIdleFunc(visualise_idle);
     //glutKeyboardFunc(visualise_process_keys);

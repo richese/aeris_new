@@ -4,7 +4,7 @@ int main()
 {
   struct sAgentGroupInitStruct agent_group_init_struct;
 
-  agent_group_init_struct.count = 4;
+  agent_group_init_struct.count = 1000;
   agent_group_init_struct.random_positions = true;
 
   /*
@@ -14,7 +14,7 @@ int main()
   sprintf(agent_group_init_struct.server_ip,"127.0.0.1");
   agent_group_init_struct.server_port = 2000;
   agent_group_init_struct.agent_type = AGENT_TYPE_NULL;
-  agent_group_init_struct.dt = 5.0;
+  agent_group_init_struct.dt = 20.0;
 
   class CClient *client;
 

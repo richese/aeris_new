@@ -32,7 +32,7 @@ void CAgentBody::agent_body_random()
 {
   unsigned int j, i;
 
-  float size = 20.0*m_abs(agent_body_rnd());
+  float size = 5.0*m_abs(agent_body_rnd());
 
   unsigned polygons_count = 10;
 

@@ -61,6 +61,7 @@ int CClient::connect_to_server()
   struct sAgentInterface agent_interface_tmp;
 
     unsigned int j;
+    unsigned int ptr = 0;
     for (j = 0; j < agent_interface.size(); j++)
     {
       if (connection_state == CLIENT_CONNECTION_STATE_NO_CONNECTED)
@@ -94,7 +95,13 @@ int CClient::connect_to_server()
 
       //printf("sending\n");
 
-      agent_interface_tmp = agent_interface[j];
+      do
+      {
+        ptr = (ptr+1)%agent_interface.size();
+      }
+        while (agent_interface[ptr].group_id != get_group_id());
+
+      agent_interface_tmp = agent_interface[ptr];
 
       if( send(sockfd, (char*)(&agent_interface_tmp), sizeof(struct sAgentInterface), 0) < 0)
       {
@@ -117,26 +124,26 @@ int CClient::connect_to_server()
 
 
       unsigned int i;
-      bool done = false;
+
+      int idx = -1;
       for (i = 0; i < agent_interface.size(); i++)
       {
         if (agent_interface_tmp.id == agent_interface[i].id)
         {
-          done = true;
-
-          if (agent_interface_tmp.robot_time > agent_interface[i].robot_time)
-          {
-            agent_interface[i] = agent_interface_tmp;
-            break;
-          }
-
-          // agent_interface[i] = agent_interface_tmp;
+          idx = i;
+          break;
         }
       }
 
-      if (done == false)
-      {
+      if (idx == -1)
         agent_interface.push_back(agent_interface_tmp);
+      else
+      {
+        if (
+            (agent_interface_tmp.robot_time > agent_interface[idx].robot_time) ||
+            (agent_interface_tmp.group_id != get_group_id())
+          )
+            agent_interface[idx] = agent_interface_tmp;
       }
 
     }
