@@ -106,7 +106,7 @@ bool CAgentBody::load_from_file(char * path)
           struct sPoint vertex;
           res_dummy = fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z );
 
-          float k = 0.9999;
+          float k = 0.1;
           vertex.x*= k;
           vertex.y*= k;
           vertex.z*= k;
