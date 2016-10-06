@@ -1,0 +1,11 @@
+cd server/bin
+./main.elf &
+cd ../..
+
+cd visualisation/bin
+./main.elf &
+cd ../..
+
+cd agent_test/bin
+./main.elf &
+cd ../..

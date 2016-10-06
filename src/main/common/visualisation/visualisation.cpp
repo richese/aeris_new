@@ -9,7 +9,6 @@
 #include <GL/freeglut.h>
 #include <GL/glut.h>
 #include <GL/glext.h>
-#include <glm/glm.hpp>
 
 
 #include "../configure.h"
@@ -138,7 +137,7 @@ void CVisualisation::refresh(std::vector<struct sAgentInterface> *agent_interfac
           glVertex3f(x - 0.5*size, y + 0.5*size, 0.0);
           glEnd();
         }
-        
+
       for (j = 0; j < agent_interface->size(); j++)
       {
         paint_agent(&(*agent_interface)[j]);

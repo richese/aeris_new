@@ -10,6 +10,17 @@ CConfigure::CConfigure()
 {
   srand(time(NULL));
 
+  FILE *f;
+  f = fopen("../../configure.txt", "r");
+  if (f == NULL)
+  {
+    printf("configure.txt file opening error\n");
+    while (1) { }
+  }
+
+  fscanf(f, "%s %i\n", server_ip, &server_port);
+
+
   width_pixel = 800.0;
   height_pixel = 600.0;
   depth_pixel = 0.0;
@@ -20,8 +31,11 @@ CConfigure::CConfigure()
 
   cm_size = 10.0*100.0/81.0;
 
+/*
   sprintf(server_ip,"127.0.0.1");
-  server_port = 2001;
+  server_port = 2010;
+*/
+
 }
 
 CConfigure::~CConfigure()

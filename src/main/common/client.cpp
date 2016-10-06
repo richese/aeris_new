@@ -19,10 +19,15 @@
 
 extern class CConfigure g_configure;
 
-CClient::CClient(struct sAgentGroupInitStruct agent_group_init_struct, class CAgent *agent):CAgentGroup(agent_group_init_struct, agent)
+CClient::CClient(struct sAgentGroupInitStruct agent_group_init_struct, class CAgent *agent, bool visualisation_enabled):CAgentGroup(agent_group_init_struct, agent)
 {
-  visualisation = new CVisualisation();
+  this->visualisation_enabled = visualisation_enabled;
+
+  if (visualisation_enabled)
+    visualisation = new CVisualisation();
+
   connection_state = CLIENT_CONNECTION_STATE_NO_CONNECTED;
+
 }
 
 CClient::~CClient()
@@ -30,7 +35,8 @@ CClient::~CClient()
   if (connection_state == CLIENT_CONNECTION_STATE_CONNECTED)
     close(sockfd);
 
-  delete visualisation;
+  if (visualisation_enabled)
+    delete visualisation;
 }
 
 int CClient::main()
@@ -49,7 +55,8 @@ int CClient::main()
     printf("%lu : client local main loop running, press ESC to end\n", (unsigned int long)this);
     #endif
 
-    visualisation->refresh(&agent_interface);
+    if (visualisation_enabled)
+      visualisation->refresh(&agent_interface);
   }
 
   rt_timer_stop();

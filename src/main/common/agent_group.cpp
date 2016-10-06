@@ -166,6 +166,11 @@ int CAgentGroup::connect_to_server()
   return 0;
 }
 
+std::vector<struct sAgentInterface>* CAgentGroup::get_agent_interface()
+{
+  return &agent_interface;
+}
+
 unsigned long int CAgentGroup::get_group_id()
 {
   return group_id;

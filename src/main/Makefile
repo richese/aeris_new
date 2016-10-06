@@ -1,4 +1,4 @@
-SUBDIRS = common server agent_test
+SUBDIRS = common server visualisation agent_test
 
 all: $(SUBDIRS)
 

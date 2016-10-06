@@ -18,6 +18,8 @@
 #include "client.h"
 #include "server.h"
 
+#include "visualisation/visualisation.h"
+
 
 
 #endif

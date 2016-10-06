@@ -33,6 +33,8 @@ class CAgentGroup : public CRT_Timer
     int get_agent_struct(struct sAgentInterface *value);
     struct sAgentInterface get_agent_struct_idx(unsigned int idx);
 
+    std::vector<struct sAgentInterface>* get_agent_interface();
+
     unsigned long int get_group_id();
 
   protected:

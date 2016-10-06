@@ -14,6 +14,7 @@
 class CClient:public CAgentGroup
 {
   private:
+    bool visualisation_enabled;
     class CVisualisation *visualisation;
 
 
@@ -22,7 +23,7 @@ class CClient:public CAgentGroup
     struct sockaddr_in serv_addr;
 
   public:
-    CClient(struct sAgentGroupInitStruct agent_group_init_struct, class CAgent *agent);
+    CClient(struct sAgentGroupInitStruct agent_group_init_struct, class CAgent *agent, bool visualisation_enabled = false);
     ~CClient();
 
     int main();
