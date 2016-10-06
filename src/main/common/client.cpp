@@ -104,7 +104,7 @@ int CClient::connect_to_server()
 
       agent_interface_tmp = agent_interface[ptr];
 
-      if( send(sockfd, (char*)(&agent_interface_tmp), sizeof(struct sAgentInterface), 0) < 0)
+      if( send(sockfd, (char*)(&agent_interface_tmp), sizeof(struct sAgentInterface), 0) <= 0)
       {
         close(sockfd);
         connection_state = CLIENT_CONNECTION_STATE_NO_CONNECTED;
@@ -114,7 +114,7 @@ int CClient::connect_to_server()
       //printf("receiving\n");
 
       agent_interface_tmp.id = 0;
-      if( recv(sockfd, (char*)(&agent_interface_tmp), sizeof(struct sAgentInterface), 0) < 0)
+      if( recv(sockfd, (char*)(&agent_interface_tmp), sizeof(struct sAgentInterface), 0) <= 0)
       {
         close(sockfd);
         connection_state = CLIENT_CONNECTION_STATE_NO_CONNECTED;
