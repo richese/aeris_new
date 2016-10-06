@@ -8,19 +8,19 @@ int main()
   agent_group_init_struct.random_positions = true;
   agent_group_init_struct.dt = 100.0;
 
-  class CClient *client_1;
- 
+  class CClient *client;
+
 
 
   class CExampleAgent *agent = new CExampleAgent();
   //class CAgent *agent = new CAgent();
 
 
-  client_1 = new CClient(agent_group_init_struct, agent);
-  client_1->main();
+  client = new CClient(agent_group_init_struct, agent);
+  client->main();
 
 
-  delete client_1;
+  delete client;
 
 
   printf("program done\n");

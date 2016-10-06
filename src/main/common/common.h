@@ -11,14 +11,18 @@
 #include <chrono>
 
 
+#include "debug.h"
+#include "configure.h"
+
 
 #include "getch.h"
+#include "visualisation_dummy.h"
 
 #include "agents/agents.h"
 #include "client.h"
 #include "server.h"
 
-#include "visualisation/visualisation.h"
+
 
 
 

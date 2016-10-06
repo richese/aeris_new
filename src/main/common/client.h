@@ -3,7 +3,7 @@
 
 
 #include "agent_group.h"
-#include "visualisation/visualisation.h"
+#include "visualisation_dummy.h"
 
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -11,11 +11,11 @@
 #define CLIENT_CONNECTION_STATE_NO_CONNECTED    ((unsigned int)0)
 #define CLIENT_CONNECTION_STATE_CONNECTED       ((unsigned int)1)
 
+
 class CClient:public CAgentGroup
 {
   private:
-    bool visualisation_enabled;
-    class CVisualisation *visualisation;
+    class CVisualisationDummy *visualisation;
 
 
     unsigned int connection_state;
@@ -23,7 +23,7 @@ class CClient:public CAgentGroup
     struct sockaddr_in serv_addr;
 
   public:
-    CClient(struct sAgentGroupInitStruct agent_group_init_struct, class CAgent *agent, bool visualisation_enabled = false);
+    CClient(struct sAgentGroupInitStruct agent_group_init_struct, class CAgent *agent, class CVisualisationDummy *visualisation = NULL);
     ~CClient();
 
     int main();

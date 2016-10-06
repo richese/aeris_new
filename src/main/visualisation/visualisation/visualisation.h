@@ -1,9 +1,9 @@
 #ifndef _VISUALISATION_H_
 #define _VISUALISATION_H_
 
-#include "../agents/agent_interface.h"
+#include "../common/common.h"
 
-class CVisualisation
+class CVisualisation:public CVisualisationDummy
 {
   private:
     bool opengl_enabled;

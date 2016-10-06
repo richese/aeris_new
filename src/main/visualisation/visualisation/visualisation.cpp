@@ -11,8 +11,6 @@
 #include <GL/glext.h>
 
 
-#include "../configure.h"
-#include "../debug.h"
 
 extern class CConfigure g_configure;
 
