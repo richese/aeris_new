@@ -1,15 +1,14 @@
 #ifndef _AGENT_BODY_H_
 #define _AGENT_BODY_H_
 
-#include <point3d.h>
-#include <glm/glm.hpp>
+#include "../point3d.h"
 
-#define AGENT_BODY_TYPE_NULL    ((unsigned int)0)
+#define AGENT_BODY_TYPE_NULL      ((unsigned int)0)
 #define AGENT_BODY_TYPE_SQUARE    ((unsigned int)1)
-#define AGENT_BODY_TYPE_RANDOM  ((unsigned int)2)
-#define AGENT_BODY_TYPE_CUSTOM  ((unsigned int)3)
+#define AGENT_BODY_TYPE_RANDOM    ((unsigned int)2)
+#define AGENT_BODY_TYPE_CUSTOM    ((unsigned int)3)
 
-#define AGENT_BODY_TYPE_COUNT   ((unsigned int)4)
+#define AGENT_BODY_TYPE_COUNT     ((unsigned int)4)
 
 
 class CAgentBody
@@ -19,12 +18,12 @@ class CAgentBody
 
   public:
     std::vector<struct sPolygone> body_polygons;
-    std::vector< glm::vec3 > vertices;
+    std::vector< struct sPoint > vertices;
 
 
   public:
+    CAgentBody();
     CAgentBody(unsigned int body_type);
-    //CAgentBody(char* body_filename);
     ~CAgentBody();
 
   private:
@@ -34,9 +33,7 @@ class CAgentBody
 
   private:
     void obj_load(char* body_filename);
-    bool load_from_file(  const char * path,
-                          std::vector < glm::vec3 > & out_vertices
-                        );
+    bool load_from_file(char * path);
     unsigned int agent_body_rand();
     double agent_body_rnd();
 };

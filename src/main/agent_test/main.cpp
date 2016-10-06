@@ -6,23 +6,22 @@ int main()
 
   agent_group_init_struct.count = 100;
   agent_group_init_struct.random_positions = true;
-
-  /*
-    char server_ip[16];
-    unsigned int server_port;
-*/
-  sprintf(agent_group_init_struct.server_ip,"127.0.0.1");
-  agent_group_init_struct.server_port = 2000;
-  agent_group_init_struct.agent_type = AGENT_TYPE_NULL;
   agent_group_init_struct.dt = 100.0;
 
-  class CClient *client;
+  class CClient *client_1;
 
-  client = new CClient(agent_group_init_struct);
 
-  client->main();
 
-  delete client;
+  class CTestingAgent *agent = new CTestingAgent();
+  //class CAgent *agent = new CAgent();
+
+
+  client_1 = new CClient(agent_group_init_struct, agent);
+  client_1->main();
+
+
+  delete client_1;
+
 
   printf("program done\n");
   return 0;

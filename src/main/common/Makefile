@@ -5,7 +5,7 @@ OBJCOPY = objcopy
 OBJDUMP = objdump
 SIZE = size
 
-CFLAGS = -O2 -Os -s -Wall -Wextra -pedantic -std=c++11 -DGL_GLEXT_PROTOTYPES
+CFLAGS = -O2 -Os -s -Wall -Wextra -pedantic -std=c++11
 LDFLAGS = -lm -lpthread -pthread -std=c++11
 
 
@@ -18,7 +18,7 @@ INC_ = $(shell find -name '*.h')
 #TMP = -I
 #INC = $(addprefix $(TMP), $(INC_))
 
-INC = -I .
+#INC = -I .
 
 
 all: $(OBJS)

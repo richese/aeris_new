@@ -1,9 +1,13 @@
-#include <agent_body.h>
-#include <math_robot.h>
+#include "agent_body.h"
+#include "../math_robot.h"
 #include <stdio.h>
 #include <string>
 #include <string.h>
 
+CAgentBody::CAgentBody()
+{
+
+}
 
 CAgentBody::CAgentBody(unsigned int body_type)
 {
@@ -65,76 +69,17 @@ void CAgentBody::agent_body_random()
 
 void CAgentBody::obj_load(char* body_filename)
 {
-
-  /*
-  std::vector < glm::vec3 > out_vertices;
-  std::vector < glm::vec2 > out_uvs;
-  std::vector < glm::vec3 > out_normals;
-
-  load_from_file(body_filename, out_vertices, out_uvs, out_normals);
-
-
-
-  for( unsigned int i=0; i<vertexIndices.size(); i++ )
-  {
-    unsigned int vertexIndex = vertexIndices[i];
-    glm::vec3 vertex = temp_vertices[ vertexIndex-1 ];
-
-  vertices.push_back(vertex);
-
-  */
-
-
-
-  /*
-  FILE * file = fopen(body_filename, "r");
-
-  if( file == NULL )
-  {
-    printf("Impossible to open the file !\n");
-  }
-
-  while(1)
-  {
-   char lineHeader[128];
-    // read the first word of the line
-   int res = fscanf(file, "%s", lineHeader);
-   if (res == EOF)
-     break; // EOF = End Of File. Quit the loop.
-     // else : parse lineHeader
-
-   if ( strcmp( lineHeader, "v" ) == 0 )
-   {
-    struct sPoint point;
-    float x, y, z;
-    res = fscanf(file, "%f %f %f\n", &x, &y, &z);
-
-    float k = 3.0;
-    point.x = x*k;
-    point.y = y*k;
-    point.z = z*k;
-    vertices.push_back(point);
-   }
-  }
-
-  fclose(file);
-  */
-
-  load_from_file(body_filename, vertices);
-
-  printf("size %u\n", vertices.size());
+  load_from_file(body_filename);
 }
 
 
-bool CAgentBody::load_from_file(  const char * path,
-                      std::vector < glm::vec3 > & out_vertices
-                    )
+bool CAgentBody::load_from_file(char * path)
 {
 
   std::vector< unsigned int > vertexIndices, uvIndices, normalIndices;
-  std::vector< glm::vec3 > temp_vertices;
-  std::vector< glm::vec2 > temp_uvs;
-  std::vector< glm::vec3 > temp_normals;
+  std::vector< struct sPoint > temp_vertices;
+  std::vector< struct sPoint2D > temp_uvs;
+  std::vector< struct sPoint > temp_normals;
 
 
   FILE * file = fopen(path, "r");
@@ -143,6 +88,7 @@ bool CAgentBody::load_from_file(  const char * path,
       return false;
   }
 
+  int res_dummy;
 
   while( 1 )
   {
@@ -157,10 +103,10 @@ bool CAgentBody::load_from_file(  const char * path,
 
       if ( strcmp( lineHeader, "v" ) == 0 )
       {
-          glm::vec3 vertex;
-          fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z );
+          struct sPoint vertex;
+          res_dummy = fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z );
 
-          float k = 0.2;
+          float k = 0.9999;
           vertex.x*= k;
           vertex.y*= k;
           vertex.z*= k;
@@ -168,14 +114,14 @@ bool CAgentBody::load_from_file(  const char * path,
       }
       else if ( strcmp( lineHeader, "vt" ) == 0 )
       {
-            glm::vec2 uv;
-            fscanf(file, "%f %f\n", &uv.x, &uv.y );
+            struct sPoint2D uv;
+            res_dummy = fscanf(file, "%f %f\n", &uv.x, &uv.y );
             temp_uvs.push_back(uv);
       }
       else if ( strcmp( lineHeader, "vn" ) == 0 )
       {
-            glm::vec3 normal;
-            fscanf(file, "%f %f %f\n", &normal.x, &normal.y, &normal.z );
+            struct sPoint normal;
+            res_dummy = fscanf(file, "%f %f %f\n", &normal.x, &normal.y, &normal.z );
             temp_normals.push_back(normal);
       }
       else if ( strcmp( lineHeader, "f" ) == 0 )
@@ -209,7 +155,7 @@ bool CAgentBody::load_from_file(  const char * path,
                   return false;
               }
 
-
+              /*
 
               printf("%u//%u %u//%u %u//%u\n",
 
@@ -225,7 +171,7 @@ bool CAgentBody::load_from_file(  const char * path,
                                   //  uvIndex[2],
                                     normalIndex[2] );
 
-
+              */
               vertexIndices.push_back(vertexIndex[0]);
               vertexIndices.push_back(vertexIndex[1]);
               vertexIndices.push_back(vertexIndex[2]);
@@ -244,10 +190,11 @@ bool CAgentBody::load_from_file(  const char * path,
   for( unsigned int i=0; i<vertexIndices.size(); i++ )
   {
       unsigned int vertexIndex = vertexIndices[i];
-      glm::vec3 vertex = temp_vertices[ vertexIndex-1 ];
+      struct sPoint vertex = temp_vertices[ vertexIndex-1 ];
       vertices.push_back(vertex);
   }
 
+  (void)res_dummy;
 
 
 

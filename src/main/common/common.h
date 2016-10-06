@@ -12,12 +12,11 @@
 
 
 
-#include <getch.h>
+#include "getch.h"
 
-#include <agent.h>
-#include <agent_group.h>
-#include <client.h>
-#include <server.h>
+#include "agents/agents.h"
+#include "client.h"
+#include "server.h"
 
 
 

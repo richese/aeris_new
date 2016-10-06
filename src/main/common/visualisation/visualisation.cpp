@@ -1,5 +1,4 @@
-#include <visualisation.h>
-#include <debug.h>
+#include "visualisation.h"
 
 #include <stdio.h>
 #include <X11/X.h>
@@ -13,7 +12,8 @@
 #include <glm/glm.hpp>
 
 
-#include <configure.h>
+#include "../configure.h"
+#include "../debug.h"
 
 extern class CConfigure g_configure;
 
@@ -117,7 +117,7 @@ void CVisualisation::refresh(std::vector<struct sAgentInterface> *agent_interfac
       unsigned int max_x = (max_y*16.0)/9.0;
       unsigned int j, i;
 
-      /*
+
       for (j = 0; j < max_y; j++)
         for (i = 0; i < max_x; i++)
         {
@@ -138,7 +138,7 @@ void CVisualisation::refresh(std::vector<struct sAgentInterface> *agent_interfac
           glVertex3f(x - 0.5*size, y + 0.5*size, 0.0);
           glEnd();
         }
-        */
+        
       for (j = 0; j < agent_interface->size(); j++)
       {
         paint_agent(&(*agent_interface)[j]);
@@ -154,6 +154,7 @@ void CVisualisation::paint_agent(struct sAgentInterface *agent_interface)
   unsigned int i, j;
 
   unsigned int body_id = agent_interface->body_type;
+
 
   float x_ofs = agent_interface->position.x;
   float y_ofs = agent_interface->position.y;

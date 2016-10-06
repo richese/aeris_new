@@ -1,8 +1,8 @@
 #ifndef _AGENT_INTERFACE_H_
 #define _AGENT_INTERFACE_H_
 
-#include <agent_body.h>
-#include <point3d.h>
+#include "agent_body.h"
+#include "../point3d.h"
 #include <stdlib.h>
 
 struct sAgentInterface
@@ -14,21 +14,22 @@ struct sAgentInterface
 };
 
 
-#define AGENT_TYPE_NULL     ((unsigned int)0)
+#define AGENT_TYPE_NULL     ((unsigned long int)0)
+#define AGENT_TYPE_DEFAULT  ((unsigned long int)1)
+#define AGENT_TYPE_TESTING  ((unsigned long int)2)
+
 
 
 class CAgentGroup;
-
 class CAgentInterface:public CAgentBody
 {
   protected:
     struct sAgentInterface agent_interface;
     class CAgentGroup *agent_group;
 
-    unsigned int serialized_size;
-    char *serialized;
 
   public:
+    CAgentInterface();
     CAgentInterface(struct sAgentInterface agent_interface,
                     class CAgentGroup *agent_group = NULL,
                     unsigned long int group_id = 0);
@@ -37,8 +38,6 @@ class CAgentInterface:public CAgentBody
     unsigned int get_id();
 
   protected:
-
-    char *get_serialized();
     unsigned int get_serialized_size();
     void set_serialized(char *b, unsigned int size);
 };

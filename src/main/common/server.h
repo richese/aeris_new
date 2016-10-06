@@ -2,8 +2,8 @@
 #define _SERVER_H_
 
 
-#include <agent_interface.h>
-#include <connected_client.h>
+#include "agents/agent_interface.h"
+
 #include <thread>
 #include <mutex>
 

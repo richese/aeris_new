@@ -1,7 +1,7 @@
 #ifndef _VISUALISATION_H_
 #define _VISUALISATION_H_
 
-#include <agent_interface.h>
+#include "../agents/agent_interface.h"
 
 class CVisualisation
 {

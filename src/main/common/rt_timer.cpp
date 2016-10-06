@@ -6,7 +6,7 @@
 // #include <time.h>
 #include <unistd.h>
 #include <thread>
-#include <debug.h>
+#include "debug.h"
 
 CRT_Timer::CRT_Timer()
 {
@@ -95,7 +95,7 @@ void CRT_Timer::rt_timer_thread_func()
       #ifdef _ERROR_COMMON_
       printf("%lu : RT warning %6.3f[ms]\n", (unsigned long int)this, time_delay);
       #endif
-      
+
       time_delay = 0.0;
     }
 

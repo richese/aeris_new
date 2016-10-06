@@ -1,7 +1,4 @@
-#include <client.h>
-
-#include <getch.h>
-#include <debug.h>
+#include "client.h"
 
 #include <string.h>
 #include <sys/types.h>
@@ -13,12 +10,16 @@
 #include <unistd.h>
 
 
+#include "getch.h"
+#include "debug.h"
+#include "configure.h"
 
 
-#include <configure.h>
+
+
 extern class CConfigure g_configure;
 
-CClient::CClient(struct sAgentGroupInitStruct agent_group_init_struct):CAgentGroup(agent_group_init_struct)
+CClient::CClient(struct sAgentGroupInitStruct agent_group_init_struct, class CAgent *agent):CAgentGroup(agent_group_init_struct, agent)
 {
   visualisation = new CVisualisation();
   connection_state = CLIENT_CONNECTION_STATE_NO_CONNECTED;

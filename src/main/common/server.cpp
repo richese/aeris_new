@@ -1,4 +1,4 @@
-#include <server.h>
+#include "server.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -8,9 +8,9 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
-#include <debug.h>
-#include <configure.h>
-#include <ms_time.h>
+#include "debug.h"
+#include "configure.h"
+#include "ms_time.h"
 
 extern CConfigure g_configure;
 

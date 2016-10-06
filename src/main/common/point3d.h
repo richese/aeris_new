@@ -8,6 +8,11 @@ struct sPoint
   float x, y, z;
 };
 
+struct sPoint2D
+{
+  float x, y;
+};
+
 struct sPolygone
 {
   std::vector<struct sPoint> points;

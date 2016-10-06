@@ -1,11 +1,19 @@
-#include <agent.h>
-#include <debug.h>
+#include "agent.h"
+#include "abstract_agent.h"
 
-#include <math_robot.h>
+#include "../math_robot.h"
+#include "../configure.h"
+#include "../debug.h"
 
-#include <configure.h>
+#include "../agent_group.h"
+
 
 extern class CConfigure g_configure;
+
+CAgent::CAgent()
+{
+
+}
 
 CAgent::CAgent( struct sAgentInterface agent_interface,
                 class CAgentGroup *agent_group,
@@ -17,8 +25,11 @@ CAgent::CAgent( struct sAgentInterface agent_interface,
   #endif
 
 
-  agent_group->set_agent_struct(&this->agent_interface);
+  this->agent_interface.agent_type = get_agent_type();
+  this->agent_interface.body_type = AGENT_BODY_TYPE_RANDOM;
 
+
+  agent_group->set_agent_struct(&this->agent_interface);
   dx = 0.0;
   dy = 0.0;
   dz = 0.0;
@@ -77,4 +88,15 @@ void CAgent::agent_process()
 
   (void)res_rx;
   (void)res_tx;
+}
+
+
+class CAgent* CAgent::clone(struct sAgentInterface agent_interface, class CAgentGroup *agent_group, unsigned long int group_id)
+{
+  return new CAgent(agent_interface, agent_group, group_id);
+}
+
+unsigned long int CAgent::get_agent_type()
+{
+  return AGENT_TYPE_DEFAULT;
 }

@@ -1,16 +1,18 @@
-#include <agent_group.h>
-#include <debug.h>
+#include "agent_group.h"
 
-#include <math_robot.h>
-#include <getch.h>
-#include <unique_id.h>
+#include "math_robot.h"
+#include "getch.h"
+#include "unique_id.h"
 
-#include <configure.h>
+#include "configure.h"
 
+
+#include "debug.h"
+#include "agents/agents.h"
 
 extern class CConfigure g_configure;
 
-CAgentGroup::CAgentGroup(struct sAgentGroupInitStruct agent_group_init_struct)
+CAgentGroup::CAgentGroup(struct sAgentGroupInitStruct agent_group_init_struct, class CAgent *agent)
 {
   unsigned int i;
 
@@ -27,8 +29,6 @@ CAgentGroup::CAgentGroup(struct sAgentGroupInitStruct agent_group_init_struct)
   agent_interface_.position.pitch = 0.0;
   agent_interface_.position.yaw = 0.0;
 
-  agent_interface_.agent_type = agent_group_init_struct.agent_type;
-  agent_interface_.body_type = AGENT_BODY_TYPE_CUSTOM; //AGENT_BODY_TYPE_RANDOM;
   agent_interface_.state = 0;
   agent_interface_.id = 0;
   agent_interface_.robot_time = 0.0;
@@ -42,7 +42,7 @@ CAgentGroup::CAgentGroup(struct sAgentGroupInitStruct agent_group_init_struct)
     agent_interface_.position.y = m_rnd()*g_configure.get_height_cm();
     agent_interface_.position.z = 0.0*m_rnd()*g_configure.get_depth_cm();
 
-    agents.push_back(new CAgent(agent_interface_, this, get_group_id()));
+    agents.push_back(agent->clone(agent_interface_, this, get_group_id()));
   }
 
 
@@ -163,10 +163,6 @@ struct sAgentInterface CAgentGroup::get_agent_struct_idx(unsigned int idx)
 
 int CAgentGroup::connect_to_server()
 {
-  #ifdef _DEBUG_COMMON_
-  printf("%lu : agent group connect to %s %i - not implemented\n", (unsigned int long)this, agent_group_init_struct.server_ip, agent_group_init_struct.server_port);
-  #endif
-
   return 0;
 }
 

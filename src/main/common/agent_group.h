@@ -1,18 +1,14 @@
 #ifndef _AGENT_GROUP_H_
 #define _AGENT_GROUP_H_
 
-#include <agent.h>
-#include <rt_timer.h>
+#include "agents/agents.h"
+#include "rt_timer.h"
+
 
 struct sAgentGroupInitStruct
 {
   unsigned int count;
   bool random_positions;
-
-  char server_ip[16];
-  unsigned int server_port;
-
-  unsigned int agent_type;
   double dt;
 };
 
@@ -27,7 +23,7 @@ class CAgentGroup : public CRT_Timer
     std::vector<class CAgent*> agents;
 
   public:
-    CAgentGroup(struct sAgentGroupInitStruct agent_group_init_struct);
+    CAgentGroup(struct sAgentGroupInitStruct agent_group_init_struct, class CAgent *agent);
     virtual ~CAgentGroup();
 
     virtual int main();
