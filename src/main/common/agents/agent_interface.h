@@ -9,7 +9,8 @@ struct sAgentInterface
 {
   unsigned long int id, group_id;
   unsigned int agent_type, body_type, state, body_id;
-  double robot_time, dt;
+  double fitness;
+  double robot_time, dt, agent_intensity;
   struct sAgentPosition position;
 };
 

@@ -18,7 +18,7 @@ unsigned long int get_unique_id()
     ss << std::this_thread::get_id();
     unsigned long int thread_id = std::stoull(ss.str());
 
-    res = thread_id + time_id + rand();
+    res = 1000000*(thread_id + time_id) + rand();
   }
 
   return res;

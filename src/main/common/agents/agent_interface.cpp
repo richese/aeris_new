@@ -10,7 +10,7 @@
 
 CAgentInterface::CAgentInterface()
 {
-  
+
 }
 
 CAgentInterface::CAgentInterface( struct sAgentInterface agent_interface,
@@ -19,6 +19,8 @@ CAgentInterface::CAgentInterface( struct sAgentInterface agent_interface,
   this->agent_interface = agent_interface;
   this->agent_group = agent_group;
 
+  this->agent_interface.fitness = 0.0;
+  this->agent_interface.agent_intensity = 1.0;
 
   this->agent_interface.body_type = AGENT_BODY_TYPE_NULL;
   this->agent_interface.state = 0;

@@ -8,4 +8,8 @@ cd ../..
 
 cd agent_test/bin
 ./main.elf &
+./main.elf &
+./main.elf &
+./main.elf &
+./main.elf &
 cd ../..

@@ -1,4 +1,5 @@
 #include "configure.h"
+#include "unique_id.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -8,7 +9,7 @@ class CConfigure g_configure;
 
 CConfigure::CConfigure()
 {
-  srand(time(NULL));
+  srand(time(NULL) + get_unique_id());
 
   FILE *f;
   f = fopen("../../configure.txt", "r");
