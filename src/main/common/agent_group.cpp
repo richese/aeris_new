@@ -56,9 +56,9 @@ CAgentGroup::CAgentGroup(struct sAgentGroupInitStruct agent_group_init_struct, c
 
   for (i = 0; i < agent_group_init_struct.count; i++)
   {
-    agent_interface_.position.x = m_rnd()*g_configure.get_width_cm();
-    agent_interface_.position.y = m_rnd()*g_configure.get_height_cm();
-    agent_interface_.position.z = 0.0*m_rnd()*g_configure.get_depth_cm();
+    agent_interface_.position.x = m_rnd()*g_configure.get_width_cm()/2.0;
+    agent_interface_.position.y = m_rnd()*g_configure.get_height_cm()/2.0;
+    agent_interface_.position.z = 0.0*m_rnd()*g_configure.get_depth_cm()/2.0;
 
     agents.push_back(agent->create(agent_interface_, this, get_group_id()));
   }

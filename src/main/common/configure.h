@@ -21,6 +21,8 @@ class CConfigure
     char server_ip[16];
     int server_port;
 
+    unsigned int view_state;
+
   public:
     CConfigure();
     ~CConfigure();
@@ -37,6 +39,8 @@ class CConfigure
 
     char *get_server_ip();
     int get_server_port();
+
+    unsigned int get_view_state();
 };
 
 

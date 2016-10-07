@@ -88,7 +88,7 @@ void CVisualisation::refresh(std::vector<struct sAgentInterface> *agent_interfac
       glMatrixMode(GL_MODELVIEW);
 
       // unsigned int g_view_state = 2;
-      unsigned int g_view_state = 0;
+      unsigned int g_view_state = g_configure.get_view_state();
 
       switch (g_view_state)
       {
@@ -128,7 +128,7 @@ void CVisualisation::refresh(std::vector<struct sAgentInterface> *agent_interfac
           float x = size*(i - max_x/2.0);
           float y = size*(j - max_y/2.0);
 
- 
+
           glBegin(GL_QUADS);
           glVertex3f(x - 0.5*size, y - 0.5*size, 0.0);
           glVertex3f(x + 0.5*size, y - 0.5*size, 0.0);

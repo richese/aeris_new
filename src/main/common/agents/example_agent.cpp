@@ -16,15 +16,20 @@ CExampleAgent::CExampleAgent(struct sAgentInterface agent_interface,
                   class CAgentGroup *agent_group,
                   unsigned long int group_id):CAgent(agent_interface, agent_group, group_id)
 {
-  this->agent_interface.body_type = AGENT_BODY_TYPE_ABSTRACT;
+  this->agent_interface.body_type = AGENT_BODY_TYPE_BASIC;
 
-  this->agent_interface.position.x = m_abs(m_rnd())*g_configure.get_width_cm();
-  this->agent_interface.position.y = m_abs(m_rnd())*g_configure.get_height_cm();
-  this->agent_interface.position.z = 0.0*m_abs(m_rnd())*g_configure.get_depth_cm();
+  if (g_configure.get_cm_size() > 20.0)
+    this->agent_interface.body_type = AGENT_BODY_TYPE_BASIC_SMALL;
+
+  this->agent_interface.position.x = 0.0*m_abs(m_rnd())*g_configure.get_width_cm()/2.0;
+  this->agent_interface.position.y = 0.0*m_abs(m_rnd())*g_configure.get_height_cm()/2.0;
+  this->agent_interface.position.z = 0.0*m_abs(m_rnd())*g_configure.get_depth_cm()/2.0;
 
   this->agent_interface.color.r = m_abs(m_rnd());
   this->agent_interface.color.g = m_abs(m_rnd());
   this->agent_interface.color.b = m_abs(m_rnd());
+
+  this->agent_interface.agent_type = AGENT_TYPE_TESTING;
 
   agent_group->set_agent_struct(&this->agent_interface);
 
@@ -60,7 +65,7 @@ void CExampleAgent::agent_process()
     dy = 0.03*m_rnd()*dt;
     // dz = 0.03*m_rnd()*dt;
 
-
+    /*
     droll = m_rnd()*dt;
     dpitch = m_rnd()*dt;
     dyaw = m_rnd()*dt;
@@ -70,6 +75,7 @@ void CExampleAgent::agent_process()
       case 0: agent_interface.body_type = AGENT_BODY_TYPE_BASIC; break;
       case 1: agent_interface.body_type = AGENT_BODY_TYPE_ABSTRACT; break;
     }
+    */
   }
 
   agent_interface.position.x+= dx;
@@ -81,9 +87,9 @@ void CExampleAgent::agent_process()
   agent_interface.position.yaw+= dyaw;
 
 
-  agent_interface.position.x = m_saturate(-g_configure.get_width_cm(), g_configure.get_width_cm(), agent_interface.position.x);
-  agent_interface.position.y = m_saturate(-g_configure.get_height_cm(), g_configure.get_height_cm(), agent_interface.position.y);
-  agent_interface.position.z = m_saturate(-g_configure.get_depth_cm(), g_configure.get_depth_cm(), agent_interface.position.z);
+  agent_interface.position.x = m_saturate(-g_configure.get_width_cm()*0.5, g_configure.get_width_cm()*0.5, agent_interface.position.x);
+  agent_interface.position.y = m_saturate(-g_configure.get_height_cm()*0.5, g_configure.get_height_cm()*0.5, agent_interface.position.y);
+  agent_interface.position.z = m_saturate(-g_configure.get_depth_cm()*0.5, g_configure.get_depth_cm()*0.5, agent_interface.position.z);
 
   //process AI here
 

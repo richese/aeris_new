@@ -4,9 +4,9 @@ int main()
 {
   struct sAgentGroupInitStruct agent_group_init_struct;
 
-  agent_group_init_struct.count = 100;
+  agent_group_init_struct.count = 250;
   agent_group_init_struct.random_positions = true;
-  agent_group_init_struct.dt = 50.0;
+  agent_group_init_struct.dt = 100.0;
 
   class CClient *client;
 

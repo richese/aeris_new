@@ -4,15 +4,17 @@
 #include "../point3d.h"
 
 
-#define AGENT_BODY_TYPE_NULL        ((unsigned int)0)
-#define AGENT_BODY_TYPE_BORDER      ((unsigned int)1)
-#define AGENT_BODY_TYPE_BASIC       ((unsigned int)2)
-#define AGENT_BODY_TYPE_ABSTRACT    ((unsigned int)3)
-#define AGENT_BODY_TYPE_PHEROMONE   ((unsigned int)4)
-#define AGENT_BODY_TYPE_SUMO_ARENA  ((unsigned int)5)
-#define AGENT_BODY_TYPE_RANDOM      ((unsigned int)6)
+#define AGENT_BODY_TYPE_NULL              ((unsigned int)0)
+#define AGENT_BODY_TYPE_BORDER            ((unsigned int)1)
+#define AGENT_BODY_TYPE_BASIC             ((unsigned int)2)
+#define AGENT_BODY_TYPE_BASIC_SMALL       ((unsigned int)3)
+#define AGENT_BODY_TYPE_ABSTRACT          ((unsigned int)4)
+#define AGENT_BODY_TYPE_PHEROMONE         ((unsigned int)5)
+#define AGENT_BODY_TYPE_PHEROMONE_SMALL   ((unsigned int)6)
+#define AGENT_BODY_TYPE_SUMO_ARENA        ((unsigned int)7)
+#define AGENT_BODY_TYPE_RANDOM            ((unsigned int)8)
 
-#define AGENT_BODY_TYPE_COUNT     ((unsigned int)7)
+#define AGENT_BODY_TYPE_COUNT             ((unsigned int)9)
 
 
 class CAgentBody

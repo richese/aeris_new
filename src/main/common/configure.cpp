@@ -20,39 +20,35 @@ CConfigure::CConfigure()
     while (1) { }
   }
 
-  int res = fscanf(f, "%s %i\n", server_ip, &server_port);
+  int read_res = 0;
+
+  read_res = fscanf(f, "%s %i\n", server_ip, &server_port);
 
   //TODO
   //load from file : screen resolution, screen size (inch) and compute these values
 
-  float screen_size = 1.0;
+  double screen_size = 1.0;
   depth_pixel = 0.0;
 
+  //screen resolution in pixels, diagonal size in inches
+  read_res = fscanf(f, "%lf %lf %lf\n", &width_pixel, &height_pixel, &screen_size);
+  screen_size = screen_size*2.54;
 
 /*
-  width_pixel = 800.0;
-  height_pixel = width_pixel*9.0/16.0;
-  screen_size = 22.0;
-  cm_size = 1.0/10.0;
-*/
-
+  //screen resolution in pixels
   width_pixel = 1920.0;
   height_pixel = 1080.0;
+
+  //screen diagonal size in cm
   screen_size = 55.0*2.454;
-  cm_size = 1/4.8;
-
-
-  width_cm =  16.0*sqrt( (screen_size*screen_size)/337.0 )*0.5;
-  height_cm =  9.0*sqrt( (screen_size*screen_size)/337.0 )*0.5;
-  cm_size*= width_pixel/(width_cm*1.0);
-
-  (void)res;
-
-/*
-  sprintf(server_ip,"127.0.0.1");
-  server_port = 2010;
 */
 
+  width_cm =  16.0*sqrt( (screen_size*screen_size)/337.0 );
+  height_cm =  9.0*sqrt( (screen_size*screen_size)/337.0 );
+  cm_size = width_pixel/(width_cm*1.0);
+
+  read_res = fscanf(f, "%u \n", &view_state);
+  (void)read_res;
 }
 
 CConfigure::~CConfigure()
@@ -104,4 +100,9 @@ char *CConfigure::get_server_ip()
 int CConfigure::get_server_port()
 {
   return server_port;
+}
+
+unsigned int CConfigure::get_view_state()
+{
+  return view_state;
 }

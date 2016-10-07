@@ -20,8 +20,10 @@ CAgentBody::CAgentBody(unsigned int body_type)
   {
     case AGENT_BODY_TYPE_NULL: agent_body_null(); break;
     case AGENT_BODY_TYPE_BASIC: obj_load((char*)"../../../models/generic_robot_v_go.obj", g_configure.get_cm_size()/10.0); break;
+    case AGENT_BODY_TYPE_BASIC_SMALL: obj_load((char*)"../../../models/generic_robot_v_go_small.obj", g_configure.get_cm_size()/10.0); break;
     case AGENT_BODY_TYPE_ABSTRACT: obj_load((char*)"../../../models/generic_robot_v_abstract.obj", g_configure.get_cm_size()/10.0); break;
     case AGENT_BODY_TYPE_PHEROMONE: obj_load((char*)"../../../models/pheromone.obj", g_configure.get_cm_size()/10.0); break;
+    case AGENT_BODY_TYPE_PHEROMONE_SMALL: obj_load((char*)"../../../models/pheromone_small.obj", g_configure.get_cm_size()/10.0); break;
     case AGENT_BODY_TYPE_BORDER: obj_load((char*)"../../../models/border_frame_16_9.obj", 5.0); break;
     case AGENT_BODY_TYPE_SUMO_ARENA:  obj_load((char*)"../../../models/sumo_arena_v01.obj", 3.5); break;
     case AGENT_BODY_TYPE_RANDOM: agent_body_random(); break;
