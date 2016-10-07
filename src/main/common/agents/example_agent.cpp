@@ -60,12 +60,11 @@ void CExampleAgent::agent_process()
     dy = 0.03*m_rnd()*dt;
     // dz = 0.03*m_rnd()*dt;
 
-    /*
+
     droll = m_rnd()*dt;
     dpitch = m_rnd()*dt;
     dyaw = m_rnd()*dt;
-    */
-    
+
     switch (rand()%2)
     {
       case 0: agent_interface.body_type = AGENT_BODY_TYPE_BASIC; break;

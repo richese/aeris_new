@@ -7,7 +7,7 @@ int main()
 
   agent_group_init_struct.count = 600;
   agent_group_init_struct.random_positions = true;
-  agent_group_init_struct.dt = 100.0;
+  agent_group_init_struct.dt = 50.0;
 
   class CClient *client;
 
