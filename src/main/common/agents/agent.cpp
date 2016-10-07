@@ -24,12 +24,10 @@ CAgent::CAgent( struct sAgentInterface agent_interface,
   printf("%lu : agent created\n", (unsigned long int)this);
   #endif
 
-
   this->agent_interface.agent_type = get_agent_type();
-  this->agent_interface.body_type = AGENT_BODY_TYPE_RANDOM;
-
-
+  this->agent_interface.body_type = AGENT_BODY_TYPE_BASIC;
   agent_group->set_agent_struct(&this->agent_interface);
+
   dx = 0.0;
   dy = 0.0;
   dz = 0.0;
@@ -47,7 +45,7 @@ CAgent::~CAgent()
   #endif
 }
 
-class CAgent* CAgent::clone(struct sAgentInterface agent_interface, class CAgentGroup *agent_group, unsigned long int group_id)
+class CAgent* CAgent::create(struct sAgentInterface agent_interface, class CAgentGroup *agent_group, unsigned long int group_id)
 {
   return new CAgent(agent_interface, agent_group, group_id);
 }
@@ -60,5 +58,5 @@ unsigned long int CAgent::get_agent_type()
 
 void CAgent::agent_process()
 {
-  
+  this->agent_interface.robot_time = get_ms_time();
 }

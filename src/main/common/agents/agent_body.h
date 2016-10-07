@@ -3,12 +3,16 @@
 
 #include "../point3d.h"
 
-#define AGENT_BODY_TYPE_NULL      ((unsigned int)0)
-#define AGENT_BODY_TYPE_SQUARE    ((unsigned int)1)
-#define AGENT_BODY_TYPE_RANDOM    ((unsigned int)2)
-#define AGENT_BODY_TYPE_CUSTOM    ((unsigned int)3)
 
-#define AGENT_BODY_TYPE_COUNT     ((unsigned int)4)
+#define AGENT_BODY_TYPE_NULL        ((unsigned int)0)
+#define AGENT_BODY_TYPE_BORDER      ((unsigned int)1)
+#define AGENT_BODY_TYPE_BASIC       ((unsigned int)2)
+#define AGENT_BODY_TYPE_ABSTRACT    ((unsigned int)3)
+#define AGENT_BODY_TYPE_PHEROMONE   ((unsigned int)4)
+#define AGENT_BODY_TYPE_SUMO_ARENA  ((unsigned int)5)
+#define AGENT_BODY_TYPE_RANDOM      ((unsigned int)6)
+
+#define AGENT_BODY_TYPE_COUNT     ((unsigned int)7)
 
 
 class CAgentBody
@@ -32,8 +36,8 @@ class CAgentBody
     void agent_body_random();
 
   private:
-    void obj_load(char* body_filename);
-    bool load_from_file(char * path);
+    void obj_load(char* body_filename, float scale);
+    bool load_from_file(char * path, float scale);
     unsigned int agent_body_rand();
     double agent_body_rnd();
 };

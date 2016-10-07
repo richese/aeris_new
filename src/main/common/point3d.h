@@ -13,6 +13,12 @@ struct sPoint2D
   float x, y;
 };
 
+
+struct sColor
+{
+  float r, g, b;
+};
+
 struct sPolygone
 {
   std::vector<struct sPoint> points;
@@ -24,6 +30,8 @@ struct sAgentPosition
   float x, y, z;
   float roll, pitch, yaw;
 };
+
+
 
 
 #endif

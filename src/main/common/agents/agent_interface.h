@@ -12,6 +12,7 @@ struct sAgentInterface
   double fitness;
   double robot_time, dt, agent_intensity;
   struct sAgentPosition position;
+  struct sColor color;
 };
 
 

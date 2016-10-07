@@ -1,20 +1,20 @@
-#ifndef _VISUALISATION_AGENT_H_
-#define _VISUALISATION_AGENT_H_
+#ifndef _PHEROMONE_AGENT_H_
+#define _PHEROMONE_AGENT_H_
 
 #include "../common/common.h"
 
-class CVisualisationAgent: public CAgent
+class CPheromoneAgent: public CAgent
 {
   private:
     class CVisualisation *visualisation;
 
   public:
-    CVisualisationAgent();
-    CVisualisationAgent(struct sAgentInterface agent_interface,
+    CPheromoneAgent();
+    CPheromoneAgent(struct sAgentInterface agent_interface,
                   class CAgentGroup *agent_group = NULL,
                   unsigned long int group_id = 0);
 
-    ~CVisualisationAgent();
+    ~CPheromoneAgent();
 
 
     unsigned long int get_agent_type();

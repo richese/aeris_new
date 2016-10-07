@@ -3,6 +3,7 @@
 
 
 #include "agent_interface.h"
+#include "../ms_time.h"
 
 class CAgent: public CAgentInterface
 {
@@ -19,10 +20,11 @@ class CAgent: public CAgentInterface
           );
 
     virtual ~CAgent();
+    void init();
     virtual void agent_process();
     virtual unsigned long int get_agent_type();
 
-    virtual class CAgent* clone(struct sAgentInterface agent_interface, class CAgentGroup *agent_group, unsigned long int group_id);
+    virtual class CAgent* create(struct sAgentInterface agent_interface, class CAgentGroup *agent_group, unsigned long int group_id);
 
 };
 

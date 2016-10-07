@@ -87,12 +87,13 @@ void CVisualisation::refresh(std::vector<struct sAgentInterface> *agent_interfac
 
       glMatrixMode(GL_MODELVIEW);
 
-      unsigned int g_view_state = 2;
+      // unsigned int g_view_state = 2;
+      unsigned int g_view_state = 0;
 
       switch (g_view_state)
       {
         case 0:
-              glTranslatef(0.0, 0.0, -800.0);
+              glTranslatef(0.0, 0.0, -550.0);
               glRotatef(0.0, 0.0, 0.0, 0.0);
               break;
 
@@ -127,7 +128,7 @@ void CVisualisation::refresh(std::vector<struct sAgentInterface> *agent_interfac
           float x = size*(i - max_x/2.0);
           float y = size*(j - max_y/2.0);
 
-
+ 
           glBegin(GL_QUADS);
           glVertex3f(x - 0.5*size, y - 0.5*size, 0.0);
           glVertex3f(x + 0.5*size, y - 0.5*size, 0.0);
@@ -152,10 +153,11 @@ void CVisualisation::paint_agent(struct sAgentInterface *agent_interface)
 
   unsigned int body_id = agent_interface->body_type;
 
+  float cm_size = g_configure.get_cm_size();
 
-  float x_ofs = agent_interface->position.x;
-  float y_ofs = agent_interface->position.y;
-  float z_ofs = agent_interface->position.z;
+  float x_ofs = agent_interface->position.x*cm_size;
+  float y_ofs = agent_interface->position.y*cm_size;
+  float z_ofs = agent_interface->position.z*cm_size;
 
   float roll = agent_interface->position.roll;
   float pitch = agent_interface->position.pitch;
@@ -171,10 +173,12 @@ void CVisualisation::paint_agent(struct sAgentInterface *agent_interface)
   glRotatef(pitch, 1.0, 0.0, 0.0);
   glRotatef(yaw, 0.0, 0.0, 1.0);
 
-
   if (agent_body[body_id]->vertices.size() != 0)
   {
-    glColor3f(  1.0, 1.0, 1.0);
+    //glColor3f(  1.0, 1.0, 1.0);
+    glColor3f(  agent_interface->color.r,
+                agent_interface->color.g,
+                agent_interface->color.b);
 
     //TODO speed test
     // glBufferData(GL_ARRAY_BUFFER, agent_body[body_id]->vertices.size() * sizeof(glm::vec3), &agent_body[body_id]->vertices[0], GL_STATIC_DRAW);

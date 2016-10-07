@@ -7,17 +7,17 @@
 #include <thread>
 #include <mutex>
 
-class CServer
+#include "agent_group.h"
+
+class CServer: public CAgentGroup
 {
+  /*
   private:
-
     std::vector<struct sAgentInterface> agent_interface;
-
+    */
   private:
-    bool run;
-    std::mutex mutex_agent_interface;
 
-    std::thread *server_thread, *killer_thread;
+    std::thread *server_thread;
     std::vector<std::thread*> client_thread;
 
     int sockfd, client_fd;

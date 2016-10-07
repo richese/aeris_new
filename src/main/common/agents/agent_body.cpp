@@ -3,6 +3,10 @@
 #include <stdio.h>
 #include <string>
 #include <string.h>
+#include "../configure.h"
+
+extern class CConfigure g_configure;
+
 
 CAgentBody::CAgentBody()
 {
@@ -15,9 +19,12 @@ CAgentBody::CAgentBody(unsigned int body_type)
   switch(body_type)
   {
     case AGENT_BODY_TYPE_NULL: agent_body_null(); break;
-    case AGENT_BODY_TYPE_SQUARE: agent_body_square(); break;
+    case AGENT_BODY_TYPE_BASIC: obj_load((char*)"../../../models/generic_robot_v_go.obj", g_configure.get_cm_size()/10.0); break;
+    case AGENT_BODY_TYPE_ABSTRACT: obj_load((char*)"../../../models/generic_robot_v_abstract.obj", g_configure.get_cm_size()/10.0); break;
+    case AGENT_BODY_TYPE_PHEROMONE: obj_load((char*)"../../../models/pheromone.obj", g_configure.get_cm_size()/10.0); break;
+    case AGENT_BODY_TYPE_BORDER: obj_load((char*)"../../../models/border_frame_16_9.obj", 5.0); break;
+    case AGENT_BODY_TYPE_SUMO_ARENA:  obj_load((char*)"../../../models/sumo_arena_v01.obj", 3.5); break;
     case AGENT_BODY_TYPE_RANDOM: agent_body_random(); break;
-    case AGENT_BODY_TYPE_CUSTOM:  obj_load((char*)"../../../models/demo.obj"); break;
   }
 }
 
@@ -67,13 +74,13 @@ void CAgentBody::agent_body_random()
   }
 }
 
-void CAgentBody::obj_load(char* body_filename)
+void CAgentBody::obj_load(char* body_filename, float scale)
 {
-  load_from_file(body_filename);
+  load_from_file(body_filename, scale);
 }
 
 
-bool CAgentBody::load_from_file(char * path)
+bool CAgentBody::load_from_file(char * path, float scale)
 {
 
   std::vector< unsigned int > vertexIndices, uvIndices, normalIndices;
@@ -84,7 +91,7 @@ bool CAgentBody::load_from_file(char * path)
 
   FILE * file = fopen(path, "r");
   if( file == NULL ){
-      printf("Impossible to open the file !\n");
+      printf("impossible to open body file %s\n", path);
       return false;
   }
 
@@ -106,10 +113,9 @@ bool CAgentBody::load_from_file(char * path)
           struct sPoint vertex;
           res_dummy = fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z );
 
-          float k = 0.1;
-          vertex.x*= k;
-          vertex.y*= k;
-          vertex.z*= k;
+          vertex.x*= scale;
+          vertex.y*= scale;
+          vertex.z*= scale;
           temp_vertices.push_back(vertex);
       }
       else if ( strcmp( lineHeader, "vt" ) == 0 )

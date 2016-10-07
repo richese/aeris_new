@@ -33,13 +33,7 @@ CServer::CServer()
       printf("ERROR on binding");
 
 
-
-  run = true;
   server_thread = new std::thread(&CServer::server_thread_func, this);
-  killer_thread = new std::thread(&CServer::killer_thread_func, this);
-
-
-
 
   #ifdef _DEBUG_COMMON_
   printf("%lu : server created\n", (unsigned long int)this);
@@ -48,8 +42,6 @@ CServer::CServer()
 
 CServer::~CServer()
 {
-
-  run = false;
   if (server_thread != NULL)
   {
     server_thread->join();
@@ -87,17 +79,11 @@ void CServer::server_thread_func()
     }
     else
     {
-      /*
-      pid_t pid = fork();
-      if (pid == 0) //child process - handle client
-      {
-        client_thread_func(client_fd);
-        return;
-      }
-      */
+      #ifdef _INFO_COMMON_
+      printf("new client connected with fd %i\n", client_fd);
+      #endif
 
       client_thread.push_back(new std::thread(&CServer::client_thread_func, this, client_fd));
-
     }
   }
 
@@ -150,21 +136,28 @@ void CServer::client_thread_func(int client_fd)
           if (agent_interface[j].id == 0)
           {
             idx = j;
+            break;
           }
       }
 
 
       if (idx == -1)
+      {
         agent_interface.push_back(agent_interface_tmp);
+      }
       else
         agent_interface[idx] = agent_interface_tmp;
     }
 
-    agent_interface_tmp = agent_interface[ptr];
-    ptr = (ptr + 1)%agent_interface.size();
+    do
+    {
+      agent_interface_tmp = agent_interface[ptr];
+      ptr = (ptr + 1)%agent_interface.size();
+    }
+      while (agent_interface_tmp.id == 0);
+
 
     mutex_agent_interface.unlock();
-
 
     int write_res = write(client_fd, (char*)(&agent_interface_tmp), sizeof(struct sAgentInterface));
     if (write_res <= 0)
@@ -174,13 +167,4 @@ void CServer::client_thread_func(int client_fd)
   #ifdef _DEBUG_COMMON_
   printf("connection %i ended with error %i\n", client_fd, error);
   #endif
-}
-
-
-void CServer::killer_thread_func()
-{
-  while (run)
-  {
-    sleep(1);
-  }
 }

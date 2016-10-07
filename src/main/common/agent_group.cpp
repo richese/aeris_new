@@ -5,12 +5,30 @@
 #include "unique_id.h"
 
 #include "configure.h"
-
+#include "ms_time.h"
 
 #include "debug.h"
 #include "agents/agents.h"
 
+
+#define _POSIX_C_SOURCE 200809L
+
+#include <sys/time.h>
+// #include <time.h>
+#include <unistd.h>
+
 extern class CConfigure g_configure;
+
+
+CAgentGroup::CAgentGroup()
+{
+  run = true;
+
+  group_id = get_unique_id();
+
+  //TODO - not working yet
+  //bone_collector_thread = new std::thread(&CAgentGroup::bone_collector_thread_func, this);
+}
 
 CAgentGroup::CAgentGroup(struct sAgentGroupInitStruct agent_group_init_struct, class CAgent *agent)
 {
@@ -42,7 +60,7 @@ CAgentGroup::CAgentGroup(struct sAgentGroupInitStruct agent_group_init_struct, c
     agent_interface_.position.y = m_rnd()*g_configure.get_height_cm();
     agent_interface_.position.z = 0.0*m_rnd()*g_configure.get_depth_cm();
 
-    agents.push_back(agent->clone(agent_interface_, this, get_group_id()));
+    agents.push_back(agent->create(agent_interface_, this, get_group_id()));
   }
 
 
@@ -50,13 +68,26 @@ CAgentGroup::CAgentGroup(struct sAgentGroupInitStruct agent_group_init_struct, c
   printf("%lu : agent group created\n", (unsigned long int)this);
   #endif
 
+  run = true;
   rt_timer_set_period(agent_group_init_struct.dt);
+
+//  bone_collector_thread = new std::thread(&CAgentGroup::bone_collector_thread_func, this);
 }
+
 
 
 CAgentGroup::~CAgentGroup()
 {
   unsigned int i;
+
+  run = false;
+
+  if (bone_collector_thread != NULL)
+  {
+    bone_collector_thread->join();
+    delete bone_collector_thread;
+  }
+
   for (i = 0; i < agents.size(); i++)
     delete agents[i];
 
@@ -74,15 +105,11 @@ void CAgentGroup::rt_timer_callback()
   #endif
 
   for (i = 0; i < agents.size(); i++)
+    if (agent_interface[i].id != 0)
     if (agent_interface[i].group_id == group_id)
       agents[i]->agent_process();
 
   int res = connect_to_server();
-
-  /*
-  if (res < 0)
-    res = connect_to_server();
-    */
 
   #ifdef _ERROR_COMMON_
   if (res < 0)
@@ -123,6 +150,9 @@ int CAgentGroup::set_agent_struct(struct sAgentInterface *value)
 {
   unsigned int i;
   int res = -1;
+
+  mutex_agent_interface.lock();
+
   for (i = 0; i < agent_interface.size(); i++)
     if (value->group_id == agent_interface[i].group_id)
     if (value->id == agent_interface[i].id)
@@ -137,6 +167,8 @@ int CAgentGroup::set_agent_struct(struct sAgentInterface *value)
     agent_interface.push_back(*value);
   }
 
+  mutex_agent_interface.unlock();
+
   return res;
 }
 
@@ -145,6 +177,10 @@ int CAgentGroup::get_agent_struct(struct sAgentInterface *value)
 {
   unsigned int i;
   int res = -1;
+
+  mutex_agent_interface.lock();
+
+
   for (i = 0; i < agent_interface.size(); i++)
     if (value->id == agent_interface[i].id)
     {
@@ -153,12 +189,19 @@ int CAgentGroup::get_agent_struct(struct sAgentInterface *value)
       break;
     }
 
+  mutex_agent_interface.unlock();
+
   return res;
 }
 
 struct sAgentInterface CAgentGroup::get_agent_struct_idx(unsigned int idx)
 {
-  return agent_interface[idx];
+  struct sAgentInterface res;
+  mutex_agent_interface.lock();
+  res = agent_interface[idx];
+  mutex_agent_interface.unlock();
+
+  return res;
 }
 
 int CAgentGroup::connect_to_server()
@@ -166,12 +209,32 @@ int CAgentGroup::connect_to_server()
   return 0;
 }
 
-std::vector<struct sAgentInterface>* CAgentGroup::get_agent_interface()
-{
-  return &agent_interface;
-}
-
 unsigned long int CAgentGroup::get_group_id()
 {
   return group_id;
+}
+
+void CAgentGroup::bone_collector_thread_func()
+{
+  double robot_death_time = 2.0*1000.0;
+
+  while (run)
+  {
+    usleep(robot_death_time*0.5*1000.0);
+
+    printf("bone collector thread\n");
+
+    mutex_agent_interface.lock();
+    unsigned int i;
+
+    for (i = 0; i < agent_interface.size(); i++)
+      if (agent_interface[i].id != 0)
+      if ( (agent_interface[i].robot_time + robot_death_time) < get_ms_time())
+      {
+        printf("robot %lu from %lu has been TERMINATED\n", agent_interface[i].id, agent_interface[i].group_id);
+        // agent_interface[i].id = 0;
+      }
+
+    mutex_agent_interface.unlock();
+  }
 }

@@ -19,7 +19,7 @@ class CExampleAgent: public CAgent
 
     void agent_process();
 
-    virtual class CAgent* clone(struct sAgentInterface agent_interface, class CAgentGroup *agent_group, unsigned long int group_id);
+    virtual class CAgent* create(struct sAgentInterface agent_interface, class CAgentGroup *agent_group, unsigned long int group_id);
 };
 
 

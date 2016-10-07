@@ -103,7 +103,7 @@ int CClient::connect_to_server()
       {
         ptr = (ptr+1)%agent_interface.size();
       }
-        while (agent_interface[ptr].group_id != get_group_id());
+        while ( (agent_interface[ptr].group_id != get_group_id()) || (agent_interface[ptr].id == 0) );
 
       agent_interface_tmp = agent_interface[ptr];
 

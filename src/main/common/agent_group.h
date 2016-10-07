@@ -4,6 +4,8 @@
 #include "agents/agents.h"
 #include "rt_timer.h"
 
+#include <thread>
+#include <mutex>
 
 struct sAgentGroupInitStruct
 {
@@ -20,9 +22,16 @@ class CAgentGroup : public CRT_Timer
     struct sAgentGroupInitStruct agent_group_init_struct;
 
     std::vector<struct sAgentInterface> agent_interface;
+    std::mutex mutex_agent_interface;
+
     std::vector<class CAgent*> agents;
 
+    std::thread *bone_collector_thread;
+    bool run;
+
+
   public:
+    CAgentGroup();
     CAgentGroup(struct sAgentGroupInitStruct agent_group_init_struct, class CAgent *agent);
     virtual ~CAgentGroup();
 
@@ -33,13 +42,15 @@ class CAgentGroup : public CRT_Timer
     int get_agent_struct(struct sAgentInterface *value);
     struct sAgentInterface get_agent_struct_idx(unsigned int idx);
 
-    std::vector<struct sAgentInterface>* get_agent_interface();
 
     unsigned long int get_group_id();
 
   protected:
     void rt_timer_callback();
     virtual int connect_to_server();
+
+  private:
+    void bone_collector_thread_func();
 };
 
 

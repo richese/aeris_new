@@ -13,6 +13,7 @@
 
 #include "debug.h"
 #include "configure.h"
+#include "math_robot.h"
 
 
 #include "getch.h"

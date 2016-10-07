@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 
+
 extern class CConfigure g_configure;
 
 CExampleAgent::CExampleAgent()
@@ -15,7 +16,16 @@ CExampleAgent::CExampleAgent(struct sAgentInterface agent_interface,
                   class CAgentGroup *agent_group,
                   unsigned long int group_id):CAgent(agent_interface, agent_group, group_id)
 {
-  this->agent_interface.body_type = AGENT_BODY_TYPE_CUSTOM;
+  this->agent_interface.body_type = AGENT_BODY_TYPE_ABSTRACT;
+
+  this->agent_interface.position.x = m_abs(m_rnd())*g_configure.get_width_cm();
+  this->agent_interface.position.y = m_abs(m_rnd())*g_configure.get_height_cm();
+  this->agent_interface.position.z = 0.0*m_abs(m_rnd())*g_configure.get_depth_cm();
+
+  this->agent_interface.color.r = m_abs(m_rnd());
+  this->agent_interface.color.g = m_abs(m_rnd());
+  this->agent_interface.color.b = m_abs(m_rnd());
+
   agent_group->set_agent_struct(&this->agent_interface);
 
   printf("example agent created \n");
@@ -31,7 +41,7 @@ unsigned long int CExampleAgent::get_agent_type()
   return AGENT_TYPE_TESTING;
 }
 
-class CAgent* CExampleAgent::clone(struct sAgentInterface agent_interface, class CAgentGroup *agent_group, unsigned long int group_id)
+class CAgent* CExampleAgent::create(struct sAgentInterface agent_interface, class CAgentGroup *agent_group, unsigned long int group_id)
 {
   return new CExampleAgent(agent_interface, agent_group, group_id);
 }
@@ -40,19 +50,27 @@ class CAgent* CExampleAgent::clone(struct sAgentInterface agent_interface, class
 void CExampleAgent::agent_process()
 {
   int res_rx = agent_group->get_agent_struct(&agent_interface);
+  agent_interface.robot_time = get_ms_time();
 
   if ((rand()%100) < 2)
   {
     double dt = 0.1*agent_interface.dt;
 
-    dx = m_rnd()*dt;
-    dy = m_rnd()*dt;
-    dz = m_rnd()*dt;
+    dx = 0.03*m_rnd()*dt;
+    dy = 0.03*m_rnd()*dt;
+    // dz = 0.03*m_rnd()*dt;
 
+    /*
     droll = m_rnd()*dt;
     dpitch = m_rnd()*dt;
     dyaw = m_rnd()*dt;
-
+    */
+    
+    switch (rand()%2)
+    {
+      case 0: agent_interface.body_type = AGENT_BODY_TYPE_BASIC; break;
+      case 1: agent_interface.body_type = AGENT_BODY_TYPE_ABSTRACT; break;
+    }
   }
 
   agent_interface.position.x+= dx;

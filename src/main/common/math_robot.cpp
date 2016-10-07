@@ -36,7 +36,7 @@ double m_saturate(double value_min, double value_max, double x)
   if (x > value_max)
     x = value_max;
 
-  return x; 
+  return x;
 }
 
 double m_map_to(double source_min, double source_max, double dest_min, double dest_max, double value)
@@ -49,4 +49,15 @@ double m_map_to(double source_min, double source_max, double dest_min, double de
 double m_mix(double a, double b, double ratio)
 {
   return ratio*a + (1.0 - ratio)*b;
+}
+
+
+double robot_distance(struct sAgentPosition *pa, struct sAgentPosition *pb)
+{
+  double res = 0.0;
+  res+= (pa->x - pb->x)*(pa->x - pb->x);
+  res+= (pa->y - pb->y)*(pa->y - pb->y);
+  res+= (pa->z - pb->z)*(pa->z - pb->z);
+
+  return sqrt(res);
 }

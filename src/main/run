@@ -2,14 +2,22 @@ cd server/bin
 ./main.elf &
 cd ../..
 
-cd visualisation/bin
+cd border/bin
 ./main.elf &
-cd ../..
+cd ../../
+
+cd arena/bin
+# ./main.elf &
+cd ../../
+
+cd pheromone/bin
+./main.elf &
+cd ../../
 
 cd agent_test/bin
 ./main.elf &
-./main.elf &
-./main.elf &
-./main.elf &
+cd ../..
+
+cd visualisation/bin
 ./main.elf &
 cd ../..

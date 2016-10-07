@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+#include <math.h>
 
 class CConfigure g_configure;
 
@@ -19,18 +20,33 @@ CConfigure::CConfigure()
     while (1) { }
   }
 
-  fscanf(f, "%s %i\n", server_ip, &server_port);
+  int res = fscanf(f, "%s %i\n", server_ip, &server_port);
 
+  //TODO
+  //load from file : screen resolution, screen size (inch) and compute these values
 
-  width_pixel = 800.0;
-  height_pixel = 600.0;
+  float screen_size = 1.0;
   depth_pixel = 0.0;
 
-  width_cm = 800.0/2.0;
-  height_cm = 600.0/2.0;
-  depth_cm = 300.0;
 
-  cm_size = 10.0*100.0/81.0;
+/*
+  width_pixel = 800.0;
+  height_pixel = width_pixel*9.0/16.0;
+  screen_size = 22.0;
+  cm_size = 1.0/10.0;
+*/
+
+  width_pixel = 1920.0;
+  height_pixel = 1080.0;
+  screen_size = 55.0*2.454;
+  cm_size = 1/4.8;
+
+
+  width_cm =  16.0*sqrt( (screen_size*screen_size)/337.0 )*0.5;
+  height_cm =  9.0*sqrt( (screen_size*screen_size)/337.0 )*0.5;
+  cm_size*= width_pixel/(width_cm*1.0);
+
+  (void)res;
 
 /*
   sprintf(server_ip,"127.0.0.1");
