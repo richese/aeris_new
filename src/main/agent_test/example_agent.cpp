@@ -1,7 +1,4 @@
 #include "example_agent.h"
-#include "../math_robot.h"
-#include "../configure.h"
-
 #include <stdio.h>
 
 

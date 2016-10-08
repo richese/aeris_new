@@ -19,6 +19,10 @@ struct sAgentInterface
 #define AGENT_TYPE_NULL     ((unsigned long int)0)
 #define AGENT_TYPE_DEFAULT  ((unsigned long int)1)
 #define AGENT_TYPE_TESTING  ((unsigned long int)2)
+#define AGENT_TYPE_ANT      ((unsigned long int)3)
+#define AGENT_TYPE_BASE      ((unsigned long int)4)
+#define AGENT_TYPE_TARGET      ((unsigned long int)5)
+#define AGENT_TYPE_PHEROMONE      ((unsigned long int)6)
 
 
 

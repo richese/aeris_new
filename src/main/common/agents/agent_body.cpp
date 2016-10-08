@@ -26,6 +26,9 @@ CAgentBody::CAgentBody(unsigned int body_type)
     case AGENT_BODY_TYPE_PHEROMONE_SMALL: obj_load((char*)"../../../models/pheromone_small.obj", g_configure.get_cm_size()/10.0); break;
     case AGENT_BODY_TYPE_BORDER: obj_load((char*)"../../../models/border_frame_16_9.obj", 5.0); break;
     case AGENT_BODY_TYPE_SUMO_ARENA:  obj_load((char*)"../../../models/sumo_arena_v01.obj", 3.5); break;
+    case AGENT_BODY_TYPE_BASE:  obj_load((char*)"../../../models/base.obj", g_configure.get_cm_size()/10.0); break;
+    case AGENT_BODY_TYPE_TARGET:  obj_load((char*)"../../../models/target.obj", g_configure.get_cm_size()/10.0); break;
+
     case AGENT_BODY_TYPE_RANDOM: agent_body_random(); break;
   }
 }

@@ -1,4 +1,4 @@
-SUBDIRS = common server visualisation border agent_test arena pheromone
+SUBDIRS = common server visualisation border arena agent_test base food pheromone ant
 
 all: $(SUBDIRS)
 

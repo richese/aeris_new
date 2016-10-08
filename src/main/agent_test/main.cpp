@@ -1,4 +1,5 @@
 #include "../common/common.h"
+#include "example_agent.h"
 
 int main()
 {

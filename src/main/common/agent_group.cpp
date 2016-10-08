@@ -106,8 +106,8 @@ void CAgentGroup::rt_timer_callback()
 
   for (i = 0; i < agents.size(); i++)
     if (agent_interface[i].id != 0)
-    if (agent_interface[i].group_id == group_id)
-      agents[i]->agent_process();
+      if (agent_interface[i].group_id == group_id)
+        agents[i]->agent_process();
 
   int res = connect_to_server();
 

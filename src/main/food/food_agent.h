@@ -1,18 +1,17 @@
-#ifndef _EXAMPLE_AGENT_H_
-#define _EXAMPLE_AGENT_H_
+#ifndef _FOOD_AGENT_H_
+#define _FOOD_AGENT_H_
 
-#include "agent.h"
-#include "../agent_group.h"
+#include "../common/common.h"
 
-class CExampleAgent: public CAgent
+class CFoodAgent: public CAgent
 {
   public:
-    CExampleAgent();
-    CExampleAgent(struct sAgentInterface agent_interface,
+    CFoodAgent();
+    CFoodAgent(struct sAgentInterface agent_interface,
                   class CAgentGroup *agent_group = NULL,
                   unsigned long int group_id = 0);
 
-    ~CExampleAgent();
+    ~CFoodAgent();
 
 
     unsigned long int get_agent_type();

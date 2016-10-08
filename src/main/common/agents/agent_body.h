@@ -13,8 +13,10 @@
 #define AGENT_BODY_TYPE_PHEROMONE_SMALL   ((unsigned int)6)
 #define AGENT_BODY_TYPE_SUMO_ARENA        ((unsigned int)7)
 #define AGENT_BODY_TYPE_RANDOM            ((unsigned int)8)
+#define AGENT_BODY_TYPE_BASE               ((unsigned int)9)
+#define AGENT_BODY_TYPE_TARGET            ((unsigned int)10)
 
-#define AGENT_BODY_TYPE_COUNT             ((unsigned int)9)
+#define AGENT_BODY_TYPE_COUNT             ((unsigned int)11)
 
 
 class CAgentBody
