@@ -18,8 +18,8 @@ CAntAgent::CAntAgent(struct sAgentInterface agent_interface,
   if (g_configure.get_cm_size() > 20.0)
     this->agent_interface.body_type = AGENT_BODY_TYPE_BASIC_SMALL;
 
-  this->agent_interface.position.x = (0.4 + 0.01*m_rnd())*g_configure.get_width_cm()/2.0;
-  this->agent_interface.position.y = (0.4 + 0.01* m_rnd())*g_configure.get_height_cm()/2.0;
+  this->agent_interface.position.x = (0.4 + 0*m_rnd())*g_configure.get_width_cm()/2.0;
+  this->agent_interface.position.y = (0.4 + 0*m_rnd())*g_configure.get_height_cm()/2.0;
   this->agent_interface.position.z = 0.0*m_abs(m_rnd())*g_configure.get_depth_cm()/2.0;
 
   this->agent_interface.color.r = 0.0;
@@ -28,6 +28,7 @@ CAntAgent::CAntAgent(struct sAgentInterface agent_interface,
 
   this->agent_interface.agent_type = AGENT_TYPE_ANT;
   this->agent_interface.fitness = 0.0;
+  this->agent_interface.state = 0;
 
   agent_group->set_agent_struct(&this->agent_interface);
 
@@ -68,8 +69,8 @@ void CAntAgent::get_neigbour_state()
     if (agent_other.agent_type == AGENT_TYPE_PHEROMONE)
     {
       struct sAgentPosition tmp;
-      double dif = 2.0;
-      double dist = 2.0;
+      double dif = 2.1;
+      double dist = 0.9;
 
       tmp.x = agent_interface.position.x + 1.0*dif;
       tmp.y = agent_interface.position.y + 0.0*dif;
@@ -181,7 +182,7 @@ void CAntAgent::agent_process()
 
     if ((agent_other.agent_type == AGENT_TYPE_TARGET) && (dist < 2.0))
     {
-      agent_interface.state = 2;
+      agent_interface.state = 1;
       agent_interface.fitness = 1.0;
       break;
     }
@@ -189,6 +190,17 @@ void CAntAgent::agent_process()
 
 
   get_neigbour_state();
+
+
+  if (agent_interface.state == 0)
+  {
+    agent_interface.fitness = agent_interface.fitness*0.98;
+  }
+  else
+  {
+    agent_interface.fitness = agent_interface.fitness*0.99;
+  }
+
 
   if ((rand()%100) < 30)
   {
@@ -198,50 +210,30 @@ void CAntAgent::agent_process()
       this->agent_interface.color.g = 0.0;
       this->agent_interface.color.b = 1.0;
 
-      if ((rand()%100) < 10)
-        action = rand()%8;
-
-      agent_interface.fitness = agent_interface.fitness*0.999;
-
-      if ((neighbour[action].r > 0.02) && ((rand()%100) < 10))
-        agent_interface.state = 1;
-    }
-
-    if (agent_interface.state == 1)
-    {
-      this->agent_interface.color.r = 0.0;
-      this->agent_interface.color.g = 1.0;
-      this->agent_interface.color.b = 0.0;
-
       unsigned int i;
 
       for (i = 0; i < neighbour.size(); i++)
         if (neighbour[i].r > neighbour[action].r)
           action = i;
 
-      if ( ((rand()%100) < 10) || (neighbour[action].r < 0.1) )
+      if (((rand()%100) < 2) || (neighbour[action].r < 0.2) )
         action = rand()%8;
-
-
-      if (neighbour[action].r < 0.01)
-        agent_interface.state = 0;
-        
-      agent_interface.fitness = 0.0;
     }
 
-    if (agent_interface.state == 2)
+    if (agent_interface.state == 1)
     {
       this->agent_interface.color.r = 1.0;
       this->agent_interface.color.g = 0.0;
       this->agent_interface.color.b = 0.0;
-
-      agent_interface.fitness = agent_interface.fitness*0.99;
 
       unsigned int i;
       action = 0;
       for (i = 0; i < neighbour.size(); i++)
         if (neighbour[i].b > neighbour[action].b)
           action = i;
+
+      if ((rand()%100) < 2)
+        action = rand()%8;
     }
   }
 
@@ -282,16 +274,6 @@ void CAntAgent::agent_process()
             dy = speed*-1.0*dt;
             break;
   }
-
-  if ((rand()%100) < 2)
-  {
-    double dt = 0.1*agent_interface.dt;
-
-    dx = 0.03*m_rnd()*dt;
-    dy = 0.03*m_rnd()*dt;
-  }
-
-
 
 
   agent_interface.position.x+= dx;

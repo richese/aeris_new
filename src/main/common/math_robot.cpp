@@ -28,6 +28,24 @@ double m_sgn(double x)
   return 0.0;
 }
 
+
+double m_min(double a, double b)
+{
+  if (a < b)
+    return a;
+  else
+    return b;
+}
+
+double m_max(double a, double b)
+{
+  if (a > b)
+    return a;
+  else
+    return b;
+}
+
+
 double m_saturate(double value_min, double value_max, double x)
 {
   if (x < value_min)

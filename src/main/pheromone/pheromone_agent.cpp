@@ -96,7 +96,7 @@ void CPheromoneAgent::agent_process()
         }
       }
 
-      if (agent_other.state == 2)
+      if (agent_other.state == 1)
       {
         if (dist < distance_min_red)
         {
@@ -129,7 +129,8 @@ void CPheromoneAgent::agent_process()
 
   agent_interface.color.r = k_red*agent_interface.color.r + (1.0-k_red)*input_red;
   agent_interface.color.g = 0.0;
-  agent_interface.color.b = k_blue*agent_interface.color.b + (1.0-k_blue)*input_blue;
+  // agent_interface.color.b = k_blue*agent_interface.color.b + (1.0-k_blue)*input_blue;
+  agent_interface.color.b = m_max(agent_interface.color.b, input_blue);
 
   int res_tx = agent_group->set_agent_struct(&agent_interface);
 

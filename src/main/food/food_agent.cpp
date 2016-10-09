@@ -14,6 +14,7 @@ CFoodAgent::CFoodAgent(struct sAgentInterface agent_interface,
 {
   this->agent_interface.body_type = AGENT_BODY_TYPE_TARGET;
 
+
   this->agent_interface.position.x = -0.4*g_configure.get_width_cm()/2.0;
   this->agent_interface.position.y = -0.4*g_configure.get_width_cm()/2.0;
   this->agent_interface.position.z = 1.1;
@@ -56,14 +57,13 @@ void CFoodAgent::agent_process()
   int res_rx = agent_group->get_agent_struct(&agent_interface);
   agent_interface.robot_time = get_ms_time();
 
-/*
-  if ((rand()%1000) < 20)
+
+  if ((rand()%10000) < 5)
   {
-    this->agent_interface.position.x = m_abs(m_rnd())*g_configure.get_width_cm()/2.0;
-    this->agent_interface.position.y = m_abs(m_rnd())*g_configure.get_height_cm()/2.0;
-    this->agent_interface.position.z = 0.0*m_abs(m_rnd())*g_configure.get_depth_cm()/2.0;
+    this->agent_interface.position.x = m_rnd()*g_configure.get_width_cm()/2.0;
+    this->agent_interface.position.y = m_rnd()*g_configure.get_height_cm()/2.0;
   }
-*/
+
   int res_tx = agent_group->set_agent_struct(&agent_interface);
 
   #ifdef _DEBUG_COMMON_

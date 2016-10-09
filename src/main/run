@@ -19,7 +19,6 @@ cd food/bin
 ./main.elf &
 cd ../../
 
-
 cd pheromone/bin
 ./main.elf &
 cd ../../
