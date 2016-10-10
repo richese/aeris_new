@@ -220,7 +220,7 @@ void CAgentGroup::bone_collector_thread_func()
 
   while (run)
   {
-    usleep(robot_death_time*0.5*1000.0);
+    usleep(robot_death_time*1000.0);
 
     printf("bone collector thread\n");
 
@@ -229,7 +229,7 @@ void CAgentGroup::bone_collector_thread_func()
 
     for (i = 0; i < agent_interface.size(); i++)
       if (agent_interface[i].id != 0)
-      if ( (agent_interface[i].robot_time + robot_death_time) < get_ms_time())
+      if ((agent_interface[i].robot_time + robot_death_time) < get_ms_time())
       {
         printf("robot %lu from %lu has been TERMINATED\n", agent_interface[i].id, agent_interface[i].group_id);
         // agent_interface[i].id = 0;

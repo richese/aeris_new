@@ -168,6 +168,8 @@ void CAntAgent::agent_process()
   double dt = agent_interface.dt;
 
   unsigned int j;
+
+  bool on_base = false;
   for (j = 0; j < agent_group->get_agents_count(); j++)
   {
     struct sAgentInterface agent_other = agent_group->get_agent_struct_idx(j);
@@ -177,6 +179,7 @@ void CAntAgent::agent_process()
     {
       agent_interface.state = 0;
       agent_interface.fitness = 1.0;
+      on_base = true;
       break;
     }
 
@@ -194,13 +197,34 @@ void CAntAgent::agent_process()
 
   if (agent_interface.state == 0)
   {
-    agent_interface.fitness = agent_interface.fitness*0.98;
+    float k = 0.7;
+    /*
+    if (on_base == false)
+    {
+      float tmp = 0.0;
+      for (j = 0; j < neighbour.size(); j++)
+        tmp = m_max(tmp, neighbour[j].b);
+
+      agent_interface.fitness = k*tmp;
+    }
+    */
+    agent_interface.fitness = agent_interface.fitness*0.99;
   }
   else
   {
     agent_interface.fitness = agent_interface.fitness*0.99;
   }
 
+/*
+  if (agent_interface.state == 0)
+  {
+    agent_interface.fitness = agent_interface.fitness*0.98;
+  }
+  else
+  {
+    agent_interface.fitness = agent_interface.fitness*0.99;
+  }
+*/
 
   if ((rand()%100) < 30)
   {

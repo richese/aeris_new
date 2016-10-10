@@ -15,8 +15,8 @@ CFoodAgent::CFoodAgent(struct sAgentInterface agent_interface,
   this->agent_interface.body_type = AGENT_BODY_TYPE_TARGET;
 
 
-  this->agent_interface.position.x = -0.4*g_configure.get_width_cm()/2.0;
-  this->agent_interface.position.y = -0.4*g_configure.get_width_cm()/2.0;
+  this->agent_interface.position.x = m_rnd()*g_configure.get_width_cm()/2.0;
+  this->agent_interface.position.y = m_rnd()*g_configure.get_width_cm()/2.0;
   this->agent_interface.position.z = 1.1;
 
 

@@ -108,7 +108,7 @@ void CPheromoneAgent::agent_process()
   }
 
 
-  double tau_red =  10000.0;
+  double tau_red =  20000.0;
   double tau_blue = 10000.0;
 
   double k_red = 1.0 - agent_interface.dt/(agent_interface.dt+tau_red);
