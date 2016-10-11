@@ -1,12 +1,6 @@
 #include "agent_interface.h"
 
-#include <stdio.h>
-#include <string.h>
-
-#include "../math_robot.h"
-#include "../unique_id.h"
-#include "../ms_time.h"
-#include "../debug.h"
+#include "../common.h"
 
 CAgentInterface::CAgentInterface()
 {

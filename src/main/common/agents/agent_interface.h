@@ -3,12 +3,16 @@
 
 #include "agent_body.h"
 #include "../point3d.h"
-#include <stdlib.h>
+
+
+#include <cstdlib>
+#include <cstdint>
 
 struct sAgentInterface
 {
-  unsigned long int id, group_id;
-  unsigned int agent_type, body_type, state, body_id;
+  uint64_t id, group_id;
+  uint32_t agent_type, body_type, state, body_id;
+
   double fitness;
   double robot_time, dt, agent_intensity;
   struct sAgentPosition position;

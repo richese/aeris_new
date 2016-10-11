@@ -2,6 +2,8 @@
 
 int main()
 {
+  printf("size = %lu\n", sizeof(struct sAgentInterface));
+
   class CServer *server = new CServer();
 
 
