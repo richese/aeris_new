@@ -33,7 +33,7 @@ CVisualisation::CVisualisation()
     glutInit(&num, NULL);
     glutInitWindowSize(window_width, window_height);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
-    glutCreateWindow("robot visualisation");
+    window_handle = glutCreateWindow("robot visualisation");
 
     //glutIdleFunc(visualise_idle);
     //glutKeyboardFunc(visualise_process_keys);
@@ -59,6 +59,8 @@ CVisualisation::~CVisualisation()
   for (j = 0; j < agent_body.size(); j++)
     delete agent_body[j];
 
+  glutDestroyWindow( window_handle );
+
   #ifdef _DEBUG_COMMON_
   printf("%lu : visualisation destroyed\n", (unsigned int long)this);
   #endif
@@ -70,6 +72,9 @@ void CVisualisation::refresh(std::vector<struct sAgentInterface> *agent_interfac
   #ifdef _DEBUG_COMMON_
   printf("%lu : visualisation refresh\n", (unsigned int long)this);
   #endif
+
+  if (agent_interface == NULL)
+    return;
 
 
   if (opengl_enabled)

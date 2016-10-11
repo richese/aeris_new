@@ -11,6 +11,7 @@ class CVisualisation:public CVisualisationDummy
 
     std::vector<class CAgentBody*> agent_body;
 
+    int window_handle;
   public:
     CVisualisation();
     ~CVisualisation();

@@ -17,7 +17,8 @@ OBJCOPY = objcopy
 OBJDUMP = objdump
 SIZE = size
 
-CFLAGS = -O2 -Os -s -Wall -Wextra -pedantic -std=c++0x
+ CFLAGS = -O2 -Os -s -Wall -Wextra -pedantic -std=c++0x
+#CFLAGS = -g -Wall -Wextra -pedantic -std=c++0x
 LDFLAGS = -lm -lpthread -pthread -std=c++11  -lglut -lGL -lGLU
 
 SRCS = $(shell find -name '*.cpp')

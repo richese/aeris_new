@@ -21,14 +21,7 @@ CRT_Timer::CRT_Timer()
 
 CRT_Timer::~CRT_Timer()
 {
-  run = false;
-  if (rt_thread != NULL)
-  {
-    rt_thread->join();
-    delete rt_thread;
-
-    rt_thread = NULL;
-  }
+  rt_timer_stop();
 }
 
 void CRT_Timer::rt_timer_set_period(float period_ms)

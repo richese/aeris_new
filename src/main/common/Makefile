@@ -6,6 +6,7 @@ OBJDUMP = objdump
 SIZE = size
 
 CFLAGS = -O2 -Os -s -Wall -Wextra -pedantic -std=c++0x
+#CFLAGS = -g -s -Wall -Wextra -pedantic -std=c++0x
 LDFLAGS = -lm -lpthread -pthread -std=c++11
 
 

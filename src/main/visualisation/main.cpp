@@ -13,13 +13,18 @@ int main()
   class CClient *client;
 
   class CVisualisation *visualisation = new CVisualisation();
+
+
   class CVisualisationAgent *agent = new CVisualisationAgent();
 
   client = new CClient(agent_group_init_struct, agent, visualisation);
+
   client->main();
 
 
   delete client;
+  delete agent;
+
   delete visualisation;
 
   printf("program done\n");

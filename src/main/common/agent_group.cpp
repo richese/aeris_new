@@ -71,6 +71,7 @@ CAgentGroup::CAgentGroup(struct sAgentGroupInitStruct agent_group_init_struct, c
   run = true;
   rt_timer_set_period(agent_group_init_struct.dt);
 
+  bone_collector_thread = NULL;
 //  bone_collector_thread = new std::thread(&CAgentGroup::bone_collector_thread_func, this);
 }
 
