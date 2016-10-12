@@ -17,6 +17,7 @@ int main()
 
 
   client = new CClient(agent_group_init_struct, agent);
+  // client->set_connection_method(CClient::USE_AF_INET);
   client->main();
 
 

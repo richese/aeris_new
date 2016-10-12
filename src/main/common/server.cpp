@@ -1,11 +1,14 @@
 #include "server.h"
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
+#include <errno.h>
 #include <unistd.h>
-#include <sys/types.h>
+#include <sys/select.h>
 #include <sys/socket.h>
+#include <sys/types.h>
+#include <sys/un.h>
 #include <netinet/in.h>
 
 #include "debug.h"
@@ -16,24 +19,11 @@ extern CConfigure g_configure;
 
 CServer::CServer()
 {
-  sockfd = socket(AF_INET, SOCK_STREAM, 0);
+  server_thread = NULL;
 
-  if (sockfd < 0)
-     printf("ERROR opening socket\n");
-
-  struct sockaddr_in serv_addr;
-  bzero((char *) &serv_addr, sizeof(serv_addr));
-
-  int portno = g_configure.get_server_port();
-  serv_addr.sin_family = AF_INET;
-  serv_addr.sin_addr.s_addr = INADDR_ANY;
-  serv_addr.sin_port = htons(portno);
-
-  if (bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0)
-      printf("ERROR on binding");
-
-
-  server_thread = new std::thread(&CServer::server_thread_func, this);
+  unix_sockfd = -1;
+  inet_sockfd = -1;
+  FD_ZERO(&open_sockets);
 
   #ifdef _DEBUG_COMMON_
   printf("%lu : server created\n", (unsigned long int)this);
@@ -44,17 +34,131 @@ CServer::~CServer()
 {
   if (server_thread != NULL)
   {
+    // FIXME: threadu sa nesignalizuje, ze ma skoncit ?
     server_thread->join();
     delete server_thread;
 
     server_thread = NULL;
   }
 
-  close(sockfd);
+  close(unix_sockfd);
+  close(inet_sockfd);
 
   #ifdef _DEBUG_COMMON_
   printf("%lu : server destroyed\n", (unsigned long int)this);
   #endif
+}
+
+int CServer::listen(const int addres_family)
+{
+  if (addres_family & USE_AF_UNIX && open_unix_domain_socket() < 0)
+  {
+    return -1;
+  }
+  if (addres_family & USE_AF_INET && open_inet_socket() < 0)
+  {
+    return -1;
+  }
+
+  server_thread = new std::thread(&CServer::server_thread_func, this);
+
+  return 0;
+}
+
+int CServer::open_unix_domain_socket()
+{
+  if (unix_sockfd != -1)
+  {
+    printf("WARNING unix socket is already open\n");
+    return 0;
+  }
+
+  struct sockaddr_un serv_unix_addr;
+  memset(&serv_unix_addr, 0, sizeof(serv_unix_addr));
+  serv_unix_addr.sun_family = AF_UNIX;
+  strcpy(serv_unix_addr.sun_path, g_configure.get_server_ud_path());
+  int addr_len = strlen(serv_unix_addr.sun_path) + sizeof(serv_unix_addr.sun_family);
+
+  if ((unix_sockfd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0)
+  {
+    printf("ERROR opening unix socket: %s\n", strerror(errno));
+    close(unix_sockfd);
+    unix_sockfd = -1;
+    return -1;
+  }
+  if (unlink(serv_unix_addr.sun_path) < 0 && errno != ENOENT)
+  {
+    printf("ERROR unlinking old unix socket file failed: %s\n", strerror(errno));
+    close(unix_sockfd);
+    unix_sockfd = -1;
+    return -1;
+  }
+  if (bind(unix_sockfd, (struct sockaddr *) &serv_unix_addr, addr_len))
+  {
+    printf("ERROR binding unix socket: %s\n", strerror(errno));
+    close(unix_sockfd);
+    unix_sockfd = -1;
+    return -1;
+  }
+  if (::listen(unix_sockfd, 5) < 0)
+  {
+    printf("ERROR unable to listen on unix socket: %s\n", strerror(errno));
+    close(unix_sockfd);
+    unix_sockfd = -1;
+    return -1;
+  }
+
+  FD_SET(unix_sockfd, &open_sockets);
+
+  #ifdef _DEBUG_COMMON_
+  printf("%lu: Opened unix domain socket at %s\n", (unsigned long int)this, serv_unix_addr.sun_path);
+  #endif
+  return 0;
+}
+
+int CServer::open_inet_socket()
+{
+  if (inet_sockfd != -1)
+  {
+    printf("WARNING inet socket is already open\n");
+    return 0;
+  }
+
+  struct sockaddr_in serv_addr;
+  memset(&serv_addr, 0, sizeof(serv_addr));
+  int portno = g_configure.get_server_port();
+  serv_addr.sin_family = AF_INET;
+  serv_addr.sin_addr.s_addr = INADDR_ANY;
+  serv_addr.sin_port = htons(portno);
+
+  if ((inet_sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+  {
+    printf("ERROR opening inet socket: %s\n", strerror(errno));
+    close(inet_sockfd);
+    inet_sockfd = -1;
+    return -1;
+  }
+  if (bind(inet_sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0)
+  {
+    printf("ERROR binding inet socket: %s\n", strerror(errno));
+    close(inet_sockfd);
+    inet_sockfd = -1;
+    return -1;
+  }
+  if (::listen(inet_sockfd, 5) < 0)
+  {
+    printf("ERROR unable to listen on inet socket: %s\n", strerror(errno));
+    close(inet_sockfd);
+    inet_sockfd = -1;
+    return -1;
+  }
+
+  FD_SET(inet_sockfd, &open_sockets);
+
+  #ifdef _DEBUG_COMMON_
+  printf("%lu: Opened inet socket at port %d\n", (unsigned long int)this, portno);
+  #endif
+  return 0;
 }
 
 void CServer::server_thread_func()
@@ -63,27 +167,62 @@ void CServer::server_thread_func()
   printf("%lu : server main loop started\n", (unsigned long int)this);
   #endif
 
+  // FIXME: kde je definovane 'run' ?
   while (run)
   {
-    listen(sockfd, 5);
+    fd_set fd_ready_to_read = open_sockets;
+    struct timeval timeout = {1, 0}; // 1s
 
-    struct sockaddr_in cli_addr;
-    socklen_t clilen = sizeof(cli_addr);
-    client_fd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
-
-    if (client_fd < 0)
+    if (select(FD_SETSIZE, &fd_ready_to_read, NULL, NULL, &timeout) < 0)
     {
       #ifdef _ERROR_COMMON_
-      printf("ERROR on accept");
+      printf("ERROR while waiting for socket activity: %s\n", strerror(errno));
       #endif
+      continue;
     }
-    else
-    {
-      #ifdef _INFO_COMMON_
-      printf("new client connected with fd %i\n", client_fd);
-      #endif
 
-      client_thread.push_back(new std::thread(&CServer::client_thread_func, this, client_fd));
+    if (unix_sockfd != -1 && FD_ISSET(unix_sockfd, &fd_ready_to_read))
+    {
+      int client_fd;
+      struct sockaddr_un client_addr;
+      socklen_t client_addr_len = sizeof(client_addr);
+
+      if ((client_fd = accept(unix_sockfd, (struct sockaddr *) &client_addr, &client_addr_len)) < 0)
+      {
+        #ifdef _ERROR_COMMON_
+        printf("ERROR on unix domain accept: %s\n", strerror(errno));
+        #endif
+      }
+      else
+      {
+        #ifdef _INFO_COMMON_
+        printf("new unix domain client connected with fd %i\n", client_fd);
+        #endif
+
+        client_thread.push_back(new std::thread(&CServer::client_thread_func, this, client_fd));
+      }
+    }
+
+    if (inet_sockfd != -1 && FD_ISSET(inet_sockfd, &fd_ready_to_read))
+    {
+      int client_fd;
+      struct sockaddr_in client_addr;
+      socklen_t client_addr_len = sizeof(client_addr);
+
+      if ((client_fd = accept(inet_sockfd, (struct sockaddr *) &client_addr, &client_addr_len)) < 0)
+      {
+        #ifdef _ERROR_COMMON_
+        printf("ERROR on inet accept: %s\n", strerror(errno));
+        #endif
+      }
+      else
+      {
+        #ifdef _INFO_COMMON_
+        printf("new inet client connected with fd %i\n", client_fd);
+        #endif
+
+        client_thread.push_back(new std::thread(&CServer::client_thread_func, this, client_fd));
+      }
     }
   }
 

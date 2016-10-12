@@ -24,6 +24,8 @@ CConfigure::CConfigure()
 
   read_res = fscanf(f, "%s %i\n", server_ip, &server_port);
 
+  read_res = fscanf(f, "%s\n", server_unix_domain_path);
+
   //TODO
   //load from file : screen resolution, screen size (inch) and compute these values
 
@@ -90,6 +92,11 @@ double CConfigure::get_depth_cm()
 double CConfigure::get_cm_size()
 {
   return cm_size;
+}
+
+char *CConfigure::get_server_ud_path()
+{
+  return server_unix_domain_path;
 }
 
 char *CConfigure::get_server_ip()

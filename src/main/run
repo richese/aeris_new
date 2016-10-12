@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 cd server/bin
 ./main.elf &
 cd ../..

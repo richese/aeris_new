@@ -2,10 +2,13 @@
 
 int main()
 {
-  printf("size = %lu\n", sizeof(struct sAgentInterface));
-
   class CServer *server = new CServer();
 
+  if (server->listen(CServer::USE_AF_INET|CServer::USE_AF_UNIX) < 0)
+  {
+    delete server;
+    return 1;
+  }
 
   printf("server started, press ESC to end\n");
   while (getch() != 27)

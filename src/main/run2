@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+(cd server/bin && exec ./main.elf) &
+
+sleep 1s
+pgrep main.elf > /dev/null
+if [ "$?" == "1" ]; then
+  echo "$0 Server crashed"
+  exit 1
+fi
+
+(cd visualisation/bin && exec ./main.elf) &
+
+(cd border/bin && exec ./main.elf) &
+
+(cd base/bin && exec ./main.elf) &
+
+(cd food/bin && exec ./main.elf) &
+(cd food/bin && exec ./main.elf) &
+
+(cd pheromone/bin && exec ./main.elf) &
+
+(cd ant/bin && exec ./main.elf) &

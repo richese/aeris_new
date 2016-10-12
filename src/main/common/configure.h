@@ -18,6 +18,7 @@ class CConfigure
 
     double cm_size;
 
+    char server_unix_domain_path[108];
     char server_ip[16];
     int server_port;
 
@@ -37,6 +38,7 @@ class CConfigure
 
     double get_cm_size();
 
+    char *get_server_ud_path();
     char *get_server_ip();
     int get_server_port();
 

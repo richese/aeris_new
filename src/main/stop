@@ -1,2 +1,4 @@
+#!/usr/bin/env bash
+
 killall main.elf
 killall main.elf
