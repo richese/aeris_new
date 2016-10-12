@@ -32,9 +32,10 @@ CServer::CServer()
 
 CServer::~CServer()
 {
+  run = false;
+
   if (server_thread != NULL)
   {
-    // FIXME: threadu sa nesignalizuje, ze ma skoncit ?
     server_thread->join();
     delete server_thread;
 
@@ -167,7 +168,6 @@ void CServer::server_thread_func()
   printf("%lu : server main loop started\n", (unsigned long int)this);
   #endif
 
-  // FIXME: kde je definovane 'run' ?
   while (run)
   {
     fd_set fd_ready_to_read = open_sockets;
