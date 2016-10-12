@@ -1,23 +1,37 @@
 #!/usr/bin/env bash
 
-(cd server/bin && exec ./main.elf) &
+function spawn
+{
+  name="$1"
+  shift
+  pushd "$name/bin" > /dev/null
+  if [ "$?" == "0" ]; then
+    ./main.elf $@ &
+    echo "$(basename $0): Spawned $name with PID $!"
+    popd > /dev/null
+  else
+    echo "$(basename $0): Target '$name' does not exist"
+    exit 1
+  fi
+}
+
+
+spawn server
 
 sleep 1s
 pgrep main.elf > /dev/null
 if [ "$?" == "1" ]; then
-  echo "$0 Server crashed"
+  echo "$(basename $0): Server crashed"
+  echo "$(basename $0): Aborting"
   exit 1
 fi
 
-(cd visualisation/bin && exec ./main.elf) &
+spawn visualisation
 
-(cd border/bin && exec ./main.elf) &
+spawn border
 
-(cd base/bin && exec ./main.elf) &
-
-(cd food/bin && exec ./main.elf) &
-(cd food/bin && exec ./main.elf) &
-
-(cd pheromone/bin && exec ./main.elf) &
-
-(cd ant/bin && exec ./main.elf) &
+spawn base
+spawn food
+spawn food
+spawn pheromone
+spawn ant
