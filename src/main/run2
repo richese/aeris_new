@@ -30,6 +30,10 @@ spawn visualisation
 
 spawn border
 
+spawn line
+
+exit 0
+
 spawn base
 spawn food
 spawn food
