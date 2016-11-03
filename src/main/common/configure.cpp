@@ -45,9 +45,13 @@ CConfigure::CConfigure()
   screen_size = 55.0*2.454;
 */
 
+  //TODO
   width_cm =  16.0*sqrt( (screen_size*screen_size)/337.0 );
   height_cm =  9.0*sqrt( (screen_size*screen_size)/337.0 );
-  cm_size = width_pixel/(width_cm*1.0);
+
+  cm_size = 0.5*width_pixel/(width_cm*1.0);
+
+  printf("screen %f %f %f\n", width_cm, height_cm, cm_size);
 
   read_res = fscanf(f, "%u \n", &view_state);
   (void)read_res;

@@ -13,10 +13,10 @@ CLineAgent::CLineAgent(struct sAgentInterface agent_interface,
                   unsigned long int group_id):CAgent(agent_interface, agent_group, group_id)
 {
   double pheromone_size = 4.0;
-  this->agent_interface.body_type = AGENT_BODY_TYPE_BASIC_SMALL;
+  this->agent_interface.body_type = AGENT_BODY_TYPE_BASIC;
 
 
-  parameter = agent_group->get_agents_count()/80.0;
+  parameter = agent_group->get_agents_count()/120.0;
 
   phase = 0.0;
 
@@ -61,7 +61,7 @@ void CLineAgent::agent_process()
   agent_interface.robot_time = get_ms_time();
 
 
-  phase+= 0.001*agent_interface.dt;
+  phase+= 0.0001*agent_interface.dt;
 
   set_position();
 
@@ -76,7 +76,7 @@ void CLineAgent::agent_process()
 
 void CLineAgent::set_position()
 {
-  this->agent_interface.position.x = 0.7*g_configure.get_width_cm()*0.5*(sin(3.0*parameter + phase));
-  this->agent_interface.position.y = 0.7*g_configure.get_height_cm()*0.5*(sin(2.0*parameter+ phase));
+  this->agent_interface.position.x = 0.6*g_configure.get_width_cm()*0.5*(sin(1.0*parameter + phase));
+  this->agent_interface.position.y = 0.6*g_configure.get_height_cm()*0.5*(sin(2.0*parameter+ phase));
   this->agent_interface.position.z = 0.0;
 }
