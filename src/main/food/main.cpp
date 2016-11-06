@@ -24,6 +24,6 @@ int main()
   delete client;
 
 
-  printf("program done\n");
+  printf("program \'food\' done\n");
   return 0;
 }

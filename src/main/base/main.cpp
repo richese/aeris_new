@@ -23,6 +23,6 @@ int main()
   delete client;
 
 
-  printf("program done\n");
+  printf("program \'base\' done\n");
   return 0;
 }

@@ -18,6 +18,6 @@ int main()
 
   delete client;
 
-  printf("program done\n");
+  printf("program \'line\' done\n");
   return 0;
 }

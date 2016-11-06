@@ -28,7 +28,7 @@ class CRT_Timer
 
 
   protected:
-    virtual void rt_timer_callback();
+    virtual void rt_timer_callback() = 0;
 
 };
 
