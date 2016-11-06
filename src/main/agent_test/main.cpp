@@ -24,6 +24,6 @@ int main()
   delete client;
 
 
-  printf("program done\n");
+  printf("program \'agent test\' done\n");
   return 0;
 }

@@ -19,6 +19,6 @@ int main()
 
   delete client;
 
-  printf("program done\n");
+  printf("program \'border\' done\n");
   return 0;
 }

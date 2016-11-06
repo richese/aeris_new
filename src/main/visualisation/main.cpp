@@ -27,6 +27,6 @@ int main()
 
   delete visualisation;
 
-  printf("program done\n");
+  printf("program \'visualisation\' done\n");
   return 0;
 }

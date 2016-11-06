@@ -51,7 +51,7 @@ int CClient::main()
 
   rt_timer_start();
 
-  while (getch() != 27)
+  while (!received_exit_signal())
   {
     rt_timer_delay_ms(100.0);
     #ifdef _DEBUG_COMMON_

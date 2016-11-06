@@ -11,13 +11,13 @@ int main()
   }
 
   printf("server started, press ESC to end\n");
-  while (getch() != 27)
+  while (!received_exit_signal())
   {
     sleep(1);
   }
 
   delete server;
 
-  printf("program done\n");
+  printf("program \'server\' done\n");
   return 0;
 }
