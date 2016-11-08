@@ -10,10 +10,7 @@ spawn server
 check_alive
 
 spawn border
-spawn pheromone
-spawn base
-spawn food
-spawn ant
+spawn line
 
 spawn visualisation
 
