@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+pushd "$(dirname $0)" > /dev/null
+export MAIN_ROOT_DIR="$(pwd)"
+popd > /dev/null
+
+if [ "$1" = "force" ]; then
+  rm -rfv "$MAIN_ROOT_DIR/.build"
+  exit 0
+fi
+
+if [ ! -d "$MAIN_ROOT_DIR/.build" ]; then
+  echo "Build directory \'$MAIN_ROOT_DIR/.build\' not found."
+  exit 1
+fi
+
+if [ -f "$MAIN_ROOT_DIR/.build/build.ninja" ]; then
+  pushd "$MAIN_ROOT_DIR/.build" > /dev/null
+  ninja clean
+  popd > /dev/null
+else
+  exit 1
+fi

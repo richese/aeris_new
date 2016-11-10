@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+
+pushd "$(dirname $0)" > /dev/null
+export MAIN_ROOT_DIR="$(pwd)"
+popd > /dev/null
+
+if [ ! -d "$MAIN_ROOT_DIR/.build" ]; then
+  mkdir -v "$MAIN_ROOT_DIR/.build"
+fi
+
+if [ ! -f "$MAIN_ROOT_DIR/.build/build.ninja" ]; then
+  meson --buildtype release "$MAIN_ROOT_DIR" "$MAIN_ROOT_DIR/.build"
+  if [ "$?" != "0" ]; then
+    exit 1
+  fi
+fi
+
+pushd "$MAIN_ROOT_DIR/.build" > /dev/null
+ninja
+popd > /dev/null

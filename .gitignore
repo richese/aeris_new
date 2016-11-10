@@ -28,3 +28,5 @@
 *.out
 *.app
 *.elf
+
+src/main/.build/*

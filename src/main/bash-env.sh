@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
 
-# nazov skriptu
-SCRIPT="$(basename $0)"
-LAST_PID=""
-
 # ziskaj absolutnu cestu ku skriptu, nech sa moze volat od hocikadial v systeme
 # akurat to zatial nezvladnu binarky lebo maju relativnu cestu ku configure.txt
 if [ -z "$MAIN_ROOT_DIR" ]; then
@@ -12,11 +8,15 @@ if [ -z "$MAIN_ROOT_DIR" ]; then
   popd > /dev/null
 fi
 
+# nazov skriptu
+SCRIPT="$(basename $0)"
+LAST_PID=""
+RUNNING_PIDS=""
 
 function spawn
 {
   NAME="$1"
-  BINARY="$MAIN_ROOT_DIR/$NAME/bin/main.elf"
+  BINARY="$MAIN_ROOT_DIR/.build/$NAME/$NAME.elf"
   shift
   if [ -f $BINARY ]; then
     pushd "$(dirname $BINARY)" > /dev/null
@@ -25,9 +25,10 @@ function spawn
     popd > /dev/null
     echo "$SCRIPT: Spawned $NAME with PID $PID"
     LAST_PID="$PID"
+    RUNNING_PIDS="$RUNNING_PIDS $PID"
   else
     echo "$SCRIPT: Target '$NAME' does not exist"
-    killall main.elf 2> /dev/null
+    kill $RUNNING_PIDS
     exit 1
   fi
 }
@@ -40,7 +41,7 @@ function check_alive
     kill -s 0 "$LAST_PID"
     if [ "$?" != "0" ]; then
       echo "$SCRIPT: Process $LAST_PID is not alive."
-      killall main.elf 2> /dev/null
+      kill $RUNNING_PIDS
       exit 1
     fi
   fi
@@ -54,7 +55,8 @@ function stop
   while [ "$key" != '' ]; do # funguje pre medzeru aj enter
     read -n1 -r key
   done
-
-  killall main.elf
-  killall main.elf 2> /dev/null
+  
+  echo ""
+  echo "$SCRIPT: Killing processes: $RUNNING_PIDS"
+  kill $RUNNING_PIDS
 }
