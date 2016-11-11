@@ -1,8 +1,8 @@
 #include "agent_group.h"
 
 #include "math_robot.h"
-#include "getch.h"
 #include "unique_id.h"
+#include "signals.h"
 
 #include "configure.h"
 #include "ms_time.h"

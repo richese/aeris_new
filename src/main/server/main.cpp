@@ -1,23 +1,35 @@
-#include "../common/common.h"
+#include <memory>
 
-int main()
+#include <unistd.h>
+
+#include "../common/logging.h"
+#include "../common/server.h"
+#include "../common/signals.h"
+
+
+int main(int argc, char *argv[])
 {
-  class CServer *server = new CServer();
-
-  if (server->listen(CServer::USE_AF_INET|CServer::USE_AF_UNIX) < 0)
+  logging_init("server", argc, argv);
+  
+  std::shared_ptr<CServer> server(new CServer);
+  if (!server)
   {
-    delete server;
+    LOG(ERROR) << "Failed to allocate server instance.";
     return 1;
   }
-
-  printf("server started, press ESC to end\n");
+  
+  if (server->listen(CServer::USE_AF_INET|CServer::USE_AF_UNIX) < 0)
+  {
+    LOG(ERROR) << "Failed to open server sockets.";
+    return 1;
+  }
+  
+  LOG(INFO) << "Started.";
   while (!received_exit_signal())
   {
     sleep(1);
   }
-
-  delete server;
-
-  printf("program \'server\' done\n");
+  
+  LOG(INFO) << "Program done. Cleaning up.";
   return 0;
 }

@@ -10,7 +10,12 @@ if [ ! -d "$MAIN_ROOT_DIR/.build" ]; then
 fi
 
 if [ ! -f "$MAIN_ROOT_DIR/.build/build.ninja" ]; then
-  meson --buildtype release "$MAIN_ROOT_DIR" "$MAIN_ROOT_DIR/.build"
+  if [ "$1" != "" ]; then
+    BUILD_TYPE="$1"
+  else
+    BUILD_TYPE="release"
+  fi
+  meson --buildtype "$BUILD_TYPE" "$MAIN_ROOT_DIR" "$MAIN_ROOT_DIR/.build"
   if [ "$?" != "0" ]; then
     exit 1
   fi

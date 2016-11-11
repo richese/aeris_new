@@ -5,11 +5,13 @@ common_src = [
   'agent_group.cpp',
   'client.cpp',
   'configure.cpp',
-  'getch.cpp',
+  'logging.cpp',
   'math_robot.cpp',
   'ms_time.cpp',
   'rt_timer.cpp',
   'server.cpp',
+  'signals.cpp',
+  'socket.cpp',
   'unique_id.cpp',
   'visualisation_dummy.cpp'
 ]

@@ -5,7 +5,7 @@
 #include <termios.h>
 #include <unistd.h>
 
-#include "getch.h"
+#include "signals.h"
 
 
 namespace {

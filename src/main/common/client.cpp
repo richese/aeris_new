@@ -11,7 +11,7 @@
 #include <unistd.h>
 
 
-#include "getch.h"
+#include "signals.h"
 #include "debug.h"
 #include "configure.h"
 
