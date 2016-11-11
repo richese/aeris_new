@@ -11,14 +11,12 @@
 #include <GL/glext.h>
 
 
-
 extern class CConfigure g_configure;
+
 
 CVisualisation::CVisualisation()
 {
-  #ifdef _DEBUG_COMMON_
-  printf("%lu : visualisation created\n", (unsigned int long)this);
-  #endif
+  VLOG(9) << "CVisualisation constructor.";
 
   cm_size = g_configure.get_cm_size();
 
@@ -61,16 +59,14 @@ CVisualisation::~CVisualisation()
 
   glutDestroyWindow( window_handle );
 
-  #ifdef _DEBUG_COMMON_
-  printf("%lu : visualisation destroyed\n", (unsigned int long)this);
-  #endif
+  VLOG(9) << "CVisualisation destructor.";
 }
 
 
 void CVisualisation::refresh(std::vector<struct sAgentInterface> *agent_interface)
 {
-  #ifdef _DEBUG_COMMON_
-  printf("%lu : visualisation refresh\n", (unsigned int long)this);
+  #ifdef VISUALISATION_PERFORMANCE_TRACKING
+  TIMED_FUNC(refresh_timer);
   #endif
 
   if (agent_interface == NULL)

@@ -5,6 +5,10 @@
 #define ELPP_FORCE_USE_STD_THREAD
 #define ELPP_NO_DEFAULT_LOG_FILE
 
+
+#define ELPP_DISABLE_PERFORMANCE_TRACKING
+
+
 #include "../bundled/easylogging++.h"
 
 

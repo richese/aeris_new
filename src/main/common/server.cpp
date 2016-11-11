@@ -21,7 +21,7 @@ CServer::CServer() :
   finished_threads(),
   sockets()
 {
-  VLOG(2) << "Server created";
+  VLOG(9) << "CServer constructor.";
 }
 
 CServer::~CServer()
@@ -37,7 +37,7 @@ CServer::~CServer()
     thread.join();
   }
 
-  VLOG(2) << "Server destroyed.";
+  VLOG(9) << "Server destructor.";
 }
 
 int CServer::listen(const int addres_family)
@@ -111,7 +111,7 @@ void CServer::server_thread_func()
 
 void CServer::client_threads_func(std::shared_ptr<Socket> client)
 {
-  LOG(DEBUG) << "Server acepted connection from " << *client;
+  LOG(INFO) << "Server acepted connection from " << *client;
   
   struct sAgentInterface agent_interface_tmp;
   const int fd = client->fd();

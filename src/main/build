@@ -21,6 +21,4 @@ if [ ! -f "$MAIN_ROOT_DIR/.build/build.ninja" ]; then
   fi
 fi
 
-pushd "$MAIN_ROOT_DIR/.build" > /dev/null
-ninja
-popd > /dev/null
+ninja -C "$MAIN_ROOT_DIR/.build"

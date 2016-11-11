@@ -18,5 +18,5 @@ void logging_init(const char *app_name, int argc, char *argv[])
   log_conf.setGlobally(el::ConfigurationType::ToFile, "false");
   log_conf.setGlobally(el::ConfigurationType::ToStandardOutput, "true");
   
-  el::Loggers::reconfigureAllLoggers(log_conf);
+  el::Loggers::reconfigureLogger("default", log_conf);
 }

@@ -3,6 +3,10 @@
 
 #include "../common/common.h"
 
+
+// #define VISUALISATION_PERFORMANCE_TRACKING
+
+
 class CVisualisation:public CVisualisationDummy
 {
   private:

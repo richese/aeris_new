@@ -1,41 +1,47 @@
 #ifndef _CLIENT_H_
 #define _CLIENT_H_
 
+#include <memory>
 
+#include "socket.h"
 #include "agent_group.h"
 #include "visualisation_dummy.h"
 
-#include <sys/socket.h>
-#include <netinet/in.h>
 
 #define CLIENT_CONNECTION_STATE_NO_CONNECTED    ((unsigned int)0)
 #define CLIENT_CONNECTION_STATE_CONNECTED       ((unsigned int)1)
 
 
-class CClient:public CAgentGroup
+class CClient : public CAgentGroup
 {
-  public:
-    static const int USE_AF_UNIX = 0x01;
-    static const int USE_AF_INET = 0x02;
-
   private:
-    class CVisualisationDummy *visualisation;
+    
+    enum ConnectionState {
+      NOT_CONNECTED = 0,
+      IS_CONNECTED  = 1
+    };
+    
+    enum ConnectionMethod {
+      METHOD_UNIX = 0x01,
+      METHOD_INET = 0x02
+    };
+    
+    CVisualisationDummy *visualisation;
 
-
-    unsigned int connection_state;
+    int connection_state;
     int connection_method;
-    int sockfd;
+    std::shared_ptr<Socket> socket;
+    
 
   public:
-    CClient(struct sAgentGroupInitStruct agent_group_init_struct, class CAgent *agent, class CVisualisationDummy *visualisation = NULL);
+    CClient(sAgentGroupInitStruct agent_group_init_struct, 
+            CAgent *agent, 
+            CVisualisationDummy *visualisation = NULL);
     ~CClient();
 
-    void set_connection_method(int address_family);
+    void set_connection_method(int methods);
     int main();
     int connect_to_server();
-
-    int connect_to_unix_domain_server();
-    int connect_to_inet_server();
 };
 
 
