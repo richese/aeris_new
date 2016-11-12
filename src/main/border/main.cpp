@@ -4,6 +4,7 @@
 
 #include "border_agent.h"
 
+
 int main(int argc, char *argv[])
 {
   logging_init("border", argc, argv);
@@ -20,8 +21,8 @@ int main(int argc, char *argv[])
   client->main();
 
   LOG(INFO) << "Program done. Cleaning up.";
-  delete agent;
   delete client;
+  delete agent;
 
   return 0;
 }
