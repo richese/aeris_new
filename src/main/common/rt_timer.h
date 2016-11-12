@@ -3,13 +3,13 @@
 
 #include <thread>
 
+
 class CRT_Timer
 {
   private:
+    
     bool run;
-
-    std::thread *rt_thread;
-
+    std::thread rt_thread;
     float period_ms;
 
   public:
@@ -32,4 +32,5 @@ class CRT_Timer
 
 };
 
-#endif
+
+#endif /* _RT_TIMER_H_ */

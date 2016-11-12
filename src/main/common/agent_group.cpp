@@ -7,14 +7,13 @@
 #include "configure.h"
 #include "ms_time.h"
 
-#include "debug.h"
+#include "logging.h"
 #include "agents/agents.h"
 
 
 #define _POSIX_C_SOURCE 200809L
 
 #include <sys/time.h>
-// #include <time.h>
 #include <unistd.h>
 
 extern class CConfigure g_configure;
@@ -64,15 +63,13 @@ CAgentGroup::CAgentGroup(struct sAgentGroupInitStruct agent_group_init_struct, c
   }
 
 
-  #ifdef _DEBUG_COMMON_
-  printf("%lu : agent group created\n", (unsigned long int)this);
-  #endif
-
   run = true;
   rt_timer_set_period(agent_group_init_struct.dt);
 
   bone_collector_thread = NULL;
-//  bone_collector_thread = new std::thread(&CAgentGroup::bone_collector_thread_func, this);
+  // bone_collector_thread = new std::thread(&CAgentGroup::bone_collector_thread_func, this);
+
+  VLOG(9) << "CAgentGroup constructor.";
 }
 
 
@@ -92,48 +89,42 @@ CAgentGroup::~CAgentGroup()
   for (i = 0; i < agents.size(); i++)
     delete agents[i];
 
-  #ifdef _DEBUG_COMMON_
-  printf("%lu : agent group destroyed\n", (unsigned long int)this);
-  #endif
+  VLOG(9) << "CAgentGroup destructor";
 }
 
 void CAgentGroup::rt_timer_callback()
 {
+  TIMED_FUNC(agent_group_benchmark);
+  
   unsigned int i;
 
-  #ifdef _DEBUG_COMMON_
-  printf("%lu : processing agents\n", (unsigned int long)this);
-  #endif
-
   for (i = 0; i < agents.size(); i++)
-    if (agent_interface[i].id != 0)
+  {
+    if (agent_interface[i].id != 0) 
+    {
       if (agent_interface[i].group_id == group_id)
+      {
         agents[i]->agent_process();
+      }
+    }
+  }
+  PERFORMANCE_CHECKPOINT_WITH_ID(agent_group_benchmark, "agent-processing");
 
-  int res = connect_to_server();
-
-  #ifdef _ERROR_COMMON_
-  if (res < 0)
-    printf("%lu : connecting to %s:%i error with %i\n", (unsigned int long)this, g_configure.get_server_ip(), g_configure.get_server_port(), res);
-  #endif
+  
+  connect_to_server();
 }
 
 
 int CAgentGroup::main()
 {
-  #ifdef _DEBUG_COMMON_
-  printf("%lu : agent group main loop started, press ESC to end\n", (unsigned int long)this);
-  #endif
-
+  VLOG(2) << "CAgentGroup main loop started.";
 
   rt_timer_start();
 
   while (!received_exit_signal())
   {
     rt_timer_delay_ms(100.0);
-    #ifdef _DEBUG_COMMON_
-    printf("%lu : agent group main loop running, press ESC to end\n", (unsigned int long)this);
-    #endif
+    VLOG_EVERY_N(10, 3) << "CAgentGroup main loop running";
   }
 
   rt_timer_stop();
@@ -223,7 +214,7 @@ void CAgentGroup::bone_collector_thread_func()
   {
     usleep(robot_death_time*1000.0);
 
-    printf("bone collector thread\n");
+    VLOG(2) << "Bone collector thread.";
 
     mutex_agent_interface.lock();
     unsigned int i;
@@ -232,7 +223,7 @@ void CAgentGroup::bone_collector_thread_func()
       if (agent_interface[i].id != 0)
       if ((agent_interface[i].robot_time + robot_death_time) < get_ms_time())
       {
-        printf("robot %lu from %lu has been TERMINATED\n", agent_interface[i].id, agent_interface[i].group_id);
+        VLOG(3) << "Agent " << agent_interface[i].id << " from " << agent_interface[i].group_id << " has been terminated.";
         // agent_interface[i].id = 0;
       }
 

@@ -65,9 +65,7 @@ CVisualisation::~CVisualisation()
 
 void CVisualisation::refresh(std::vector<struct sAgentInterface> *agent_interface)
 {
-  #ifdef VISUALISATION_PERFORMANCE_TRACKING
-  TIMED_FUNC(refresh_timer);
-  #endif
+  TIMED_FUNC(refresh_benchmark);
 
   if (agent_interface == NULL)
     return;
@@ -149,7 +147,7 @@ void CVisualisation::refresh(std::vector<struct sAgentInterface> *agent_interfac
 
 
 void CVisualisation::paint_agent(struct sAgentInterface *agent_interface)
-{
+{  
   unsigned int i, j;
 
   unsigned int body_id = agent_interface->body_type;

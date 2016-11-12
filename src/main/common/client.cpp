@@ -61,6 +61,8 @@ int CClient::main()
 
 int CClient::connect_to_server()
 {
+  TIMED_FUNC(connection_benchmark);
+  
   struct sAgentInterface agent_interface_tmp;
   unsigned int ptr = 0;
   
@@ -101,7 +103,7 @@ int CClient::connect_to_server()
         }
         connection_state = IS_CONNECTED;
       }
-      LOG(INFO) << "Connected to server " << *socket;
+      VLOG(2) << "Connected to server " << *socket;
     }
     int fd = socket->fd();
 

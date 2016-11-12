@@ -111,7 +111,7 @@ void CServer::server_thread_func()
 
 void CServer::client_threads_func(std::shared_ptr<Socket> client)
 {
-  LOG(INFO) << "Server acepted connection from " << *client;
+  VLOG(2) << "Server acepted connection from " << *client;
   
   struct sAgentInterface agent_interface_tmp;
   const int fd = client->fd();
@@ -196,6 +196,6 @@ void CServer::client_threads_func(std::shared_ptr<Socket> client)
     }
   }
 
-  LOG(DEBUG) << "Server closed connection with " << *client;
+  VLOG(2) << "Server closed connection with " << *client;
   finished_threads.emplace_back(std::this_thread::get_id());
 }

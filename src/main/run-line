@@ -5,6 +5,7 @@ export MAIN_ROOT_DIR="$(pwd)"
 popd > /dev/null
 source "$MAIN_ROOT_DIR/bash-env.sh"
 
+clean_logs
 
 spawn server
 check_alive
@@ -15,3 +16,6 @@ spawn line
 spawn visualisation
 
 stop
+
+sleep 1s
+print_performance
