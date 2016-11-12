@@ -15,7 +15,7 @@ std::string g_app_name = "unknown";
 void set_app_name(const char *name)
 {
   std::string tmp = name;
-  
+
   while (tmp.length() < kAppNameLength)
   {
     tmp.insert(tmp.begin(), ' ');
@@ -33,7 +33,7 @@ const char * get_app_name()
 void logging_init(const char *app_name, int argc, char *argv[])
 {
   START_EASYLOGGINGPP(argc, argv);
-  
+
   set_app_name(app_name);
   el::Helpers::installCustomFormatSpecifier(el::CustomFormatSpecifier("%name", get_app_name));
 
@@ -46,7 +46,7 @@ void logging_init(const char *app_name, int argc, char *argv[])
   el::Configurations conf("../../log.config");
   conf.setGlobally(el::ConfigurationType::Filename, log_file.c_str());
   el::Loggers::reconfigureLogger("default", conf);
-  
+
   log_file = "../logs/";
   log_file += app_name;
   log_file += "-performance-";

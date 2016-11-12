@@ -8,6 +8,7 @@ source "$MAIN_ROOT_DIR/bash-env.sh"
 clean_logs
 
 spawn server
+sleep 1s
 check_alive
 
 spawn border

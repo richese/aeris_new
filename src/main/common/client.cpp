@@ -16,9 +16,9 @@
 extern class CConfigure g_configure;
 
 
-CClient::CClient(sAgentGroupInitStruct agent_group_init_struct, 
+CClient::CClient(sAgentGroupInitStruct agent_group_init_struct,
                  CAgent *agent,
-                 CVisualisationDummy *visualisation) : 
+                 CVisualisationDummy *visualisation) :
   CAgentGroup(agent_group_init_struct, agent),
   visualisation(visualisation),
   connection_state(NOT_CONNECTED),
@@ -30,7 +30,7 @@ CClient::CClient(sAgentGroupInitStruct agent_group_init_struct,
 
 CClient::~CClient()
 {
-  
+
 }
 
 void CClient::set_connection_method(int methods)
@@ -62,10 +62,10 @@ int CClient::main()
 int CClient::connect_to_server()
 {
   TIMED_FUNC(connection_benchmark);
-  
+
   struct sAgentInterface agent_interface_tmp;
   unsigned int ptr = 0;
-  
+
   for (unsigned int j = 0; j < agent_interface.size(); j++)
   {
     /* establish connection */
@@ -75,7 +75,7 @@ int CClient::connect_to_server()
       {
         LOG(WARNING) << "Lost connection to server " << *socket;
       }
-      
+
       if (connection_method & METHOD_UNIX)
       {
         socket = std::shared_ptr<Socket>(new Socket(g_configure.get_server_ud_path()));

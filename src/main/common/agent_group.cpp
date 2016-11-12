@@ -95,12 +95,12 @@ CAgentGroup::~CAgentGroup()
 void CAgentGroup::rt_timer_callback()
 {
   TIMED_FUNC(agent_group_benchmark);
-  
+
   unsigned int i;
 
   for (i = 0; i < agents.size(); i++)
   {
-    if (agent_interface[i].id != 0) 
+    if (agent_interface[i].id != 0)
     {
       if (agent_interface[i].group_id == group_id)
       {
@@ -110,7 +110,7 @@ void CAgentGroup::rt_timer_callback()
   }
   PERFORMANCE_CHECKPOINT_WITH_ID(agent_group_benchmark, "agent-processing");
 
-  
+
   connect_to_server();
 }
 

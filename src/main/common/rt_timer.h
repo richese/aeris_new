@@ -7,7 +7,7 @@
 class CRT_Timer
 {
   private:
-    
+
     bool run;
     std::thread rt_thread;
     float period_ms;

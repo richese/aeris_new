@@ -17,7 +17,7 @@
 
 /** \brief Create new AF_INET socket.
  *
- * \param ip 
+ * \param ip
  *   An IPv4 address in number-and-dots notation or hostname (such as localhost).
  *   Length of this string  is limited to 108 characters.
  * \param portno
@@ -100,13 +100,13 @@ int Socket::listen(int queue_len)
     LOG(ERROR) << *this <<" is already open.";
     return -1;
   }
-  
+
   if (queue_len < 0)
   {
     queue_len = 1;
     LOG(WARNING) << "Negative queue len given for " << *this;
   }
-  
+
   if ((m_fd = ::socket(m_family, SOCK_STREAM, 0)) < 0)
   {
     PLOG(ERROR) << "Error opening " << *this;
@@ -114,7 +114,7 @@ int Socket::listen(int queue_len)
     m_fd = -1;
     return -1;
   }
-  
+
   if (m_family == AF_UNIX)
   {
     struct sockaddr_un addr;
@@ -122,7 +122,7 @@ int Socket::listen(int queue_len)
     addr.sun_family = AF_UNIX;
     strcpy(addr.sun_path, m_address);
     int addr_len = strlen(addr.sun_path) + sizeof(addr.sun_family);
-    
+
     if (::unlink(addr.sun_path) < 0 && errno != ENOENT)
     {
       PLOG(ERROR) << "Unlinking old unix socket path failed for " << *this;
@@ -130,7 +130,7 @@ int Socket::listen(int queue_len)
       m_fd = -1;
       return -1;
     }
-    
+
     if (::bind(m_fd, (struct sockaddr *) &addr, addr_len))
     {
       PLOG(ERROR) << "Binding " << *this << " failed";
@@ -138,7 +138,7 @@ int Socket::listen(int queue_len)
       m_fd = -1;
       return -1;
     }
-    
+
     if (::listen(m_fd, queue_len) < 0)
     {
       PLOG(ERROR) << "Unable to listen on " << *this;
@@ -154,7 +154,7 @@ int Socket::listen(int queue_len)
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = INADDR_ANY;
     addr.sin_port = htons(m_portno);
-    
+
     if (::bind(m_fd, (struct sockaddr *) &addr, sizeof(addr)))
     {
       PLOG(ERROR) << "Binding socket " << *this << " failed";
@@ -162,7 +162,7 @@ int Socket::listen(int queue_len)
       m_fd = -1;
       return -1;
     }
-    
+
     if (::listen(m_fd, 5) < 0)
     {
       PLOG(ERROR) << "Unable to listen on " << *this;
@@ -171,10 +171,10 @@ int Socket::listen(int queue_len)
       return -1;
     }
   }
-  
+
   m_type = TYPE_SERVER;
   VLOG(1) << "Opened " << *this;
-  
+
   return 0;
 }
 
@@ -189,31 +189,31 @@ int Socket::listen(int queue_len)
 std::shared_ptr<Socket> Socket::accept()
 {
   Socket *sock = nullptr;
-  
+
   if (m_fd == -1)
   {
     LOG(ERROR) << "Trying to accept on unopened socket " << *this;
     return std::shared_ptr<Socket>(nullptr);
   }
-  
+
   if (m_type != TYPE_SERVER)
   {
     LOG(ERROR) << "Trying to accept connection on non-server socket " << *this;
     return std::shared_ptr<Socket>(nullptr);
   }
-  
+
   if (m_family == AF_UNIX)
   {
     int client_fd;
     struct sockaddr_un client_addr;
     socklen_t client_addr_len = sizeof(client_addr);
-    
+
     if ((client_fd = ::accept(m_fd, (struct sockaddr *) &client_addr, &client_addr_len)) < 0)
     {
       PLOG(ERROR) << "Accept error on " << *this;
       return std::shared_ptr<Socket>(nullptr);
     }
-    
+
     sock = new Socket(client_fd, AF_UNIX, m_address, 0);
   }
   else
@@ -221,16 +221,16 @@ std::shared_ptr<Socket> Socket::accept()
     int client_fd;
     struct sockaddr_in client_addr;
     socklen_t client_addr_len = sizeof(client_addr);
-    
+
     if ((client_fd = ::accept(m_fd, (struct sockaddr *) &client_addr, &client_addr_len)) < 0)
     {
       PLOG(ERROR) << "Accept error on " << *this;
       return std::shared_ptr<Socket>(nullptr);
     }
-    
+
     sock = new Socket(client_fd, AF_INET, inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
   }
-  
+
   VLOG_IF(sock != nullptr, 1) << "Accepted connection from " << *sock;
   return std::shared_ptr<Socket>(sock);
 }
@@ -248,7 +248,7 @@ int Socket::connect()
     LOG(ERROR) << *this << "is already connected.";
     return -1;
   }
-  
+
   if ((m_fd = socket(m_family, SOCK_STREAM, 0)) < 0)
   {
     PLOG(ERROR) << "Unable to open " << *this;
@@ -256,7 +256,7 @@ int Socket::connect()
     m_fd = -1;
     return -1;
   }
-  
+
   if (m_family == AF_UNIX)
   {
     struct sockaddr_un addr;
@@ -264,7 +264,7 @@ int Socket::connect()
     addr.sun_family = AF_UNIX;
     strcpy(addr.sun_path, m_address);
     int addr_len = strlen(addr.sun_path) + sizeof(addr.sun_family);
-    
+
     if (::connect(m_fd, (struct sockaddr *) &addr, addr_len) < 0)
     {
       LOG(ERROR) << "Unable to connect " << *this;
@@ -280,7 +280,7 @@ int Socket::connect()
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = inet_addr(m_address);
     addr.sin_port = htons(m_portno);
-    
+
     if (::connect(m_fd, (struct sockaddr *) &addr, sizeof(addr)) < 0)
     {
       LOG(ERROR) << "Unable to connect " << *this;
@@ -289,10 +289,10 @@ int Socket::connect()
       return -1;
     }
   }
-  
+
   m_type = TYPE_CLIENT;
   VLOG(1) << "Connected to " << *this;
-  
+
   return 0;
 }
 
@@ -336,14 +336,21 @@ SocketWatch::SocketWatch() :
 
 SocketWatch::~SocketWatch()
 {
-  
+
 }
 
 /** \brief Add socket to watchlist */
 void SocketWatch::add_socket(std::shared_ptr<Socket> sock)
 {
-  m_sockets.push_back(sock);
-  FD_SET(sock->fd(), &m_read_set);
+  if (sock->valid())
+  {
+    m_sockets.push_back(sock);
+    FD_SET(sock->fd(), &m_read_set);
+  }
+  else
+  {
+    LOG(ERROR) << "Trying to add invalid socket to SocketWatch: " << *sock;
+  }
 }
 
 /** \brief Remove socket from watchlist */
@@ -360,7 +367,7 @@ void SocketWatch::del_socket(int sock_fd)
   }
 }
 
-/** \brief Return socket from watchlist that is ready for read operations. 
+/** \brief Return socket from watchlist that is ready for read operations.
  *
  * \param timeout
  *   Wait for sockets max timeout ms.
@@ -374,13 +381,13 @@ std::shared_ptr<Socket> SocketWatch::select(int timeout)
   struct timeval timeout_val;
   timeout_val.tv_sec = timeout / 1000;
   timeout_val.tv_usec = (timeout - (timeout_val.tv_sec * 1000)) * 1000;
-  
+
   if (::select(FD_SETSIZE, &read_set, nullptr, nullptr, &timeout_val) < 0)
   {
     PLOG(ERROR) << "Waiting for socket activity failed";
     return std::shared_ptr<Socket>(nullptr);
   }
-  
+
   for (std::shared_ptr<Socket> &sock: m_sockets)
   {
     if (FD_ISSET(sock->fd(), &read_set))

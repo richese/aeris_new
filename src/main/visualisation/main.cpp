@@ -11,7 +11,7 @@
 int main(int argc, char *argv[])
 {
   logging_init("visualisation", argc, argv);
-  
+
   struct sAgentGroupInitStruct agent_group_init_struct;
   agent_group_init_struct.count = 1;
   agent_group_init_struct.random_positions = true;

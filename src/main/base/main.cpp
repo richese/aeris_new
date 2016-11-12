@@ -8,7 +8,7 @@
 int main(int argc, char *argv[])
 {
   logging_init("base", argc, argv);
-  
+
   struct sAgentGroupInitStruct agent_group_init_struct;
   agent_group_init_struct.count = 250;
   agent_group_init_struct.random_positions = true;
@@ -23,6 +23,6 @@ int main(int argc, char *argv[])
   LOG(INFO) << "Program done. Cleaning up.";
   delete client;
   delete agent;
-  
+
   return 0;
 }

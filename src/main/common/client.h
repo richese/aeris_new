@@ -15,27 +15,27 @@
 class CClient : public CAgentGroup
 {
   private:
-    
+
     enum ConnectionState {
       NOT_CONNECTED = 0,
       IS_CONNECTED  = 1
     };
-    
+
     enum ConnectionMethod {
       METHOD_UNIX = 0x01,
       METHOD_INET = 0x02
     };
-    
+
     CVisualisationDummy *visualisation;
 
     int connection_state;
     int connection_method;
     std::shared_ptr<Socket> socket;
-    
+
 
   public:
-    CClient(sAgentGroupInitStruct agent_group_init_struct, 
-            CAgent *agent, 
+    CClient(sAgentGroupInitStruct agent_group_init_struct,
+            CAgent *agent,
             CVisualisationDummy *visualisation = NULL);
     ~CClient();
 

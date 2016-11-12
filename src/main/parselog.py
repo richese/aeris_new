@@ -29,7 +29,7 @@ def main():
            sortby = int(arg)
 
     # https://docs.python.org/2/howto/regex.html
-    # \[ : [ is a meta char and needs to be escaped 
+    # \[ : [ is a meta char and needs to be escaped
     # (.*?) : match everything in a non-greedy way and capture it.
     expr = re.compile('\[(.*?)\]')
 
@@ -52,7 +52,7 @@ def main():
         # brings everything on the same scale (ms)
         num_ms = float(vals[0])
         if unit=='mis':
-            num_ms = num_ms/1000.0    
+            num_ms = num_ms/1000.0
 
         # append time to dictionary entry
         if key in data:
@@ -78,7 +78,7 @@ def main():
 
     #--- create a pretty table
     header= ["Context","median (ms)", "mean(ms)","max(ms)"]
-    header[sortby] = '**'+header[sortby]+'**' 
+    header[sortby] = '**'+header[sortby]+'**'
     # print('Table sorted by: ', header[sortby])
     print( tabulate(table, headers=header, floatfmt=".2f") )
 

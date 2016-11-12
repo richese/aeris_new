@@ -9,7 +9,7 @@ thread_dep = dependency('threads')
 glut_dep = dependency('freeglut', required: false)
 glu_dep = dependency('glu', required: false)
 
-add_global_arguments('-Wextra', '-pedantic', language : 'cpp')
+add_global_arguments('-Wextra', '-Wpedantic', language : 'cpp')
 
 subdir('common')
 

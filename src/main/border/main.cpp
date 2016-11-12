@@ -8,7 +8,7 @@
 int main(int argc, char *argv[])
 {
   logging_init("border", argc, argv);
-  
+
   struct sAgentGroupInitStruct agent_group_init_struct;
   agent_group_init_struct.count = 1;
   agent_group_init_struct.random_positions = true;
@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
 
   CBorderAgent *agent = new CBorderAgent();
   CClient *client = new CClient(agent_group_init_struct, agent);
-  
+
   LOG(INFO) << "Started.";
   client->main();
 

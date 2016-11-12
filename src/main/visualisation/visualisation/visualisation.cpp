@@ -147,7 +147,7 @@ void CVisualisation::refresh(std::vector<struct sAgentInterface> *agent_interfac
 
 
 void CVisualisation::paint_agent(struct sAgentInterface *agent_interface)
-{  
+{
   unsigned int i, j;
 
   unsigned int body_id = agent_interface->body_type;

@@ -60,7 +60,7 @@ int CServer::listen(const int addres_family)
     }
     sockets.add_socket(std::shared_ptr<Socket>(sock));
   }
-  
+
   std::thread *t = new std::thread(&CServer::server_thread_func, this);
   server_thread = std::shared_ptr<std::thread>(t);
 
@@ -69,7 +69,7 @@ int CServer::listen(const int addres_family)
 
 void CServer::server_thread_func()
 {
-  LOG(DEBUG) << "Server main loop started.";
+  VLOG(2) << "Server main loop started.";
 
   while (run)
   {
@@ -83,7 +83,7 @@ void CServer::server_thread_func()
         client_threads.emplace_back(&CServer::client_threads_func, this, client);
       }
     }
-    
+
     /* clean finished client threads */
     for (auto id_it = finished_threads.begin(); id_it != finished_threads.end();)
     {
@@ -105,14 +105,14 @@ void CServer::server_thread_func()
     }
   }
 
-  LOG(DEBUG) << "Server main loop ended.";
+  VLOG(2) << "Server main loop ended.";
 }
 
 
 void CServer::client_threads_func(std::shared_ptr<Socket> client)
 {
   VLOG(2) << "Server acepted connection from " << *client;
-  
+
   struct sAgentInterface agent_interface_tmp;
   const int fd = client->fd();
   ssize_t tmp;

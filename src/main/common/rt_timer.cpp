@@ -31,7 +31,7 @@ void CRT_Timer::rt_timer_set_period(float period_ms)
 int CRT_Timer::rt_timer_start()
 {
   run = true;
-  
+
   if (!rt_thread.joinable())
   {
     rt_thread = std::thread(&CRT_Timer::rt_timer_thread_func, this);
@@ -40,7 +40,7 @@ int CRT_Timer::rt_timer_start()
   {
     LOG(ERROR) << "RT_Timer thread already running.";
   }
-  
+
   return 0;
 }
 
@@ -73,7 +73,7 @@ void CRT_Timer::rt_timer_thread_func()
   VLOG(2) << "RT thread starting.";
 
   while (run)
-  {  
+  {
     double time_start = rt_timer_get_ms_time();
     rt_timer_callback();
     double time_stop = rt_timer_get_ms_time();
