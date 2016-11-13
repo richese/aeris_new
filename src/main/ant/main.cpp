@@ -16,6 +16,12 @@ int main(int argc, char *argv[])
   CAntAgent *agent = new CAntAgent();
   CClient *client = new CClient(agent_group_init_struct, agent);
 
+  // debug
+  if (argc > 1)
+  {
+    client->set_connection_method(CClient::METHOD_INET);
+  }
+
   LOG(INFO) << "Started.";
   client->main();
 

@@ -71,6 +71,8 @@ int CClient::connect_to_server()
     /* establish connection */
     if (connection_state == NOT_CONNECTED)
     {
+      VLOG(2) << "Establishing connection";
+
       if (socket)
       {
         LOG(WARNING) << "Lost connection to server " << *socket;
@@ -83,12 +85,18 @@ int CClient::connect_to_server()
         {
           return -1;
         }
-        if (socket->connect() < 0 && !(connection_method & METHOD_INET))
+        if (socket->connect() < 0)
         {
           socket = std::shared_ptr<Socket>(nullptr);
-          return -1;
+          if (!(connection_method & METHOD_INET))
+          {
+            return -1;
+          }
         }
-        connection_state = IS_CONNECTED;
+        else
+        {
+          connection_state = IS_CONNECTED;
+        }
       }
       if (connection_state == NOT_CONNECTED)
       {

@@ -19,5 +19,10 @@ if [ ! -f "${MAIN_BUILD_DIR}/build.ninja" ]; then
   exit 1
 fi
 
+if [ -z "$HAS_NINJA" ]; then
+  echo "Missing build dependency: ninja-build"
+  exit 1
+fi
+
 ## Vymaž všetky zostavené objekty a binárky.
 ninja -C "$MAIN_BUILD_DIR" clean

@@ -13,9 +13,10 @@ check_alive
 
 spawn border
 spawn pheromone
+spawn pheromone
 spawn base
 spawn food
-spawn ant
+spawn ant -v
 
 spawn visualisation
 

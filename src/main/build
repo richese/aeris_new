@@ -15,6 +15,17 @@ fi
 
 ## Vygeneruj kompilačné pravidlá pri prvej kompilácii.
 if [ ! -f "${MAIN_BUILD_DIR}/build.ninja" ]; then
+  ## Skontroluj závislosti.
+  ## Možno obísť manuálne ak meson nie je v $PATH lebo si pamätá odkiaľ sa volal.
+  if [ -z "$HAS_MESON" ]; then
+    echo "Missing build dependency: meson"
+    exit 1
+  fi
+  if [ -z "$HAS_NINJA" ]; then
+    echo "Missing build dependency: ninja-build"
+    exit 1
+  fi
+
   meson --buildtype release "$MAIN_ROOT_DIR" "$MAIN_BUILD_DIR"
   if [ "$?" != "0" ]; then
     exit 1

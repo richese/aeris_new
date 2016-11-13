@@ -11,6 +11,17 @@ fi
 ## Adresár v ktorom prebieha kompilácia.
 MAIN_BUILD_DIR="${MAIN_ROOT_DIR}/.build"
 
+## Zisti dostupnosť potrebných programov
+HAS_MESON="$(command -v meson)"
+HAS_NINJA="$(command -v ninja)"
+HAS_PYTHON3="$(command -v python3)"
+if [ -n "$HAS_PYTHON3" ]; then
+  python3 -c 'import tabulate' 2> /dev/null
+  if [ "$?" == "0" ]; then
+    HAS_TABULATE="true"
+  fi
+fi
+
 ## Názov skriptu
 SCRIPT="$(basename $0)"
 
@@ -92,6 +103,15 @@ function clean_logs
 ## Usage: print_performance
 function print_performance
 {
+  if [ -z "$HAS_PYTHON3" ]; then
+    echo "$SCRIPT: python3 >= 3.4 is needed to show performance tracking information."
+    return
+  fi
+  if [ -z "$HAS_TABULATE" ]; then
+    echo "$SCRIPT: python3 package \'tabulate\' is needed to show performance tracking information."
+    return
+  fi
+
   echo ""
   echo ""
   pushd "$MAIN_ROOT_DIR" > /dev/null

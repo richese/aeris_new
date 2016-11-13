@@ -8,13 +8,9 @@
 #include "visualisation_dummy.h"
 
 
-#define CLIENT_CONNECTION_STATE_NO_CONNECTED    ((unsigned int)0)
-#define CLIENT_CONNECTION_STATE_CONNECTED       ((unsigned int)1)
-
-
 class CClient : public CAgentGroup
 {
-  private:
+  public:
 
     enum ConnectionState {
       NOT_CONNECTED = 0,
@@ -26,6 +22,7 @@ class CClient : public CAgentGroup
       METHOD_INET = 0x02
     };
 
+  private:
     CVisualisationDummy *visualisation;
 
     int connection_state;

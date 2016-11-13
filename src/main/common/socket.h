@@ -16,7 +16,7 @@
  */
 class Socket : public el::Loggable
 {
-  private:
+  public:
     enum SocketType {
       TYPE_NONE   = 0,
       TYPE_SERVER = 1,
@@ -24,6 +24,7 @@ class Socket : public el::Loggable
       TYPE_ACCEPT = 3
     };
 
+  private:
     int m_fd;
     const int m_family;
     const int m_portno;

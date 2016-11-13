@@ -267,7 +267,7 @@ int Socket::connect()
 
     if (::connect(m_fd, (struct sockaddr *) &addr, addr_len) < 0)
     {
-      LOG(ERROR) << "Unable to connect " << *this;
+      PLOG(ERROR) << "Unable to connect " << *this;
       ::close(m_fd);
       m_fd = -1;
       return -1;
@@ -283,7 +283,7 @@ int Socket::connect()
 
     if (::connect(m_fd, (struct sockaddr *) &addr, sizeof(addr)) < 0)
     {
-      LOG(ERROR) << "Unable to connect " << *this;
+      PLOG(ERROR) << "Unable to connect " << *this;
       ::close(m_fd);
       m_fd = -1;
       return -1;
@@ -384,7 +384,14 @@ std::shared_ptr<Socket> SocketWatch::select(int timeout)
 
   if (::select(FD_SETSIZE, &read_set, nullptr, nullptr, &timeout_val) < 0)
   {
-    PLOG(ERROR) << "Waiting for socket activity failed";
+    if (errno == EINTR)
+    {
+      PLOG(DEBUG) << "Select call was interrupted";
+    }
+    else
+    {
+      PLOG(ERROR) << "Waiting for socket activity failed";
+    }
     return std::shared_ptr<Socket>(nullptr);
   }
 
