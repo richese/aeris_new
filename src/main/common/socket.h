@@ -2,6 +2,7 @@
 #define _SOCKET_H_
 
 #include <memory>
+#include <mutex>
 #include <vector>
 
 #include <sys/select.h>
@@ -61,6 +62,7 @@ class Socket : public el::Loggable
 class SocketWatch
 {
   private:
+    std::mutex m_access_lock;
     std::vector<std::shared_ptr<Socket>> m_sockets;
     fd_set m_read_set;
 
@@ -68,8 +70,6 @@ class SocketWatch
 
     SocketWatch();
     ~SocketWatch();
-
-    const std::vector<std::shared_ptr<Socket>>& sockets() const { return m_sockets; }
 
     void add_socket(std::shared_ptr<Socket> sock);
     void del_socket(int sock_fd);

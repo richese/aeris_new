@@ -1,6 +1,6 @@
 #include <cstdlib>
 #include <cstring>
-
+#include <mutex>
 #include <memory>
 
 #include <arpa/inet.h>
@@ -329,6 +329,7 @@ void Socket::log(el::base::type::ostream_t& os) const
 }
 
 SocketWatch::SocketWatch() :
+  m_access_lock(),
   m_sockets()
 {
   FD_ZERO(&m_read_set);
@@ -344,8 +345,10 @@ void SocketWatch::add_socket(std::shared_ptr<Socket> sock)
 {
   if (sock->valid())
   {
+    m_access_lock.lock();
     m_sockets.push_back(sock);
     FD_SET(sock->fd(), &m_read_set);
+    m_access_lock.unlock();
   }
   else
   {
@@ -356,6 +359,7 @@ void SocketWatch::add_socket(std::shared_ptr<Socket> sock)
 /** \brief Remove socket from watchlist */
 void SocketWatch::del_socket(int sock_fd)
 {
+  m_access_lock.lock();
   for (auto sock=m_sockets.begin(); sock != m_sockets.end(); sock++)
   {
     if ((*sock)->fd() == sock_fd)
@@ -365,6 +369,7 @@ void SocketWatch::del_socket(int sock_fd)
       break;
     }
   }
+  m_access_lock.unlock();
 }
 
 /** \brief Return socket from watchlist that is ready for read operations.
@@ -377,10 +382,13 @@ void SocketWatch::del_socket(int sock_fd)
  */
 std::shared_ptr<Socket> SocketWatch::select(int timeout)
 {
-  fd_set read_set = m_read_set;
   struct timeval timeout_val;
   timeout_val.tv_sec = timeout / 1000;
   timeout_val.tv_usec = (timeout - (timeout_val.tv_sec * 1000)) * 1000;
+
+  m_access_lock.lock();
+  fd_set read_set = m_read_set;
+  m_access_lock.unlock();
 
   if (::select(FD_SETSIZE, &read_set, nullptr, nullptr, &timeout_val) < 0)
   {
@@ -395,6 +403,7 @@ std::shared_ptr<Socket> SocketWatch::select(int timeout)
     return std::shared_ptr<Socket>(nullptr);
   }
 
+  std::lock_guard<std::mutex> lock_until_return(m_access_lock);
   for (std::shared_ptr<Socket> &sock: m_sockets)
   {
     if (FD_ISSET(sock->fd(), &read_set))
