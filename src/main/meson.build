@@ -20,6 +20,7 @@ subdir('base')
 subdir('border')
 subdir('food')
 subdir('line')
+subdir('line2')
 subdir('pheromone')
 subdir('server')
 

@@ -41,6 +41,8 @@ CVisualisation::CVisualisation()
     glEnable(GL_DEPTH_TEST);
     gluPerspective(45, (float) window_width / window_height, 0.1, 2000);
     glMatrixMode(GL_MODELVIEW);
+
+    glutFullScreen();
   }
 
 
