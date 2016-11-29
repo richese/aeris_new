@@ -76,7 +76,7 @@ void CLineAgent::agent_process()
 
 void CLineAgent::set_position()
 {
-  this->agent_interface.position.x = 0.6*g_configure.get_width_cm()*0.5*(sin(1.0*parameter + phase));
-  this->agent_interface.position.y = 0.6*g_configure.get_height_cm()*0.5*(sin(2.0*parameter+ phase));
+  this->agent_interface.position.x = 0.6*g_configure.get_width_cm()*0.5*(sin(1.0*parameter + cos(phase)));
+  this->agent_interface.position.y = 0.6*g_configure.get_height_cm()*0.5*(sin(2.0*parameter+ cos(phase)));
   this->agent_interface.position.z = 0.0;
 }
