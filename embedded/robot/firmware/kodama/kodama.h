@@ -25,6 +25,8 @@
 #include <controll/reinforcement_learning.h>
 #include <controll/line_position.h>
 
+#include <wifi.h>
+
 #ifndef NULL
 #define NULL  0
 #endif

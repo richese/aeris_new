@@ -31,6 +31,10 @@ void CDemo::run(unsigned int demo_id)
                           blink_task();
                           break;
 
+    case DEMO_WIFI_CLIENT:
+                          wifi_client_task();
+                          break;
+
     case DEMO_BASIC_LINE_FOLLOWER:
                           basic_line_follower_task();
                           break;
@@ -51,6 +55,13 @@ void CDemo::blink_task()
     timer.delay_ms(10);
     kodama.gpio_off(LED_0);
   }
+}
+
+void CDemo::wifi_client_task()
+{
+  class CWifi wifi;
+  wifi.init(WIFI_MODE_CLIENT);
+  wifi.client_demo();
 }
 
 

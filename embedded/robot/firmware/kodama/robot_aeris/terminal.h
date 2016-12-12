@@ -5,6 +5,8 @@
 #include <stdint.h>
 #include "terminal_interface.h"
 
+#define NO_CHAR     ((int)0xffff)
+
 class CTerminal:public CTerminalInterface
 {
   public:
@@ -12,11 +14,13 @@ class CTerminal:public CTerminalInterface
     ~CTerminal();
 
     int32_t terminal_init();
+    void clear_buffer();
 
     void putchar(char c);
     int getchar();
     int ischar();
     int puts(char *s);
+
 
     /*print signed int number*/
     void puti(int32_t n);

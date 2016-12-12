@@ -1,7 +1,7 @@
 #/bin/bash
 
-device=motoko
-#device=aeris
+#device=motoko
+device=aeris
 
 echo configuring for device $device
 

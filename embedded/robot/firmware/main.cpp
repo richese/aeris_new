@@ -32,8 +32,9 @@ int main()
       demo.init();
 
       //demo.run(DEMO_HELLO_WORLD);
+      demo.run(DEMO_WIFI_CLIENT);
       //demo.run(DEMO_BASIC_LINE_FOLLOWER);
-      demo.run(DEMO_LEARNING_LINE_FOLLOWER);
+      //demo.run(DEMO_LEARNING_LINE_FOLLOWER);
     }
 
     kodama.gpio_on(LED_0);
