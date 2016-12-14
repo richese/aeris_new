@@ -25,6 +25,11 @@ class CGPIO
     int32_t get_left_encoder();
     int32_t get_right_encoder();
     int32_t get_encoder_distance();
+
+  public:
+    void led_blinking_init();
+    void led_blinking_set_pwm(unsigned int pwm);
+    void led_blinking(unsigned int mode);
 };
 
 

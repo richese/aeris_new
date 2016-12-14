@@ -11,6 +11,10 @@
 #define ENCODER_CONSTANT ((uint32_t)750) //670
 
 
+
+#define LED_BLINKING_MODE_OFF   ((unsigned int)0)
+
+
 class CGPIO
 {
   public:
@@ -26,6 +30,8 @@ class CGPIO
     int32_t get_left_encoder();
     int32_t get_right_encoder();
     int32_t get_encoder_distance();
+
+
 };
 
 #endif

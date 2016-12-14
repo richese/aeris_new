@@ -1,6 +1,7 @@
 #ifndef _WIFI_H_
 #define _WIFI_H_
 
+//TODO this module is not tested yet !!!!!!!!!!!!!!
 
 
 #define WIFI_SUCCESS                   ((int)0)
@@ -20,7 +21,6 @@
 
 #include "kodama.h"
 
-//TODO this module is not tested yet !!!!!!!!!!!!!!
 
 class CWifi
 {
@@ -38,6 +38,8 @@ class CWifi
     //connect to server with specified IP, send tx_buffer with tx_buffer_length;
     //and receive data from server into rx_buffer with maximum length rx_buffer_length
     int connect(char *ip, unsigned int port, char *tx_buffer, unsigned int tx_buffer_length, char *rx_buffer, unsigned int rx_buffer_length);
+
+    int connect_send_data(unsigned int packet_type, unsigned char *data, unsigned int packet_size);
 
     void client_demo();
 

@@ -1,8 +1,7 @@
 #include "wifi.h"
 #include "wifi_config.h"
+#include "wifi_packet.h"
 
-//TODO this module is not tested yet !!!!!!!!!!!!!!
-//client is working - but some peformance test are required
 
 #define STATE_NO_CONNECTED	((unsigned int)0)
 #define STATE_CONNECTED			((unsigned int)1)
@@ -24,13 +23,23 @@ CWifi::~CWifi()
 int CWifi::init(unsigned char mode_)
 {
   mode = mode_;
-  return esp8266_init();
+  i_led.i_led_set(I_LED_MODE_BLINKING, 100);
+  int result = esp8266_init();
+  if (result == WIFI_SUCCESS)
+    i_led.i_led_set(I_LED_MODE_BLINKING, 300);
+  else
+    i_led.i_led_set(I_LED_MODE_PULSES_BLINKING, 8);
+  return result;
 }
 
 //connect to server with specified IP, send tx_buffer with tx_buffer_length;
 //and receive data from server into rx_buffer with maximum length rx_buffer_length
 int CWifi::connect(char *ip, unsigned int port, char *tx_buffer, unsigned int tx_buffer_length, char *rx_buffer, unsigned int rx_buffer_length)
 {
+  unsigned int i;
+  for (i = 0; i < rx_buffer_length; i++)
+    rx_buffer[i] = 0x00;
+
   if (esp8266_state != STATE_CONNECTED)
 	{
 		esp8266_send(const_cast<char*>("AT+CIPCLOSE\r\n"));
@@ -42,7 +51,7 @@ int CWifi::connect(char *ip, unsigned int port, char *tx_buffer, unsigned int tx
 		esp8266_send_uint(port);
 		esp8266_send(const_cast<char*>("\r\n"));
 
-		if (esp8266_find_stream(const_cast<char*>("CONNECT"), 7, 900) == 0)
+		if (esp8266_find_stream(const_cast<char*>("CONNECT"), 7, 1500) == 0)
 		{
 			esp8266_state = STATE_NO_CONNECTED;
 			return WIFI_SERVER_CONNECTING_ERROR;
@@ -64,7 +73,6 @@ int CWifi::connect(char *ip, unsigned int port, char *tx_buffer, unsigned int tx
 		return WIFI_SERVER_CONNECTING_ERROR2;
 	}
 
-	unsigned int i;
 	for (i = 0; i < tx_buffer_length; i++)
 		kodama.putchar(tx_buffer[i]);
 
@@ -95,30 +103,41 @@ int CWifi::connect(char *ip, unsigned int port, char *tx_buffer, unsigned int tx
 	return (count);
 }
 
+int CWifi::connect_send_data(unsigned int packet_type, unsigned char *data, unsigned int packet_size)
+{
+  struct sWifiPacket tmp_packet;
+
+
+  tmp_packet.address = kodama.get_unique_id();
+  tmp_packet.magic = WIFI_PACKET_MAGIC;
+  tmp_packet.packet_type = packet_type;
+
+  unsigned int i;
+
+  for (i = 0; i < packet_size; i++)
+    tmp_packet.data[i] = data[i];
+
+  connect(const_cast<char*>(WIFI_SERVER_IP), WIFI_SERVER_PORT,
+          (char*)(&tmp_packet), sizeof(tmp_packet),
+          NULL, 0);
+  return 0;
+}
+
 void CWifi::client_demo()
 {
-  char tx_buffer[10];
-  char rx_buffer[10];
-
 	while (1)
 	{
-		unsigned int i;
-		for (i = 0; i < sizeof(tx_buffer); i++)
-			tx_buffer[i] = 0;
+    struct sWifiData_State state;
 
-		tx_buffer[0] = 'H';
-		tx_buffer[1] = 'e';
-		tx_buffer[2] = 'l';
-		tx_buffer[3] = 'l';
-		tx_buffer[4] = 'O';
-		tx_buffer[5] = '1';
-		tx_buffer[6] = '2';
-		tx_buffer[7] = '3';
-		tx_buffer[8] = '4';
+    state.uptime = timer.get_time()/1000;
+    state.state = 0xCAFECAFE;
+    state.action = 314159;
 
     kodama.gpio_on(LED_0);
-		connect(WIFI_SERVER_IP, WIFI_TERMINAL_PORT, tx_buffer, sizeof(tx_buffer), rx_buffer, sizeof(rx_buffer));
+    connect_send_data(WIFI_PACKET_TYPE_STATE, (unsigned char*)&state, sizeof(struct sWifiData_State));
+    connect_send_data(WIFI_PACKET_TYPE_STATE, (unsigned char*)&state, sizeof(struct sWifiData_State));
     kodama.gpio_off(LED_0);
+
 		timer.delay_ms(100);
 	}
 }
@@ -214,6 +233,7 @@ int CWifi::esp8266_init()
 {
 	esp8266_state = STATE_NO_CONNECTED;
 
+
 	timer.delay_ms(3000);
 
 	if (mode == WIFI_MODE_SERVER)
@@ -258,18 +278,25 @@ int CWifi::esp8266_get_nonblocking(char *buf, unsigned int buf_length, unsigned 
 	unsigned long int time_ = timer.get_time();
 	unsigned long int time_stop = time_ + time_out;
 
-	do
-	{
-		int c = kodama.ischar();
-		if (c != NO_CHAR)
-		{
-			buf[ptr] = c;
-			ptr++;
-		}
+  if (buf == NULL)
+  {
+    timer.delay_ms(time_out);
+    kodama.clear_buffer();
+    return 0;
+  }
 
-		time_ = timer.get_time();
-	}
-	while ((ptr < buf_length) && (time_stop > time_));
+	do
+  	{
+  		int c = kodama.ischar();
+  		if (c != NO_CHAR)
+  		{
+   	   buf[ptr] = c;
+  			ptr++;
+  		}
+
+  		time_ = timer.get_time();
+  	}
+  	while ((ptr < buf_length) && (time_stop > time_));
 
 	if (time_ > time_stop)
 		return -1; // time out

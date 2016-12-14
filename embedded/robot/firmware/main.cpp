@@ -15,13 +15,9 @@ int main()
   kodama.set_dt(10);
   kodama.sleep();
 
+  i_led.i_led_init();
+  i_led.i_led_set(I_LED_MODE_BLINKING, 600);
 
-  float number = 3.141592654;
-  kodama.printf("testing number print %u %u %u:\n", sizeof(unsigned int), sizeof(float), sizeof(double));
-  kodama.printf("float number %f \n",  number);
-
-  kodama.printf("%f %f %f %f %f %f %f %f\n",  0.0, 1.0, 0.123456, 3.141592654, 32.7681, 1234.5678, 5.7, 5.72);
-  kodama.printf("%f %f %f %f %f %f %f %f\n", -0.0, -1.0, -0.123456, -3.141592654, -32.7681, -1234.5678, -5.7, -5.72);
 
   while (1)
   {
