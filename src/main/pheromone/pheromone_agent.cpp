@@ -72,66 +72,75 @@ void CPheromoneAgent::agent_process()
 
   agent_interface.robot_time = get_ms_time();
 
-  double distance_min_blue = 1000000000.0;
-  double distance_min_red = 1000000000.0;
 
+  agent_interface.body_type = AGENT_BODY_TYPE_NULL;
 
-  unsigned int j;
-  double fitness_blue = 0.0;
-  double fitness_red = 0.0;
-  for (j = 0; j < agent_group->get_agents_count(); j++)
+  if (get_agent_mode(agent_group) == AERIS_MODE_ANTS)
   {
-    struct sAgentInterface agent_other = agent_group->get_agent_struct_idx(j);
-    double dist = robot_distance(&agent_other.position, &agent_interface.position);
+    agent_interface.body_type = AGENT_BODY_TYPE_BASE;
 
 
-    if (agent_other.agent_type == AGENT_TYPE_ANT)
+    double distance_min_blue = 1000000000.0;
+    double distance_min_red = 1000000000.0;
+
+
+    unsigned int j;
+    double fitness_blue = 0.0;
+    double fitness_red = 0.0;
+    for (j = 0; j < agent_group->get_agents_count(); j++)
     {
-      if (agent_other.state == 0)
-      {
-        if (dist < distance_min_blue)
-        {
-          distance_min_blue = dist;
-          fitness_blue = agent_other.fitness;
-        }
-      }
+      struct sAgentInterface agent_other = agent_group->get_agent_struct_idx(j);
+      double dist = robot_distance(&agent_other.position, &agent_interface.position);
 
-      if (agent_other.state == 1)
+
+      if (agent_other.agent_type == AGENT_TYPE_ANT)
       {
-        if (dist < distance_min_red)
+        if (agent_other.state == 0)
         {
-          distance_min_red = dist;
-          fitness_red = agent_other.fitness;
+          if (dist < distance_min_blue)
+          {
+            distance_min_blue = dist;
+            fitness_blue = agent_other.fitness;
+          }
+        }
+
+        if (agent_other.state == 1)
+        {
+          if (dist < distance_min_red)
+          {
+            distance_min_red = dist;
+            fitness_red = agent_other.fitness;
+          }
         }
       }
     }
+
+
+    double tau_red =  20000.0;
+    double tau_blue = 10000.0;
+
+    double k_red = 1.0 - agent_interface.dt/(agent_interface.dt+tau_red);
+    double k_blue = 1.0 - agent_interface.dt/(agent_interface.dt+tau_blue);
+    double trehsold = 1.0;
+
+
+    double input_blue = 0.0;
+    double input_red = 0.0;
+
+    if (distance_min_blue < trehsold)
+      input_blue = fitness_blue;
+
+    if (distance_min_red < trehsold)
+      input_red = fitness_red;
+
+
+
+    agent_interface.color.r = k_red*agent_interface.color.r + (1.0-k_red)*input_red;
+    agent_interface.color.g = 0.0;
+    // agent_interface.color.b = k_blue*agent_interface.color.b + (1.0-k_blue)*input_blue;
+    agent_interface.color.b = m_max(agent_interface.color.b, input_blue);
   }
-
-
-  double tau_red =  20000.0;
-  double tau_blue = 10000.0;
-
-  double k_red = 1.0 - agent_interface.dt/(agent_interface.dt+tau_red);
-  double k_blue = 1.0 - agent_interface.dt/(agent_interface.dt+tau_blue);
-  double trehsold = 1.0;
-
-
-  double input_blue = 0.0;
-  double input_red = 0.0;
-
-  if (distance_min_blue < trehsold)
-    input_blue = fitness_blue;
-
-  if (distance_min_red < trehsold)
-    input_red = fitness_red;
-
-
-
-  agent_interface.color.r = k_red*agent_interface.color.r + (1.0-k_red)*input_red;
-  agent_interface.color.g = 0.0;
-  // agent_interface.color.b = k_blue*agent_interface.color.b + (1.0-k_blue)*input_blue;
-  agent_interface.color.b = m_max(agent_interface.color.b, input_blue);
-
+  
   int res_tx = agent_group->set_agent_struct(&agent_interface);
 
   (void)res_tx;

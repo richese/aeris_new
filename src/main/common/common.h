@@ -12,6 +12,7 @@
 #include <cstdint>
 #include <cstring>
 
+#include <string>
 
 #include "debug.h"
 #include "configure.h"
@@ -25,6 +26,8 @@
 #include "agents/agents.h"
 #include "client.h"
 #include "server.h"
+
+#include "aeris_mode.h"
 
 
 

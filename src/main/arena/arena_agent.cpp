@@ -42,5 +42,27 @@ class CAgent* CArenaAgent::create(struct sAgentInterface agent_interface, class 
 
 void CArenaAgent::agent_process()
 {
+  int res_rx = agent_group->get_agent_struct(&agent_interface);
+
   agent_interface.robot_time = get_ms_time();
+
+  int mode = get_agent_mode(agent_group);
+
+
+  //check if dafault or sumo mode selected
+  if ((mode == AERIS_MODE_NULL) || (mode == AERIS_MODE_MINI_SUMO))
+  {
+    agent_interface.body_type = AGENT_BODY_TYPE_SUMO_ARENA;
+  }
+  else
+  {
+    //do nothing -> different mode selected
+    agent_interface.body_type = AGENT_BODY_TYPE_NULL;
+  }
+
+
+  int res_tx = agent_group->set_agent_struct(&agent_interface);
+
+  (void)res_tx;
+  (void)res_rx;
 }

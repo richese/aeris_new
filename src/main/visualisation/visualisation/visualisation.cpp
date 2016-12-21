@@ -158,6 +158,9 @@ void CVisualisation::paint_agent(struct sAgentInterface *agent_interface)
 
   unsigned int body_id = agent_interface->body_type;
 
+  if (body_id == AGENT_TYPE_NULL)
+    return;
+
   float cm_size = g_configure.get_cm_size();
 
   float x_ofs = agent_interface->position.x*cm_size;
@@ -178,49 +181,49 @@ void CVisualisation::paint_agent(struct sAgentInterface *agent_interface)
   glRotatef(pitch, 1.0, 0.0, 0.0);
   glRotatef(yaw, 0.0, 0.0, 1.0);
 
-  if (agent_body[body_id]->vertices.size() != 0)
-  {
-    //glColor3f(  1.0, 1.0, 1.0);
-    glColor3f(  agent_interface->color.r,
-                agent_interface->color.g,
-                agent_interface->color.b);
 
-    //TODO speed test
-    // glBufferData(GL_ARRAY_BUFFER, agent_body[body_id]->vertices.size() * sizeof(glm::vec3), &agent_body[body_id]->vertices[0], GL_STATIC_DRAW);
-
-    glBegin(GL_TRIANGLES);
-    for (j = 0; j < agent_body[body_id]->vertices.size(); j++)
+    if (agent_body[body_id]->vertices.size() != 0)
     {
-      glVertex3f(agent_body[body_id]->vertices[j].x, agent_body[body_id]->vertices[j].y, agent_body[body_id]->vertices[j].z);
+      //glColor3f(  1.0, 1.0, 1.0);
+      glColor3f(  agent_interface->color.r,
+                  agent_interface->color.g,
+                  agent_interface->color.b);
+
+      //TODO speed test
+      // glBufferData(GL_ARRAY_BUFFER, agent_body[body_id]->vertices.size() * sizeof(glm::vec3), &agent_body[body_id]->vertices[0], GL_STATIC_DRAW);
+
+      glBegin(GL_TRIANGLES);
+      for (j = 0; j < agent_body[body_id]->vertices.size(); j++)
+      {
+        glVertex3f(agent_body[body_id]->vertices[j].x, agent_body[body_id]->vertices[j].y, agent_body[body_id]->vertices[j].z);
+      }
+      glEnd();
+
     }
-    glEnd();
-
-  }
-  else
-  for (j = 0; j < agent_body[body_id]->body_polygons.size(); j++)
-  {
-    glColor3f(  agent_body[body_id]->body_polygons[j].r,
-                agent_body[body_id]->body_polygons[j].g,
-                agent_body[body_id]->body_polygons[j].b);
-
-    glBegin(GL_POLYGON);
-
-    for (i = 0; i < agent_body[body_id]->body_polygons[j].points.size(); i++)
+    else
+    for (j = 0; j < agent_body[body_id]->body_polygons.size(); j++)
     {
-      glVertex3f( agent_body[body_id]->body_polygons[j].points[i].x,
-                  agent_body[body_id]->body_polygons[j].points[i].y,
-                  agent_body[body_id]->body_polygons[j].points[i].z);
+      glColor3f(  agent_body[body_id]->body_polygons[j].r,
+                  agent_body[body_id]->body_polygons[j].g,
+                  agent_body[body_id]->body_polygons[j].b);
 
-                  /*
-      printf("%f %f %f\n", agent_interface->body.polygons[j].points[i].x,
-                              agent_interface->body.polygons[j].points[i].y,
-                              agent_interface->body.polygons[j].points[i].z);
-                              */
+      glBegin(GL_POLYGON);
+
+      for (i = 0; i < agent_body[body_id]->body_polygons[j].points.size(); i++)
+      {
+        glVertex3f( agent_body[body_id]->body_polygons[j].points[i].x,
+                    agent_body[body_id]->body_polygons[j].points[i].y,
+                    agent_body[body_id]->body_polygons[j].points[i].z);
+
+                    /*
+        printf("%f %f %f\n", agent_interface->body.polygons[j].points[i].x,
+                                agent_interface->body.polygons[j].points[i].y,
+                                agent_interface->body.polygons[j].points[i].z);
+                                */
+      }
+
+
+      glEnd();
     }
-
-
-    glEnd();
-  }
-
   glPopMatrix();
 }

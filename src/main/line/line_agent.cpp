@@ -61,10 +61,30 @@ void CLineAgent::agent_process()
   agent_interface.robot_time = get_ms_time();
 
 
-  phase+= 0.0001*agent_interface.dt;
+  int mode = get_agent_mode(agent_group);
+  this->agent_interface.body_type = AGENT_BODY_TYPE_NULL;
 
-  set_position();
+  //check if dafult or line following mode selected
+  if (mode == AERIS_MODE_NULL)
+  {
+    this->agent_interface.body_type = AGENT_BODY_TYPE_BASIC;
+    phase+= 0.0001*agent_interface.dt;
+    set_position();
+  }
 
+  if (mode == AERIS_MODE_LINE_FOLLOWER)
+  {
+    this->agent_interface.body_type = AGENT_BODY_TYPE_BASIC;
+    phase = 0.0;
+    set_position();
+  }
+
+  if (mode == AERIS_MODE_DYNAMIC_LINE_FOLLOWER)
+  {
+    this->agent_interface.body_type = AGENT_BODY_TYPE_BASIC;
+    phase+= 0.0001*agent_interface.dt;
+    set_position();
+  }
 
 
   int res_tx = agent_group->set_agent_struct(&agent_interface);

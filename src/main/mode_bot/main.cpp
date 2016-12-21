@@ -1,7 +1,10 @@
 #include "../common/common.h"
-#include "arena_agent.h"
+#include "mode_agent.h"
+#include "gui/gui.h"
 
-int main()
+class CGUI *gui;
+
+void application_main_func()
 {
   struct sAgentGroupInitStruct agent_group_init_struct;
 
@@ -10,15 +13,24 @@ int main()
   agent_group_init_struct.dt = 300.0;
 
   class CClient *client;
+  class CModeAgent *agent = new CModeAgent();
 
-  class CArenaAgent *agent = new CArenaAgent();
 
   client = new CClient(agent_group_init_struct, agent);
   client->main();
 
-
   delete client;
 
-  printf("program \'arena\' done\n");
+  exit(EXIT_SUCCESS);
+}
+
+int main()
+{
+  gui = new CGUI();
+  gui->run(application_main_func);
+
+  printf("program \'mode agent\' done\n");
+
+  delete gui;
   return 0;
 }

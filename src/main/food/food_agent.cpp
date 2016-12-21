@@ -57,13 +57,20 @@ void CFoodAgent::agent_process()
   int res_rx = agent_group->get_agent_struct(&agent_interface);
   agent_interface.robot_time = get_ms_time();
 
+  agent_interface.body_type = AGENT_BODY_TYPE_NULL;
 
-  if ((rand()%10000) < 5)
+  if (get_agent_mode(agent_group) == AERIS_MODE_ANTS)
   {
-    this->agent_interface.position.x = m_rnd()*g_configure.get_width_cm()/2.0;
-    this->agent_interface.position.y = m_rnd()*g_configure.get_height_cm()/2.0;
-  }
+    agent_interface.body_type = AGENT_BODY_TYPE_BASE;
 
+
+    if ((rand()%10000) < 5)
+    {
+      this->agent_interface.position.x = m_rnd()*g_configure.get_width_cm()/2.0;
+      this->agent_interface.position.y = m_rnd()*g_configure.get_height_cm()/2.0;
+    }
+  }
+  
   int res_tx = agent_group->set_agent_struct(&agent_interface);
 
   #ifdef _DEBUG_COMMON_

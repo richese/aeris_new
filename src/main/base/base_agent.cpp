@@ -56,6 +56,13 @@ void CBaseAgent::agent_process()
   int res_rx = agent_group->get_agent_struct(&agent_interface);
   agent_interface.robot_time = get_ms_time();
 
+  agent_interface.body_type = AGENT_BODY_TYPE_NULL;
+
+  if (get_agent_mode(agent_group) == AERIS_MODE_ANTS)
+  {
+    agent_interface.body_type = AGENT_BODY_TYPE_BASE;
+  }
+
   int res_tx = agent_group->set_agent_struct(&agent_interface);
 
   #ifdef _DEBUG_COMMON_

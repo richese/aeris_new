@@ -165,155 +165,153 @@ void CAntAgent::agent_process()
   int res_rx = agent_group->get_agent_struct(&agent_interface);
   agent_interface.robot_time = get_ms_time();
 
-  double dt = agent_interface.dt;
+  agent_interface.body_type = AGENT_BODY_TYPE_NULL;
 
-  unsigned int j;
-
-  bool on_base = false;
-  for (j = 0; j < agent_group->get_agents_count(); j++)
+  if (get_agent_mode(agent_group) == AERIS_MODE_ANTS)
   {
-    struct sAgentInterface agent_other = agent_group->get_agent_struct_idx(j);
-    double dist = robot_distance(&agent_other.position, &agent_interface.position);
+    agent_interface.body_type = AGENT_BODY_TYPE_BASIC;
 
-    if ((agent_other.agent_type == AGENT_TYPE_BASE) && (dist < 2.0))
+    if (g_configure.get_cm_size() > 20.0)
+      agent_interface.body_type = AGENT_BODY_TYPE_BASIC_SMALL;
+
+    double dt = agent_interface.dt;
+
+    unsigned int j;
+
+    bool on_base = false;
+    for (j = 0; j < agent_group->get_agents_count(); j++)
     {
-      agent_interface.state = 0;
-      agent_interface.fitness = 1.0;
-      on_base = true;
-      break;
+      struct sAgentInterface agent_other = agent_group->get_agent_struct_idx(j);
+      double dist = robot_distance(&agent_other.position, &agent_interface.position);
+
+      if ((agent_other.agent_type == AGENT_TYPE_BASE) && (dist < 2.0))
+      {
+        agent_interface.state = 0;
+        agent_interface.fitness = 1.0;
+        on_base = true;
+        break;
+      }
+
+      if ((agent_other.agent_type == AGENT_TYPE_TARGET) && (dist < 2.0))
+      {
+        agent_interface.state = 1;
+        agent_interface.fitness = 1.0;
+        break;
+      }
     }
 
-    if ((agent_other.agent_type == AGENT_TYPE_TARGET) && (dist < 2.0))
-    {
-      agent_interface.state = 1;
-      agent_interface.fitness = 1.0;
-      break;
-    }
-  }
+
+    get_neigbour_state();
 
 
-  get_neigbour_state();
-
-
-  if (agent_interface.state == 0)
-  {
-    float k = 0.7;
-    /*
-    if (on_base == false)
-    {
-      float tmp = 0.0;
-      for (j = 0; j < neighbour.size(); j++)
-        tmp = m_max(tmp, neighbour[j].b);
-
-      agent_interface.fitness = k*tmp;
-    }
-    */
-    agent_interface.fitness = agent_interface.fitness*0.99;
-  }
-  else
-  {
-    agent_interface.fitness = agent_interface.fitness*0.99;
-  }
-
-/*
-  if (agent_interface.state == 0)
-  {
-    agent_interface.fitness = agent_interface.fitness*0.98;
-  }
-  else
-  {
-    agent_interface.fitness = agent_interface.fitness*0.99;
-  }
-*/
-
-  if ((rand()%100) < 30)
-  {
     if (agent_interface.state == 0)
     {
-      this->agent_interface.color.r = 0.0;
-      this->agent_interface.color.g = 0.0;
-      this->agent_interface.color.b = 1.0;
+      float k = 0.7;
+      /*
+      if (on_base == false)
+      {
+        float tmp = 0.0;
+        for (j = 0; j < neighbour.size(); j++)
+          tmp = m_max(tmp, neighbour[j].b);
 
-      unsigned int i;
-
-      for (i = 0; i < neighbour.size(); i++)
-        if (neighbour[i].r > neighbour[action].r)
-          action = i;
-
-      if (((rand()%100) < 2) || (neighbour[action].r < 0.2) )
-        action = rand()%8;
+        agent_interface.fitness = k*tmp;
+      }
+      */
+      agent_interface.fitness = agent_interface.fitness*0.99;
     }
-
-    if (agent_interface.state == 1)
+    else
     {
-      this->agent_interface.color.r = 1.0;
-      this->agent_interface.color.g = 0.0;
-      this->agent_interface.color.b = 0.0;
-
-      unsigned int i;
-      action = 0;
-      for (i = 0; i < neighbour.size(); i++)
-        if (neighbour[i].b > neighbour[action].b)
-          action = i;
-
-      if ((rand()%100) < 2)
-        action = rand()%8;
+      agent_interface.fitness = agent_interface.fitness*0.99;
     }
+
+
+    if ((rand()%100) < 30)
+    {
+      if (agent_interface.state == 0)
+      {
+        this->agent_interface.color.r = 0.0;
+        this->agent_interface.color.g = 0.0;
+        this->agent_interface.color.b = 1.0;
+
+        unsigned int i;
+
+        for (i = 0; i < neighbour.size(); i++)
+          if (neighbour[i].r > neighbour[action].r)
+            action = i;
+
+        if (((rand()%100) < 2) || (neighbour[action].r < 0.2) )
+          action = rand()%8;
+      }
+
+      if (agent_interface.state == 1)
+      {
+        this->agent_interface.color.r = 1.0;
+        this->agent_interface.color.g = 0.0;
+        this->agent_interface.color.b = 0.0;
+
+        unsigned int i;
+        action = 0;
+        for (i = 0; i < neighbour.size(); i++)
+          if (neighbour[i].b > neighbour[action].b)
+            action = i;
+
+        if ((rand()%100) < 2)
+          action = rand()%8;
+      }
+    }
+
+
+    double speed = 0.001;
+
+    switch (action)
+    {
+      case 0: dx = speed*1.0*dt;
+              dy = speed*0.0*dt;
+              break;
+
+      case 1: dx = speed*-1.0*dt;
+              dy = speed*0.0*dt;
+              break;
+
+      case 2: dx = speed*0.0*dt;
+              dy = speed*1.0*dt;
+              break;
+
+      case 3: dx = speed*0.0*dt;
+              dy = speed*-1.0*dt;
+              break;
+
+      case 4: dx = speed*1.0*dt;
+              dy = speed*1.0*dt;
+              break;
+
+      case 5: dx = speed*-1.0*dt;
+              dy = speed*1.0*dt;
+              break;
+
+      case 6: dx = speed*-1.0*dt;
+              dy = speed*-1.0*dt;
+              break;
+
+      case 7: dx = speed*1.0*dt;
+              dy = speed*-1.0*dt;
+              break;
+    }
+
+
+    agent_interface.position.x+= dx;
+    agent_interface.position.y+= dy;
+    agent_interface.position.z+= dz;
+
+    agent_interface.position.roll+= droll;
+    agent_interface.position.pitch+= dpitch;
+    agent_interface.position.yaw+= dyaw;
+
+
+    agent_interface.position.x = m_saturate(-g_configure.get_width_cm()*0.5, g_configure.get_width_cm()*0.5, agent_interface.position.x);
+    agent_interface.position.y = m_saturate(-g_configure.get_height_cm()*0.5, g_configure.get_height_cm()*0.5, agent_interface.position.y);
+    agent_interface.position.z = m_saturate(-g_configure.get_depth_cm()*0.5, g_configure.get_depth_cm()*0.5, agent_interface.position.z);
   }
-
-
-  double speed = 0.001;
-
-  switch (action)
-  {
-    case 0: dx = speed*1.0*dt;
-            dy = speed*0.0*dt;
-            break;
-
-    case 1: dx = speed*-1.0*dt;
-            dy = speed*0.0*dt;
-            break;
-
-    case 2: dx = speed*0.0*dt;
-            dy = speed*1.0*dt;
-            break;
-
-    case 3: dx = speed*0.0*dt;
-            dy = speed*-1.0*dt;
-            break;
-
-    case 4: dx = speed*1.0*dt;
-            dy = speed*1.0*dt;
-            break;
-
-    case 5: dx = speed*-1.0*dt;
-            dy = speed*1.0*dt;
-            break;
-
-    case 6: dx = speed*-1.0*dt;
-            dy = speed*-1.0*dt;
-            break;
-
-    case 7: dx = speed*1.0*dt;
-            dy = speed*-1.0*dt;
-            break;
-  }
-
-
-  agent_interface.position.x+= dx;
-  agent_interface.position.y+= dy;
-  agent_interface.position.z+= dz;
-
-  agent_interface.position.roll+= droll;
-  agent_interface.position.pitch+= dpitch;
-  agent_interface.position.yaw+= dyaw;
-
-
-  agent_interface.position.x = m_saturate(-g_configure.get_width_cm()*0.5, g_configure.get_width_cm()*0.5, agent_interface.position.x);
-  agent_interface.position.y = m_saturate(-g_configure.get_height_cm()*0.5, g_configure.get_height_cm()*0.5, agent_interface.position.y);
-  agent_interface.position.z = m_saturate(-g_configure.get_depth_cm()*0.5, g_configure.get_depth_cm()*0.5, agent_interface.position.z);
-
-  //process AI here
 
   int res_tx = agent_group->set_agent_struct(&agent_interface);
 

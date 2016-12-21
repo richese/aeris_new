@@ -1,5 +1,5 @@
 SUBDIRS = common server visualisation
-SUBDIRS+= border arena line
+SUBDIRS+= mode_bot border arena line
 SUBDIRS+= agent_test base food pheromone ant
 
 all: $(SUBDIRS)

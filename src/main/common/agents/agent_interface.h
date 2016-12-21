@@ -28,6 +28,8 @@ struct sAgentInterface
 #define AGENT_TYPE_TARGET     ((unsigned long int)5)
 #define AGENT_TYPE_PHEROMONE      ((unsigned long int)6)
 
+#define  AGENT_TYPE_MODE    ((unsigned long int)7)
+
 
 class CAgentGroup;
 

@@ -23,6 +23,7 @@ template <class C_AGENT_TYPE> class tAbstractAgent
     {
         return new C_AGENT_TYPE(agent_interface, agent_group, group_id);
     }
+
 };
 
 #endif

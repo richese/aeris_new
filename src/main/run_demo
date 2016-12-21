@@ -11,7 +11,16 @@ check_alive
 
 spawn mode_bot
 
+#security border
 spawn border
+
+#line follower
+spawn line
+
+#sumo arena
+spawn arena
+
+#ants demo
 spawn pheromone
 spawn base
 spawn food

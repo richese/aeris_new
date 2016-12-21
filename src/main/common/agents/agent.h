@@ -26,6 +26,7 @@ class CAgent: public CAgentInterface
 
     virtual class CAgent* create(struct sAgentInterface agent_interface, class CAgentGroup *agent_group, unsigned long int group_id);
 
+    int get_agent_mode(class CAgentGroup *agent_group = NULL);
 };
 
 

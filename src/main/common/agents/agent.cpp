@@ -7,6 +7,8 @@
 
 #include "../agent_group.h"
 
+#include "../aeris_mode.h"
+
 
 extern class CConfigure g_configure;
 
@@ -59,4 +61,26 @@ unsigned long int CAgent::get_agent_type()
 void CAgent::agent_process()
 {
   this->agent_interface.robot_time = get_ms_time();
+}
+
+
+int CAgent::get_agent_mode(class CAgentGroup *agent_group)
+{
+  if (agent_group == NULL)
+    return AERIS_MODE_NULL;
+
+  unsigned int i;
+  int mode = AERIS_MODE_NULL;
+
+  for (i = 0; i < agent_group->get_agents_count(); i++)
+  {
+    struct sAgentInterface tmp = agent_group->get_agent_struct_idx(i);
+    if (tmp.agent_type == AGENT_TYPE_MODE)
+    {
+      mode = tmp.state;
+      break;
+    }
+  }
+
+  return mode;
 }
