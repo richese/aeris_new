@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+pushd "$(dirname $0)" > /dev/null
+export MAIN_ROOT_DIR="$(pwd)"
+popd > /dev/null
+source "$MAIN_ROOT_DIR/bash-env.sh"
+
+clean_logs
+
+spawn server
+sleep 1s
+check_alive
+
+spawn border
+spawn pheromone
+spawn pheromone
+spawn base
+spawn food
+spawn ant -v
+
+spawn visualisation
+
+stop
+
+sleep 1s
+print_performance

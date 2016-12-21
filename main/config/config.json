@@ -1,0 +1,146 @@
+{
+  "server_list":
+  {
+    "local":
+    {
+      "ip": "127.0.0.1",
+      "port": 2001,
+      "ud_path": "/tmp/aeris.sock"
+    },
+    "grid":
+    {
+      "ip": "158.193.210.195",
+      "port": 20001,
+      "ud_path": null
+    },
+    "ud_test":
+    {
+      "ip": null,
+      "port": null,
+      "ud_path": "/tmp/test.sock"
+    }
+  },
+  "playground_list":
+  {
+    "production":
+    {
+      "size": [16, 9],
+      "resolution": [1920, 1080],
+      "diagonal": 55.0
+    },
+    "testing":
+    {
+      "size": [16, 9],
+      "resolution": [1280, 720],
+      "diagonal": 36.6
+    },
+    "viewsonic23":
+    {
+      "size": [16, 9],
+      "resolution": [1920, 1080],
+      "diagonal": 23.0
+    },
+    "notebook":
+    {
+      "size": [16, 9],
+      "resolution": [1366, 768],
+      "diagonal": 15.5
+    }
+  },
+  "agent_list":
+  {
+    "null":
+    {
+      "interface_type": 0,
+      "body": "null",
+    },
+    "example_agent":
+    {
+      "interface_type": 1,
+      "body": "sphere"
+    },
+    "border_agent":
+    {
+      "interface_type": 2,
+      "body": "border"
+    },
+    "line_agent":
+    {
+      "interface_type": 3,
+      "body": "sphere",
+    }
+  },
+  "body_list":
+  {
+    "null":
+    {
+      "interface_type": 0,
+      "simulation_model": null,
+      "visualisation_model": null
+    },
+    "sphere":
+    {
+      "interface_type": 1,
+      "simulation_model": "unit_sphere.obj",
+      "visualisation_model": "unit_sphere_lowpoly.obj",
+      "scale": 1.0
+    },
+    "square":
+    {
+      "interface_type": 2,
+      "simulation_model": "unit_square.obj",
+      "visualisation_model": "unit_square_lowpoly.obj",
+      "scale": 1.0
+    },
+    "border":
+    {
+      "interface_type": 3,
+      "simulation_model": null,
+      "visualisation_model": "border_16_9.obj",
+      "scale": "fit"
+    }
+  },
+  "agent_group_list":
+  {
+    "line-demo":
+    {
+      "group_type": "standalone",
+      "playground": "production",
+      "dt": 100.0,
+      "spawn":
+      [
+        [
+          "border",
+          1,
+          {}
+        ],
+        [
+          "visualisation",
+          1,
+          {
+            "fullscreen": true
+          }
+        ],
+        [
+          "line_agent",
+          1,
+          {
+            "offset": [20, 40],
+            "scale": 1.5,
+            "speed": 1.0,
+            "agent_count": 400,
+            "color": [1.0, 0.0, 0.0]
+          }
+        ]
+      ]
+    },
+    "groupp":
+    {
+      "group_type": "net",
+      "server": "grid",
+      "playground": "testing",
+      "dt": 1000.0,
+      "spawn": [ ["null", 1, {}] ]
+    }
+  }
+}
