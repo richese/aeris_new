@@ -3,7 +3,10 @@
 #include "gui/gui.h"
 
 extern class CConfigure g_configure;
-extern class CGUI *gui;
+extern class CGUI *gui; 
+
+extern class CBridgeInterface *bridge_interface;
+extern void BridgeResult_Init(struct sBridgeResult *result);
 
 CRobotBridgeAgent::CRobotBridgeAgent()
 {
@@ -21,36 +24,20 @@ CRobotBridgeAgent::CRobotBridgeAgent(struct sAgentInterface agent_interface,
   agent_group->set_agent_struct(&this->agent_interface);
 
 
-  struct sModeResult tmp;
+  struct sBridgeResult tmp;
 
-  tmp.state = AERIS_MODE_IDLE;
-  tmp.mode_name = "idle";
-  mode_result.push_back(tmp);
+  unsigned int i;
+  for (i = 0; i < 1000; i++)
+  {
+    BridgeResult_Init(&tmp);
 
-  tmp.state = AERIS_MODE_LINE_FOLLOWER;
-  tmp.mode_name = "line follower";
-  mode_result.push_back(tmp);
+    tmp.id = rand();
+    bridge_interface->set_by_id(tmp.id, tmp);
+  }
 
-  tmp.state = AERIS_MODE_DYNAMIC_LINE_FOLLOWER;
-  tmp.mode_name = "dynamic line follower";
-  mode_result.push_back(tmp);
+  gui->refresh();
 
-  tmp.state = AERIS_MODE_MAZE;
-  tmp.mode_name = "maze";
-  mode_result.push_back(tmp);
-
-  tmp.state = AERIS_MODE_MINI_SUMO;
-  tmp.mode_name = "mini sumo";
-  mode_result.push_back(tmp);
-
-  tmp.state = AERIS_MODE_DYNAMIC_LINE_FOLLOWER;
-  tmp.mode_name = "ants colony";
-  mode_result.push_back(tmp);
-
-  gui->refresh(mode_result);
-
-
-  printf("mode agent created \n");
+  printf("bridge agent created \n");
 }
 
 CRobotBridgeAgent::~CRobotBridgeAgent()
@@ -74,14 +61,28 @@ void CRobotBridgeAgent::agent_process()
   int res_rx = agent_group->get_agent_struct(&agent_interface);
   agent_interface.robot_time = get_ms_time();
 
-  int mode = gui->get_mode();
-  if (mode != -1)
-    printf("SELECTED MODE \"%s\" %i\n", mode_result[mode].mode_name.c_str(), mode);
+  unsigned int i;
+  for (i = 0; i < bridge_interface->size(); i++)
+  {
+    struct sBridgeResult tmp;
 
-  if (mode == -1)
-    this->agent_interface.state = AERIS_MODE_IDLE;
-  else
-    this->agent_interface.state = mode + 1;
+    tmp = bridge_interface->get(i);
+
+    tmp.type = rand();
+    tmp.state = rand();
+    tmp.action = rand();
+    tmp.fitness = (rand()%1000000)/1000000.0;
+    tmp.uptime++;
+
+    tmp.roll+= 0.1;
+    tmp.pitch+= 0.2;
+    tmp.yaw+= 0.3;
+
+    bridge_interface->set(i, tmp);
+  }
+
+  gui->robot_values_refresh();
+  Fl::awake();
 
   int res_tx = agent_group->set_agent_struct(&agent_interface);
 

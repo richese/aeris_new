@@ -1,7 +1,9 @@
 #include "../common/common.h"
+#include "bridge_interface.h"
 #include "robot_bridge_agent.h"
 #include "gui/gui.h"
 
+class CBridgeInterface *bridge_interface;
 class CGUI *gui;
 
 void application_main_func()
@@ -14,7 +16,7 @@ void application_main_func()
 
   class CClient *client;
   class CRobotBridgeAgent *agent = new CRobotBridgeAgent();
-
+ 
 
   client = new CClient(agent_group_init_struct, agent);
   client->main();
@@ -26,11 +28,14 @@ void application_main_func()
 
 int main()
 {
-  gui = new CGUI();
+  bridge_interface = new CBridgeInterface();
+
+  gui = new CGUI(bridge_interface);
   gui->run(application_main_func);
 
-  printf("program \'mode agent\' done\n");
+  printf("program \'bridge agent\' done\n");
 
   delete gui;
+  delete bridge_interface;
   return 0;
 }

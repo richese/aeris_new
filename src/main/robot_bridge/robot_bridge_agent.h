@@ -7,14 +7,11 @@
 
 class CRobotBridgeAgent: public CAgent
 {
-  private:
-    std::vector<struct sModeResult> mode_result;
-
   public:
     CRobotBridgeAgent();
-    CRobotBridgeAgent(struct sAgentInterface agent_interface,
-                  class CAgentGroup *agent_group = NULL,
-                  unsigned long int group_id = 0);
+    CRobotBridgeAgent( struct sAgentInterface agent_interface,
+                       class CAgentGroup *agent_group = NULL,
+                       unsigned long int group_id = 0);
 
     ~CRobotBridgeAgent();
 
