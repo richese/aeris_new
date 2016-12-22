@@ -60,17 +60,20 @@ class CGUI
     Fl_Output *robot_angles;
 
 
-    CGLWindow *gl_window_angles;
+    CGLWindow *gl_window;
 
   public:
     CGUI(CBridgeInterface *bridge_interface_);
     virtual ~CGUI();
 
     void run(void (*application_main_func)() = NULL);
+    void redraw();
+
+  protected:
+
     void refresh();
     void robot_values_refresh();
 
-  protected:
 
     static void callback_list_on_click_static(Fl_Widget* w, void* data);
     void callback_list_on_click(Fl_Widget* w);

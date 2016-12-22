@@ -12,11 +12,11 @@ void application_main_func()
 
   agent_group_init_struct.count = 1;
   agent_group_init_struct.random_positions = true;
-  agent_group_init_struct.dt = 100.0;
+  agent_group_init_struct.dt = 500.0;
 
   class CClient *client;
   class CRobotBridgeAgent *agent = new CRobotBridgeAgent();
- 
+
 
   client = new CClient(agent_group_init_struct, agent);
   client->main();

@@ -18,11 +18,11 @@ void BridgeResult_Init(struct sBridgeResult *result)
 
   result->x = 0.0;
   result->y = 0.0;
-  result->z = 0.0; 
+  result->z = 0.0;
 
-  result->roll = 0.0;
-  result->pitch = 0.0;
-  result->yaw = 0.0;
+  result->roll = rand()%360;
+  result->pitch = rand()%360;
+  result->yaw = rand()%360;
 
   struct sRGBSensor tmp;
 

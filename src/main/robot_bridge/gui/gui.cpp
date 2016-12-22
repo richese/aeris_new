@@ -2,6 +2,8 @@
 
 #include <cstdio>
 
+int g_selected_robot = -1;
+
 
 CGUI::CGUI(CBridgeInterface *bridge_interface_)
 {
@@ -28,7 +30,7 @@ void CGUI::run(void (*application_main_func)())
   int window_height = (9*window_width)/16;
 
   XInitThreads();
-  // Fl::gl_visual(FL_RGB);
+Fl::gl_visual(FL_RGB);
 
   main_window = new Fl_Window( window_width, window_height, "robot debug");
   main_window->begin();
@@ -124,13 +126,14 @@ void CGUI::run(void (*application_main_func)())
   robot_angles->value("N/A");
 
 
-  gl_window_angles = new CGLWindow(530, 260, 100, 100, (char*)"NONE");
-  main_window->add(gl_window_angles);
+  gl_window = new CGLWindow(530, 260, 280, 190, (char*)"NONE");
 
-
-  main_window->end();
   main_window->show();
-  gl_window_angles->show();
+  main_window->end();
+  gl_window->show();
+
+
+
 
   Fl::lock();
 
@@ -150,11 +153,24 @@ void CGUI::run(void (*application_main_func)())
   }
 }
 
+
+void CGUI::redraw()
+{
+  Fl::lock();
+
+  refresh();
+  robot_values_refresh();
+
+  Fl::unlock();
+  Fl::redraw();
+  Fl::awake();
+}
+
+
 void CGUI::refresh()
 {
   printf("GUI : refresh called\n");
 
-  Fl::lock();
 
   robots_list->clear();
 
@@ -174,11 +190,8 @@ void CGUI::refresh()
     robots_list->select(selected_robot+1);
   }
 
-  Fl::unlock();
-
-
-  robot_values_refresh();
 }
+
 
 
 
@@ -188,7 +201,6 @@ void CGUI::robot_values_refresh()
 
   char str[1024];
 
-  Fl::lock();
 
   struct sBridgeResult result = bridge_interface->get(selected_robot);
 
@@ -217,23 +229,14 @@ void CGUI::robot_values_refresh()
   sprintf(str,"%6.3f %6.3f %6.3f", result.x, result.y, result.z);
   robot_position->value(str);
 
-  sprintf(str,"%6.1f %6.1f %6.1f", result.roll, result.pitch, result.yaw);
+  sprintf(str,"%6.3f %6.3f %6.3f", result.roll, result.pitch, result.yaw);
   robot_angles->value(str);
 
 
   log_enabled->value(result.log_enabled);
   debug_enabled->value(result.debug_enabled);
-
-  main_window->redraw();
-
-  Fl::unlock();
-
-
-  gl_window_angles->draw();
-/*
-  gl_window_angles->flush();
-*/
 }
+
 
 
 void CGUI::callback_list_on_click_static(Fl_Widget* w, void* data)
@@ -257,6 +260,8 @@ void CGUI::callback_list_on_click(Fl_Widget* w)
     selected_robot = tmp - 1;
     robots_list->select(selected_robot + 1);
     printf("GUI : selected_robot %i\n", selected_robot);
+
+    g_selected_robot = selected_robot;
   }
 
   Fl::unlock();

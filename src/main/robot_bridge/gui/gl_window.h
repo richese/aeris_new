@@ -9,13 +9,18 @@
 class CGLWindow : public Fl_Gl_Window
 {
   private:
-    // bool valid;
+    float angle;
 
   public:
     CGLWindow(int X, int Y, int W, int H, const char *L);
     ~CGLWindow();
 
+  private:
+    static void callback_timer_static(void *userdata);
+
     void draw();
+
+    void redraw();
     int handle(int param);
 };
 

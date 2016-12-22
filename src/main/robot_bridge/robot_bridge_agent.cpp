@@ -3,7 +3,7 @@
 #include "gui/gui.h"
 
 extern class CConfigure g_configure;
-extern class CGUI *gui; 
+extern class CGUI *gui;
 
 extern class CBridgeInterface *bridge_interface;
 extern void BridgeResult_Init(struct sBridgeResult *result);
@@ -35,7 +35,7 @@ CRobotBridgeAgent::CRobotBridgeAgent(struct sAgentInterface agent_interface,
     bridge_interface->set_by_id(tmp.id, tmp);
   }
 
-  gui->refresh();
+  gui->redraw();
 
   printf("bridge agent created \n");
 }
@@ -81,8 +81,7 @@ void CRobotBridgeAgent::agent_process()
     bridge_interface->set(i, tmp);
   }
 
-  gui->robot_values_refresh();
-  Fl::awake();
+  gui->redraw();
 
   int res_tx = agent_group->set_agent_struct(&agent_interface);
 
