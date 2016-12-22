@@ -77,7 +77,7 @@ fi
 
 ## Skompiluj projekt a posuň prípadné argumenty ninjovi
 ninja -C "$MAIN_BUILD_DIR" $@
-## Nakopíruj skompilované binárky do adreasára
+## Nakopíruj skompilované binárky do adreasára bin
 if [ "$?" == "0" ]; then
   ninja -C "$MAIN_BUILD_DIR" install
 else

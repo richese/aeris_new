@@ -52,7 +52,7 @@
     "null":
     {
       "interface_type": 0,
-      "body": "null",
+      "body": "null"
     },
     "example_agent":
     {
@@ -67,7 +67,7 @@
     "line_agent":
     {
       "interface_type": 3,
-      "body": "sphere",
+      "body": "sphere"
     }
   },
   "body_list":
@@ -75,29 +75,25 @@
     "null":
     {
       "interface_type": 0,
-      "simulation_model": null,
-      "visualisation_model": null
+      "model": null
     },
     "sphere":
     {
       "interface_type": 1,
-      "simulation_model": "unit_sphere.obj",
-      "visualisation_model": "unit_sphere_lowpoly.obj",
+      "model": "models/circle.obj",
       "scale": 1.0
     },
     "square":
     {
       "interface_type": 2,
-      "simulation_model": "unit_square.obj",
-      "visualisation_model": "unit_square_lowpoly.obj",
+      "model": "models/circle.obj",
       "scale": 1.0
     },
     "border":
     {
       "interface_type": 3,
-      "simulation_model": null,
-      "visualisation_model": "border_16_9.obj",
-      "scale": "fit"
+      "model": "models/circle.obj",
+      "scale": 1.0
     }
   },
   "agent_group_list":

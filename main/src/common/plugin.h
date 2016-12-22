@@ -25,7 +25,7 @@ struct plugin_init_t
 {
   const json &conf_storage;
   el::base::type::StoragePointer log_storage;
-  AgentBodyStorage *body_storage;
+  ae::helpers::body_storage_t *body_storage;
 
   plugin_init_t() : conf_storage(config::get) {}
 };

@@ -141,7 +141,7 @@ class Agent
     /* Pretypovanie na bool vráti to, či má agent nenulové id. */
     operator bool() const { return m_interface; }
 
-    /* Pretypovanie na sAgentInterface vráti hodnotu agentoho interface. */
+    /* Pretypovanie na sAgentInterface vráti hodnotu agentovho interface. */
     operator sAgentInterface() const { return m_interface; }
 };
 
