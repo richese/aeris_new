@@ -1,3 +1,0 @@
-ulimit -v 100000
-./main.elf
-ulimit -v unlimited

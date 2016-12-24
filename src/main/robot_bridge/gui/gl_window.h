@@ -9,7 +9,9 @@
 class CGLWindow : public Fl_Gl_Window
 {
   private:
-    float angle;
+    float roll_fil;
+    float pitch_fil;
+    float yaw_fil;
 
   public:
     CGLWindow(int X, int Y, int W, int H, const char *L);

@@ -3,6 +3,6 @@
 
 
 double get_ms_time();
-
+unsigned int get_s_time();
 
 #endif

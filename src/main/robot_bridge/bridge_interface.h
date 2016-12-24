@@ -6,7 +6,7 @@
 
 struct sRGBSensor
 {
-  unsigned int r, g, b, w;
+  int r, g, b, w, d;
 };
 
 struct sBridgeResult
@@ -19,19 +19,26 @@ struct sBridgeResult
   float fitness;
 
   unsigned int uptime;
+  double time;
+
   std::string note;
 
-  //options
-  bool log_enabled;
-  bool debug_enabled;
-
+  //IMU
   float x, y, z;
   float roll, pitch, yaw;
 
-  struct sRGBSensor rgb_sensors[4];
+  //RGB sensors
+  std::vector<struct sRGBSensor> rgb_sensors;
+
+  std::string terminal;
+
+  //options
+  bool log_enabled;
+  bool log_clear;
+  bool debug_enabled;
 };
 
-void BridgeResult_Init(struct sBridgeResult *result);
+void BridgeResult_Init(struct sBridgeResult *result, bool random = false);
 
 class CBridgeInterface
 {
@@ -52,6 +59,8 @@ class CBridgeInterface
     int set_by_id(unsigned int id, struct sBridgeResult value);
 
     int size();
+
+    void add_to_log(int idx);
 };
 
 

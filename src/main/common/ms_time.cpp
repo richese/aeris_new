@@ -18,3 +18,14 @@ double get_ms_time()
 
   return (readed_time.tv_sec*1000.0 + readed_time.tv_usec/1000.0);
 }
+
+
+
+unsigned int get_s_time()
+{
+  struct timeval readed_time;
+
+  gettimeofday(&readed_time, NULL);
+
+  return (int)(readed_time.tv_sec);
+}
