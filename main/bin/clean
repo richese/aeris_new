@@ -9,6 +9,7 @@ export MAIN_ROOT_DIR="$(pwd)"
 popd > /dev/null
 popd > /dev/null
 source ${MAIN_ROOT_DIR}/bin/bash-env.sh
+source ${MAIN_ROOT_DIR}/bin/build-env.sh
 
 ## Kompletne zmaž buildovací adresár ak bol skript spustený s argumentom `force`.
 if [ "$1" = "force" ]; then
@@ -20,11 +21,6 @@ fi
 
 ## Skontroluj či je vôbec treba niečo mazať.
 if [ ! -f "${MAIN_BUILD_DIR}/build.ninja" ]; then
-  exit 1
-fi
-
-if [ -z "$HAS_NINJA" ]; then
-  echo "Missing build dependency: ninja-build"
   exit 1
 fi
 

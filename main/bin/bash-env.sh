@@ -10,6 +10,8 @@ if [ -z "$MAIN_ROOT_DIR" ]; then
   popd > /dev/null
 fi
 
+echo $MAIN_ROOT_DIR
+
 ## Adresár s binárnymi súbormi
 MAIN_BIN_DIR="${MAIN_ROOT_DIR}/bin"
 
@@ -19,12 +21,7 @@ MAIN_BUILD_DIR="${MAIN_ROOT_DIR}/build"
 ## Adresár pre logy
 MAIN_LOG_DIR="${MAIN_ROOT_DIR}/logs"
 
-## Adresár pre iný software (ako buildovací systém)
-MAIN_OPT_DIR="${MAIN_ROOT_DIR}/opt"
-
 ## Zisti dostupnosť potrebných programov
-HAS_MESON="$(command -v meson)"
-HAS_NINJA="$(command -v ninja)"
 HAS_PYTHON3="$(command -v python3)"
 if [ -n "$HAS_PYTHON3" ]; then
   python3 -c 'import tabulate' 2> /dev/null
@@ -114,6 +111,9 @@ function clean_logs
 ## Usage: print_performance
 function print_performance
 {
+  echo 'Print performance: TODO'
+  return
+
   if [ -z "$HAS_PYTHON3" ]; then
     echo "$SCRIPT: python3 >= 3.4 is needed to show performance tracking information."
     return
@@ -128,7 +128,7 @@ function print_performance
   pushd "$MAIN_ROOT_DIR" > /dev/null
   for log in ${PERFORMANCE_LOGS}; do
     echo "$log"
-    python3 parselog.py -s 2 -i "$log"
+    python3 "${MAIN_BIN_DIR}/parselog.py" -s 2 -i "$log"
     echo ""
     echo ""
   done

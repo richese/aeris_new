@@ -1,6 +1,7 @@
 common_src = [
   'agent_body.cpp',
   'agent_group.cpp',
+  'agent_server.cpp',
   'agent.cpp',
   'config.cpp',
   'plugin.cpp',

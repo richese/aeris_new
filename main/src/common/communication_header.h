@@ -77,6 +77,7 @@ struct sCommunicationHeader
  * môže pokračovať v komunikácií.
  */
 #define OPCODE_SERVER_ACK         ((uint16_t)0xA5A5)
+#define OPCODE_SERVER_ERROR       ((uint16_t)0xA5AA)
 
 
 

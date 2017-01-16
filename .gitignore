@@ -29,4 +29,12 @@
 *.app
 *.elf
 
+# Aeris - main
+main/build
+main/lib
+main/logs
+main/bin/ninja
+main/bin/meson
+
+# Aeris - old main
 src/main/.build/*

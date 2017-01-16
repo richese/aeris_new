@@ -66,17 +66,47 @@ uint16_t ae::AgentBody::get_body_type(const uint16_t agent_type)
 ae::AgentBody* ae::AgentBody::load_body(const uint16_t body_id)
 {
   std::string model_filename = "";
-  float scale = 1.0;
+  float model_scale = 1.0;
 
-  for (const auto &body : config::get["body_list"])
+  // chacks
+  if (config::get.find("body_list") == config::get.end())
   {
+    LOG(ERROR) << "Config file is missing \"body_list\" section.";
+    return nullptr;
+  }
+  auto body_list = config::get["body_list"];
+  if (!body_list.is_object())
+  {
+    LOG(ERROR) << "body_list has to be an object not: " << body_list;
+    return nullptr;
+  }
+
+  // find body with required body id
+  for (const auto &body : body_list)
+  {
+    if (!body.is_object())
+    {
+      LOG(WARNING) << "Invalid entry type in body_list section: " << body;
+      continue;
+    }
+    if (body.find("interface_type") == body.end() ||
+        !body["interface_type"].is_number_unsigned() ||
+        body.find("model") == body.end() ||
+        !(body["model"].is_string() || body["model"].is_null()) ||
+        body.find("scale") == body.end() ||
+        !body["scale"].is_number())
+    {
+      LOG(ERROR) << "Invalid entry in body_list section: " << body;
+      continue;
+    }
     if (body["interface_type"].get<uint16_t>() == body_id)
     {
-      if (!body["model"].is_null())
+      if (body["model"].is_string())
       {
         model_filename = body["model"];
       }
-      scale = body["scale"];
+      model_scale = body["scale"];
+      break;
     }
   }
 
@@ -85,12 +115,15 @@ ae::AgentBody* ae::AgentBody::load_body(const uint16_t body_id)
   // do not load model if no filename is provided => agent has empty model
   if (model_filename.size() != 0)
   {
-    if (body->load_obj(config::path(config::DIR_ROOT, model_filename), scale) != 0)
+    if (body->load_obj(config::path(config::DIR_ROOT, model_filename), model_scale) != 0)
     {
+      delete body;
+      LOG(ERROR) << "Failed to load body from file " << model_filename;
       return nullptr;
     }
   }
 
+  VLOG(3) << "Loaded AgentBody(id=" << body_id << ", vert="<< body->vertices().size() << ", file=\"" << model_filename << "\")";
   helpers::active_body_storage->bodies[body_id] = body;
   return body;
 }

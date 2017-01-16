@@ -1,9 +1,9 @@
-group_src = [
+agent_group_src = [
   'main.cpp'
 ]
 
-executable('group-test',
-  group_src,
+executable('agent-group',
+  agent_group_src,
   dependencies: thread_dep,
   include_directories: global_inc,
   link_with: common_lib,

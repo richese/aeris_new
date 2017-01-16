@@ -238,22 +238,6 @@ int validate_config(const json &config)
   return 0;
 }
 
-
-void calculate_playground_size(json &playground)
-{
-  double w_px = playground["resolution"][0];
-  double h_px = playground["resolution"][1];
-  double diag_cm = 2.54 * playground["diagonal"].get<double>();
-  double cm = diag_cm / sqrt(w_px * w_px + h_px * h_px);
-  double w = w_px * cm;
-  double h = h_px * cm;
-
-  playground["w"] = w;
-  playground["h"] = h;
-  playground["cm"] = cm;
-}
-
-
 } /* namespace */
 
 
@@ -338,7 +322,6 @@ int ae::config::setup(const char *app_name, int argc, char *argv[])
     LOG(ERROR) << "Playground list is missing playground " << options["playground"] << ". Check your config.";
     return -1;
   }
-  calculate_playground_size(*playground);
   config["playground"] = *playground;
 
   // nakopiruj nacitanu konfiguraciu do globalnej premennej
@@ -373,38 +356,6 @@ std::string ae::config::path(const Directory base_dir, const std::string &file)
   tmp += '/';
   tmp += file;
   return tmp;
-}
-
-
-
-const std::string ae::config::server_ud_path()
-{
-  // auto ud_path = get["servers"][0]["ud_path"];
-  // if (ud_path.is_string())
-  // {
-  //   return ud_path;
-  // }
-  return std::string();
-}
-
-const std::string ae::config::server_ip_addr()
-{
-  // auto ip = get["servers"][0]["ip"];
-  // if (ip.is_string())
-  // {
-  //   return ip;
-  // }
-  return std::string();
-}
-
-int ae::config::server_port()
-{
-  // auto port = get["servers"][0]["port"];
-  // if (port.is_number_unsigned())
-  // {
-  //   return port;
-  // }
-  return -1;
 }
 
 

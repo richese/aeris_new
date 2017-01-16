@@ -9,67 +9,12 @@ export MAIN_ROOT_DIR="$(pwd)"
 popd > /dev/null
 popd > /dev/null
 source ${MAIN_ROOT_DIR}/bin/bash-env.sh
+source ${MAIN_ROOT_DIR}/bin/build-env.sh
 
-
-function install_ninja
-{
-  if [ ! -f "${MAIN_BIN_DIR}/ninja" ]; then
-    pushd "$MAIN_OPT_DIR" > /dev/null
-    git clone https://github.com/ninja-build/ninja.git
-    pushd "ninja" > /dev/null
-    ./configure.py --bootstrap
-    popd > /dev/null
-    popd > /dev/null
-
-    cp "$MAIN_OPT_DIR/ninja/ninja" "$MAIN_BIN_DIR"
-  fi
-}
-
-
-function install_meson
-{
-  if [ ! -f "${MAIN_BIN_DIR}/meson" ]; then
-    pushd "$MAIN_OPT_DIR" > /dev/null
-    git clone https://github.com/mesonbuild/meson.git
-    rm -v meson/__main__.py
-    python3 -m zipapp -p '/usr/bin/env python3' -m meson:main -o "${MAIN_BIN_DIR}/meson" meson
-    popd > /dev/null
-  fi
-}
-
-
-## Zaisti, že existuje adresár na kompiláciu projektu.
-## $MAIN_BUILD_DIR je definovaný v bash-env.sh
-if [ ! -d "$MAIN_BUILD_DIR" ]; then
-  mkdir -v "$MAIN_BUILD_DIR"
-fi
-
-## Zaisti, že existuje adresár na kompiláciu projektu.
-## $MAIN_BUILD_DIR je definovaný v bash-env.sh
-if [ ! -d "$MAIN_OPT_DIR" ]; then
-  mkdir -v "$MAIN_OPT_DIR"
-fi
-
-##
-install_ninja
-install_meson
-
-PATH="${MAIN_BIN_DIR}:${PATH}"
 
 ## Vygeneruj kompilačné pravidlá pri prvej kompilácii.
 if [ ! -f "${MAIN_BUILD_DIR}/build.ninja" ]; then
-  ## Skontroluj závislosti.
-  ## Možno obísť manuálne ak meson nie je v $PATH lebo si pamätá odkiaľ sa volal.
-  if [ -z "$HAS_MESON" ]; then
-    echo "Missing build dependency: meson"
-    exit 1
-  fi
-  if [ -z "$HAS_NINJA" ]; then
-    echo "Missing build dependency: ninja-build"
-    exit 1
-  fi
-
-  meson --buildtype release --prefix "$MAIN_ROOT_DIR" "$MAIN_ROOT_DIR" "$MAIN_BUILD_DIR"
+  meson --buildtype debug --prefix "$MAIN_ROOT_DIR" "$MAIN_ROOT_DIR" "$MAIN_BUILD_DIR"
   if [ "$?" != "0" ]; then
     exit 1
   fi

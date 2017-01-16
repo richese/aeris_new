@@ -24,27 +24,11 @@
   {
     "production":
     {
-      "size": [16, 9],
-      "resolution": [1920, 1080],
-      "diagonal": 55.0
+      "size": [121.8, 68.5]
     },
     "testing":
     {
-      "size": [16, 9],
-      "resolution": [1280, 720],
-      "diagonal": 36.6
-    },
-    "viewsonic23":
-    {
-      "size": [16, 9],
-      "resolution": [1920, 1080],
-      "diagonal": 23.0
-    },
-    "notebook":
-    {
-      "size": [16, 9],
-      "resolution": [1366, 768],
-      "diagonal": 15.5
+      "size": [50.9, 28.6]
     }
   },
   "agent_list":
@@ -54,19 +38,24 @@
       "interface_type": 0,
       "body": "null"
     },
-    "example_agent":
+    "visualisation":
     {
       "interface_type": 1,
+      "body": "null"
+    },
+    "example_agent":
+    {
+      "interface_type": 2,
       "body": "sphere"
     },
     "border_agent":
     {
-      "interface_type": 2,
+      "interface_type": 3,
       "body": "border"
     },
     "line_agent":
     {
-      "interface_type": 3,
+      "interface_type": 4,
       "body": "sphere"
     }
   },
@@ -75,13 +64,14 @@
     "null":
     {
       "interface_type": 0,
-      "model": null
+      "model": null,
+      "scale": 1.0
     },
     "sphere":
     {
       "interface_type": 1,
       "model": "models/circle.obj",
-      "scale": 1.0
+      "scale": 0.1
     },
     "square":
     {
@@ -98,45 +88,112 @@
   },
   "agent_group_list":
   {
-    "line-demo":
+    "test":
     {
-      "group_type": "standalone",
-      "playground": "production",
-      "dt": 100.0,
+      "dt": 200.0,
+      "njobs": 1,
       "spawn":
       [
-        [
-          "border",
-          1,
-          {}
-        ],
-        [
-          "visualisation",
-          1,
+        {
+          "plugin": "visualisation",
+          "count": 1,
+          "params":
           {
-            "fullscreen": true
+            "fullscreen": true,
+            "draw_grid": true,
+            "resolution": [1280, 720],
+            "framerate": 30,
+            "window_name": "test - robot visualisation"
           }
-        ],
-        [
-          "line_agent",
-          1,
+        },
+        {
+          "plugin": "example_agent",
+          "count": 2000,
+          "params":
           {
-            "offset": [20, 40],
-            "scale": 1.5,
-            "speed": 1.0,
-            "agent_count": 400,
             "color": [1.0, 0.0, 0.0]
           }
-        ]
+        }
       ]
     },
-    "groupp":
+    "test1":
     {
-      "group_type": "net",
-      "server": "grid",
-      "playground": "testing",
-      "dt": 1000.0,
-      "spawn": [ ["null", 1, {}] ]
+      "dt": 300.0,
+      "njobs": 1,
+      "spawn":
+      [
+        {
+          "plugin": "example_agent",
+          "count": 2000,
+          "params":
+          {
+            "color": [0.0, 1.0, 0.0]
+          }
+        }
+      ]
+    },
+    "test2":
+    {
+      "dt": 400.0,
+      "njobs": 1,
+      "spawn":
+      [
+        {
+          "plugin": "example_agent",
+          "count": 2000,
+          "params":
+          {
+            "color": [0.0, 0.0, 1.0]
+          }
+        }
+      ]
+    },
+    "line-demo":
+    {
+      "dt": 100,
+      "njobs": 1,
+      "spawn":
+      [
+        {
+          "plugin": "border",
+          "count": 1,
+          "params": {}
+        },
+        {
+          "plugin": "visualisation",
+          "count": 1,
+          "params":
+          {
+            "fullscreen": true,
+            "draw_grid": true,
+            "resolution": [1280, 720],
+            "framerate": 1,
+            "window_name": "robot visualisation"
+          }
+        },
+        {
+          "plugin": "line",
+          "count": 1,
+          "params":
+          {
+            "type": "wave",
+            "count": 400,
+            "speed": 1.0,
+            "color": [1.0, 0.0, 0.0]
+          }
+        },
+        {
+          "plugin": "line",
+          "count": 1,
+          "params":
+          {
+            "type": "fancy",
+            "count": 400,
+            "speed": 1.0,
+            "color": [0, 0.5, 0]
+          }
+        }
+      ]
     }
   }
 }

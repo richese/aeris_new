@@ -68,12 +68,51 @@ struct plugin_init_t
 struct plugin_t
 {
   int (*init) (plugin_init_t &init_data);
-  ae::Agent* (*create) (const json &parameters);
+  std::vector<ae::Agent*>* (*create) (const json &parameters);
 };
 
 
 /** \brief Základná funkcia na inicializovanie pluginu. */
 int plugin_init(plugin_init_t &init_data);
+
+
+/** \brief Plugin na vytváranie agentov.
+ *
+ */
+class Agent
+{
+  private:
+    /** Názov agenta */
+    std::string m_plugin_name;
+    plugin_t *m_plugin;
+
+  public:
+    Agent(const char *agent_name);
+    ~Agent();
+
+    /** \brief Načíta agent plugin zo zdieľanej knižnice.
+     *
+     * Nutné zavolať pred volaním metódy create.
+     *
+     * \returns
+     *   0 - Pri úspešnom načíteni pluginu.
+     *  -1 - Ak sa vyskytla chyba. Chyba je vypísaná do logu.
+     */
+    int load();
+
+    /** \brief Vráti pointer na novú inštanciu agenta poskytovaného pluginom
+     *
+     * Volateľ tejto funkcie preberá zodpovednosť za dealokáciu pamäte tohto
+     * agenta.
+     *
+     * \returns
+     *  Pointer na inštanciu agenta alebo nullptr ak nebol plugin ešte načítaný.
+     */
+    std::vector<ae::Agent*>* create(const json &parameters);
+};
+
+
+void agent_spawner(const nlohmann::json &list, std::vector<ae::Agent*> &agents);
 
 
 /** \brief Stará sa o dynamické otváranie a zatváranie zdieľaných knižníc
@@ -131,42 +170,6 @@ class PluginStorage
      * Pluginy sa zatvárajú automaticky pri ukončení programu.
      */
     ~PluginStorage();
-};
-
-
-/** \brief Plugin na vytváranie agentov.
- *
- */
-class Agent
-{
-  private:
-    /** Názov agenta */
-    std::string m_plugin_name;
-    plugin_t *m_plugin;
-
-  public:
-    Agent(const char *agent_name);
-    ~Agent();
-
-    /** \brief Načíta agent plugin zo zdieľanej knižnice.
-     *
-     * Nutné zavolať pred volaním metódy create.
-     *
-     * \returns
-     *   0 - Pri úspešnom načíteni pluginu.
-     *  -1 - Ak sa vyskytla chyba. Chyba je vypísaná do logu.
-     */
-    int load();
-
-    /** \brief Vráti pointer na novú inštanciu agenta poskytovaného pluginom
-     *
-     * Volateľ tejto funkcie preberá zodpovednosť za dealokáciu pamäte tohto
-     * agenta.
-     *
-     * \returns
-     *  Pointer na inštanciu agenta alebo nullptr ak nebol plugin ešte načítaný.
-     */
-    ae::Agent * create(const json &parameters);
 };
 
 

@@ -1,13 +1,14 @@
 #ifndef _AGENT_SERVER_H_
 #define _AGENT_SERVER_H_
 
-#include <list>
+#include <atomic>
 #include <memory>
+#include <map>
 #include <mutex>
 #include <vector>
-#include <thread>
 
 #include "agent.h"
+#include "communication_header.h"
 #include "socket.h"
 
 
@@ -22,21 +23,21 @@ class Server
 
     /** \brief Identifikátor tohto servera náhodne vygenerovaný pri jeho
      * štarte.
+     * TODO
      */
     uint32_t m_session_id;
 
     /** \brief Čítač, podľa ktorého sa priraďujú identifikačné čísla novo
      * pripojeným agent grupám.
      */
-    uint32_t m_agent_group_counter;
+    std::atomic<uint32_t> m_agent_group_counter;
 
     /** \brief List všetkých agentov nachádzajúcich sa v prostredí.
      *
-     * List pre konštantný čas pri pridávaní a odoberaní agentov.
-     * Random access nie je až taký dôležitý, lebo pri kopírovaní do read bufera
-     * sa musí preiterovať cez všetkých agentov.
+     *
+     *
      */
-    std::list<sAgentInterface> m_global_state;
+    std::map<uint64_t, sAgentInterface> m_global_state;
 
     /** \brief Kópia aktuálneho stavu prostredia, ktorá sa posúva agent grupám.
      *
@@ -53,7 +54,7 @@ class Server
      */
     interface_buffer_t m_read_buffer;
 
-    /** \brief chráni prístup ku m_global_state (je potrebný?) */
+    /** \brief chráni prístup ku m_global_state */
     std::mutex m_lock_global_state;
 
     /** \brief Chráni prístup k m_read_buffer */
@@ -69,23 +70,51 @@ class Server
     Server();
     ~Server();
 
-
+    /* \brief Main server loop.
+     *
+     * Returns when exit signal is received.
+     */
     int main();
 
   private:
+    /** \brief Opens server sockets according to configuration. */
     int listen();
 
-    const interface_buffer_t get_read_buffer() const;
+    /** \brief Gets pointer to most recent global state buffer. */
+    const interface_buffer_t get_read_buffer();
 
-    void global_change_watcher();
+    /** \brief Updates global state based on data received from agent groups.
+     *
+     * All agents have to be from the same agent group.
+     *
+     * \param agents List of agents received from agent group.
+     *   Possible situations:
+     *   Is in global state | Is in agents | action
+     *   true               |  true        | Update agent interface in global state
+     *   false              |  true        | Adds this interface into global state
+     *   true               |  false       | Removes this interface from global state
+     *
+     */
+    void update_global_state(const std::vector<sAgentInterface> &agents);
 
+    /** \brief Checks global state for expired agents. */
+    void expired_agent_check();
+
+    /** \brief Creates new read-only copy of global state
+     *
+     * Does not lock global state.
+     */
+    void update_read_buffer();
+
+    /** \brief Handles communication requests from clients.
+     *
+     * Determines type of request from header and calls apropriate request handler.
+     */
     void request_handler(std::shared_ptr<Socket> client);
 
-    void request_group_id();
-    void request_agent_sync_all();
-    void request_agent_sync_type();
-    void request_agent_sync_id();
-    void request_agent_commit();
+    void request_group_id(std::shared_ptr<Socket> client);
+    void request_agent_sync_all(std::shared_ptr<Socket> client, sCommunicationHeader &header);
+    void request_agent_commit(std::shared_ptr<Socket> client, sCommunicationHeader &header);
 
 };
 

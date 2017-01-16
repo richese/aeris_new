@@ -4,7 +4,7 @@
 #include "common/logging.h"
 #include "common/plugin.h" // pre ae::plugin::plugin_t, ae::plugin::plugin_init, nlohmann::json, el::base::type::StoragePointer
 
-#include "example_agent.h"
+#include "visualisation_agent.h"
 
 
 // mená, ktoré používame
@@ -17,27 +17,27 @@ using ae::plugin::plugin_init;
 
 
 // forward declarations for plugin functions
-extern "C" plugin_t* example_agent_load();
-int example_agent_init(plugin_init_t &init_data);
-std::vector<Agent*>* example_agent_create(const json &parameters);
+extern "C" plugin_t* visualisation_load();
+int visualisation_init(plugin_init_t &init_data);
+std::vector<Agent*>* visualisation_create(const json &parameters);
 
 
 // štruktúra pluginu
-static plugin_t example_agent_plugin = {
-  example_agent_init, // or just ae::plugin::plugin_init
-  example_agent_create
+static plugin_t visualisation_plugin = {
+  visualisation_init, // or just ae::plugin::plugin_init
+  visualisation_create
 };
 
 
 // plugin load function
-extern "C" plugin_t* example_agent_load()
+extern "C" plugin_t* visualisation_load()
 {
-  return &example_agent_plugin;
+  return &visualisation_plugin;
 }
 
 
 // Inicializuje plugin a vypíše správu do logu.
-int example_agent_init(plugin_init_t &init_data)
+int visualisation_init(plugin_init_t &init_data)
 {
   // nastav globálne premenné
   plugin_init(init_data);
@@ -49,11 +49,11 @@ int example_agent_init(plugin_init_t &init_data)
   const auto &agent_list = config::get["agent_list"];
   if (agent_list.find("example_agent") == agent_list.end())
   {
-    LOG(ERROR) << "Configuration is missing 'agent_list' entry for 'example_agent'";
+    LOG(ERROR) << "Configuration is missing 'agent_list' entry for 'visualisation'";
     return -1;
   }
 
-  LOG(INFO) << "ExampleAgent plugin initialized.";
+  LOG(INFO) << "Visualisation plugin initialized.";
 
   // vráť nulu pri úspešnej inicializácii
   return 0;
@@ -61,21 +61,19 @@ int example_agent_init(plugin_init_t &init_data)
 
 
 // Funkcia, ktorá vytvára agentov na základe predaných parametrov.
-std::vector<Agent*>* example_agent_create(const json &parameters)
+std::vector<Agent*>* visualisation_create(const json &parameters)
 {
-  (void)parameters; // unused
-
   std::vector<Agent*> *arr = new std::vector<Agent*>();
   if (arr == nullptr)
   {
     return nullptr;
   }
-  ExampleAgent *agent = new ExampleAgent(parameters);
-  if (agent == nullptr)
+  VisualisationAgent *vis = new VisualisationAgent(parameters);
+  if (vis == nullptr)
   {
     delete arr;
     return nullptr;
   }
-  arr->push_back(agent);
+  arr->push_back(vis);
   return arr;
 }

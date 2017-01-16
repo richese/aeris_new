@@ -23,7 +23,7 @@ namespace ae
  */
 class AgentGroup
 {
-  private:
+  protected:
     using agents_iter_t = std::vector<Agent*>::iterator;
 
   protected:
@@ -99,6 +99,9 @@ class AgentGroup
     virtual int main();
 
   protected:
+    /** \brief Získaj aktuálny globálny stav */
+    virtual int sync();
+
     /** \brief Aktualizuje stav všetkých agentov.
      *
      * Aktualizácia prebieha v m_njobs vláknach.
@@ -133,33 +136,30 @@ class AgentGroup
  * Globálny stav je sprostredkovaný pomocou jedného servera, ku ktorému
  * sa pripájajú všetky grupy.
  */
-// class NetAgentGroup : public AgentGroup
-// {
-//   private:
-//     using socket_ptr_t = std::unique_ptr<Socket>;
-//
-//     /** \brief Socket, ktorý sa použije na nadviazanie spojenia so serverom. */
-//     socket_ptr_t m_socket;
-//
-//   public:
-//     NetAgentGroup(time::milliseconds dt, uint32_t njobs);
-//     ~NetAgentGroup();
-//
-//     int main();
-//
-//   private:
-//     /** \brief Vytvorí spojenie medzi grupou a serverom. */
-//     int connect();
-//
-//     /** \bief Grupa si od servera vyžiada unikátne id pre seba a svojich agentov. */
-//     int request_group_id();
-//
-//     /** \brief Grupa si vyžiada nový globálny stav od servera. */
-//     int sync();
-//
-//     /** \brief Odošle aktualizovaný lokálny stav agentov späť na server. */
-//     int commit();
-// };
+class NetAgentGroup : public AgentGroup
+{
+  private:
+    using socket_ptr_t = std::unique_ptr<Socket>;
+
+    /** \brief Socket, ktorý sa použije na nadviazanie spojenia so serverom. */
+    socket_ptr_t m_socket;
+
+    uint32_t m_session_id;
+
+  public:
+    NetAgentGroup(time::milliseconds dt, uint32_t njobs);
+    virtual ~NetAgentGroup();
+
+    int main();
+
+  private:
+    int receive_agent_group_id();
+    int sync();
+    int commit();
+
+    int connect();
+    int disconnect();
+};
 
 
 /** Grupa, čo beží priamo na serveri a má k dispozícii zdieľanú pamäť so serverom  */

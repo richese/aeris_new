@@ -176,7 +176,7 @@ int ae::plugin::Agent::load()
 }
 
 
-ae::Agent* ae::plugin::Agent::create(const json &parameters)
+std::vector<ae::Agent*>* ae::plugin::Agent::create(const json &parameters)
 {
   if (m_plugin != nullptr && m_plugin->create != nullptr)
   {
@@ -185,5 +185,64 @@ ae::Agent* ae::plugin::Agent::create(const json &parameters)
   else
   {
     return nullptr;
+  }
+}
+
+
+void ae::plugin::agent_spawner(const nlohmann::json &list, std::vector<ae::Agent*> &agents)
+{
+  for (const auto &item : list)
+  {
+    if (!item.is_object())
+    {
+      LOG(WARNING) << "Invalid entry in group spawn array: " << item;
+      continue;
+    }
+
+    // get plugin name
+    if (item.find("plugin") == item.end() ||
+        !item["plugin"].is_string())
+    {
+      LOG(WARNING) << "Invalid entry in group spawn array: " << item;
+      continue;
+    }
+    const std::string &plugin_name = item["plugin"];
+
+    // get agent spawn count
+    int count = 1;
+    if (item.find("count") != item.end() &&
+        item["count"].is_number_unsigned())
+    {
+      count = item["count"];
+    }
+
+    // get agent parameters
+    auto params = nlohmann::json::object();
+    if (item.find("params") != item.end() &&
+        item["params"].is_object())
+    {
+      params = item["params"];
+    }
+
+    // open plugin
+    ae::plugin::Agent plugin(plugin_name.data());
+    if (plugin.load() < 0)
+    {
+      LOG(ERROR) << "Failed to open plugin " << plugin_name << ". Skipping...";
+      continue;
+    }
+
+    // spawn agents
+    for (int i = 0; i < count; ++i)
+    {
+      std::vector<ae::Agent*> *new_agents = plugin.create(params);
+      if (new_agents == nullptr)
+      {
+        LOG(ERROR) << "Failed to spawn agent from plugin " << plugin_name << ". Skipping...";
+        break;
+      }
+      agents.insert(agents.end(), new_agents->begin(), new_agents->end());
+      delete new_agents;
+    }
   }
 }

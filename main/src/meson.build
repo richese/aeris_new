@@ -1,3 +1,4 @@
 subdir('common')
+subdir('server')
+subdir('agent-group')
 subdir('agents')
-subdir('group_test')

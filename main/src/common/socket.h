@@ -56,7 +56,7 @@ class Socket : public el::Loggable
     int connect();
     void close();
 
-    ssize_t send(const void *buf, size_t len);
+    ssize_t send(void *buf, size_t len);
     ssize_t recv(void *buf, size_t len);
     ssize_t exchange(void *buf, size_t len);
 

@@ -4,17 +4,17 @@
 #include <cstdint> // for integer types
 
 #include "common/agent.h" // for ae::Agent, ae::Environment
-
+#include "common/config.h" // for nlohmann::json
 
 class ExampleAgent : public ae::Agent
 {
   public:
-    ExampleAgent() {}
+    ExampleAgent(const nlohmann::json &parameters);
     ~ExampleAgent() {}
 
     void process(ae::Environment &env);
 
-    uint16_t assigned_type() const { return 0; }
+    uint16_t assigned_type() const;
 
     bool remove_protection() const { return false; }
 };

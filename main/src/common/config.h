@@ -50,9 +50,6 @@ int setup(const char *app_name, int argc, char *argv[]);
 
 std::string path(const Directory base_dir, const std::string &file);
 
-const std::string server_ud_path();
-const std::string server_ip_addr();
-int server_port();
 
 uint16_t agent_type_from_name(const std::string &name);
 

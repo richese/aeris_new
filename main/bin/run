@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 
 pushd "$(dirname $0)" > /dev/null
+pushd .. > /dev/null
 export MAIN_ROOT_DIR="$(pwd)"
 popd > /dev/null
-source "$MAIN_ROOT_DIR/bash-env.sh"
+popd > /dev/null
+source ${MAIN_ROOT_DIR}/bin/bash-env.sh
 
 clean_logs
 
@@ -11,16 +13,13 @@ spawn server
 sleep 1s
 check_alive
 
-spawn border
-spawn pheromone
-spawn pheromone
-spawn base
-spawn food
-spawn ant -v
-
-spawn visualisation
+spawn agent-group --name=test
+sleep 1s
+spawn agent-group --name=test1
+sleep 1s
+spawn agent-group --name=test2
 
 stop
 
 sleep 1s
-print_performance
+#print_performance

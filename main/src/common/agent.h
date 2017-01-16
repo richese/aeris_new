@@ -80,8 +80,8 @@ struct sAgentInterface
   agent_time_t timestamp;
   agent_time_t expires;
 
-  struct sAgentPosition position;
-  struct sColor color;
+  sAgentPosition position;
+  sColor color;
 
   uint16_t value[4];
 
@@ -104,11 +104,13 @@ struct sAgentInterface
  */
 class Agent
 {
-  private:
+  protected:
     sAgentInterface m_interface;
 
   public:
+    /** \brief default constructor. Resents all values in agents interface. */
     Agent();
+
     virtual ~Agent();
 
     /* Gettery pre interface */
@@ -173,7 +175,11 @@ class Environment
     /** Vráti agentovi číslo grupy, ktorej je súčasťou. */
     uint32_t this_group_id() const { return m_this_group_id; }
 
-    /** Poskytne agentovi globálny stav prostredia. */
+    /** \brief Poskytne agentovi globálny stav prostredia.
+     *
+     * Ak si agent chce uchovať tento stav musí si urobiť jeho kópiu!
+     * Po skončení metódy process bude toto pole dealokované.
+     */
     const std::vector<sAgentInterface>& global_state() const { return m_global_state; }
 
     /** Poskytne agentovi informácie o tele ľubovolného agenta v prostredí */

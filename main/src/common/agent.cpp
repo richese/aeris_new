@@ -11,6 +11,17 @@ ae::Agent::Agent()
   m_interface.id = 0;
   m_interface.type = 0;
   m_interface.body = 0;
+
+  m_interface.timestamp = 0;
+  m_interface.expires = 0;
+
+  m_interface.position = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+  m_interface.color = {0.0f, 0.0f, 0.0f};
+
+  m_interface.value[0] = 0;
+  m_interface.value[1] = 0;
+  m_interface.value[2] = 0;
+  m_interface.value[3] = 0;
 }
 
 

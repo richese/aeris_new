@@ -306,20 +306,39 @@ void ae::Socket::close()
 }
 
 
-ssize_t ae::Socket::send(const void *buf, size_t len)
+ssize_t ae::Socket::send(void *buf, size_t len)
 {
   if (!valid())
   {
     return -1;
   }
 
-  ssize_t retval = ::send(m_fd, buf, len, 0);
-  if (retval < 0)
+  char *cbuf = (char*)buf;
+  ssize_t sent_total = 0;
+  ssize_t retval;
+
+  while ((size_t)sent_total != len)
   {
+    retval = ::send(m_fd, cbuf + sent_total, len - sent_total, MSG_NOSIGNAL);
+    if (retval > 0)
+    {
+      sent_total += retval;
+      continue;
+    }
+    if (retval == 0)
+    {
+      return 0;
+    }
+    if (errno == EAGAIN || errno == EWOULDBLOCK || errno == EINTR)
+    {
+      continue;
+    }
+
+    PLOG(ERROR) << "Error while sending data to " << *this;
     close();
-    PLOG(ERROR) << "Error while sending data through " << *this;
+    return -1;
   }
-  return retval;
+  return sent_total;
 }
 
 
@@ -330,27 +349,54 @@ ssize_t ae::Socket::recv(void *buf, size_t len)
     return -1;
   }
 
-  ssize_t retval = ::recv(m_fd, buf, len, 0);
-  if (retval < 0)
+  char *cbuf = (char*)buf;
+  ssize_t received_total = 0;
+  ssize_t retval;
+
+  while ((size_t)received_total != len)
   {
-    close();
+    retval = ::recv(m_fd, cbuf + received_total, len - received_total, MSG_NOSIGNAL);
+    if (retval > 0)
+    {
+      received_total += retval;
+      continue;
+    }
+    if (retval == 0)
+    {
+      return 0;
+    }
+    if (errno == EAGAIN || errno == EWOULDBLOCK || errno == EINTR)
+    {
+      continue;
+    }
+
     PLOG(ERROR) << "Error while receiving data through " << *this;
+    close();
+    return -1;
   }
-  return retval;
+  return received_total;
 }
 
 
 ssize_t ae::Socket::exchange(void *buf, size_t len)
 {
-  if (valid())
+  if (!valid())
   {
-    send(buf, len);
+    return -1;
   }
-  if (valid())
+
+  ssize_t retval = send(buf, len);
+  if ((size_t)retval != len)
   {
-    return recv(buf, len);
+    return retval;
   }
-  return -1;
+
+  if (!valid())
+  {
+    return -1;
+  }
+
+  return recv(buf, len);
 }
 
 

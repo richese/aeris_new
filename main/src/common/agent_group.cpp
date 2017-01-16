@@ -5,6 +5,8 @@
 
 #include "agent.h"
 #include "agent_group.h"
+#include "communication_header.h"
+#include "config.h"
 #include "logging.h"
 #include "socket.h"
 #include "signals.h"
@@ -71,7 +73,6 @@ int ae::AgentGroup::main()
   m_running = true;
   VLOG(3) << "Starting AgentGroup main loop with " << m_agents.size() << " agents.";
 
-
   for (Agent *agent : m_agents)
   {
     agent->init(generate_agent_id());
@@ -88,6 +89,11 @@ int ae::AgentGroup::main()
   while (!signal::exit())
   {
     VLOG(4) << "AgentGroup main loop running.";
+
+    if (sync() < 0)
+    {
+      return -1;
+    }
 
     if (process() < 0)
     {
@@ -113,6 +119,12 @@ int ae::AgentGroup::main()
 
   VLOG(3) << "Exiting AgentGroup main loop.";
   m_running = false;
+  return 0;
+}
+
+
+int ae::AgentGroup::sync()
+{
   return 0;
 }
 
@@ -251,4 +263,324 @@ ae::Environment* ae::AgentGroup::process_range(agents_iter_t start, agents_iter_
   }
 
   return env;
+}
+
+
+ae::NetAgentGroup::NetAgentGroup(ae::time::milliseconds dt, uint32_t njobs) :
+  AgentGroup(dt, njobs),
+  m_socket(nullptr),
+  m_session_id(0)
+{
+
+}
+
+
+ae::NetAgentGroup::~NetAgentGroup()
+{
+
+}
+
+
+int ae::NetAgentGroup::main()
+{
+  using std::chrono::duration_cast;
+
+  m_running = true;
+  VLOG(3) << "Starting NetAgentGroup main loop with " << m_agents.size() << " agents.";
+
+  if (receive_agent_group_id() < 0)
+  {
+    LOG(ERROR) << "Failed to receive agent group id.";
+    return -1;
+  }
+
+  for (Agent *agent : m_agents)
+  {
+    agent->init(generate_agent_id());
+  }
+
+  if (commit() < 0)
+  {
+    LOG(ERROR) << "Failed on initial commit.";
+    return -1;
+  }
+
+  auto next_update = time::clock::now() + m_dt;
+
+  while (!signal::exit())
+  {
+    VLOG(4) << "NetAgentGroup main loop running.";
+
+    if (sync() < 0)
+    {
+      return -1;
+    }
+
+    if (process() < 0)
+    {
+      return -1;
+    }
+
+    if (commit() < 0)
+    {
+      return -1;
+    }
+
+    if (disconnect() < 0)
+    {
+      return -1;
+    }
+
+    auto time_left = next_update - time::clock::now();
+    if (time_left.count() < 0)
+    {
+      LOG(WARNING) << "Main loop lagging by: [" << duration_cast<time::milliseconds>(time_left).count() << " ms]";
+    }
+    else
+    {
+      time::sleep_until(next_update);
+    }
+    next_update += m_dt;
+  }
+
+  if (disconnect() < 0)
+  {
+    return -1;
+  }
+
+  VLOG(3) << "Exiting NetAgentGroup main loop.";
+  m_running = false;
+  return 0;
+}
+
+
+int ae::NetAgentGroup::receive_agent_group_id()
+{
+  if (connect() < 0)
+  {
+    return -1;
+  }
+
+  sCommunicationHeader header;
+  header.session_id = 0;
+  header.opcode = OPCODE_REQUEST_GROUP_ID;
+  header.agent_group_id = 0;
+  header.agent_count = 0;
+
+  if (m_socket->exchange(&header, sizeof(header)) != sizeof(header))
+  {
+    PLOG(ERROR) << "Failed header exchange: ";
+    return -1;
+  }
+
+  if (header.opcode != OPCODE_SERVER_ACK)
+  {
+    LOG(ERROR) << "Invalid server reply opcode for OPCODE_REQUEST_GROUP_ID: " << header.opcode;
+    return -1;
+  }
+  m_session_id = header.session_id;
+  m_group_id = header.agent_group_id;
+  return 0;
+}
+
+
+int ae::NetAgentGroup::sync()
+{
+  TIMED_FUNC(net_sync_timer);
+
+  if (connect() < 0)
+  {
+    return -1;
+  }
+
+  sCommunicationHeader header;
+  header.session_id = m_session_id;
+  header.opcode = OPCODE_AGENT_SYNC_ALL;
+  header.agent_group_id = m_group_id;
+  header.agent_count = 0;
+
+  if (m_socket->exchange(&header, sizeof(header)) != sizeof(header))
+  {
+    PLOG(ERROR) << "Failed header exchange: ";
+    return -1;
+  }
+
+  if (header.opcode != OPCODE_SERVER_ACK)
+  {
+    LOG(ERROR) << "Invalid server reply opcode for OPCODE_AGENT_SYNC_ALL: " << header.opcode;
+    return -1;
+  }
+
+  std::vector<sAgentInterface> *synced_state = new std::vector<sAgentInterface>();
+  if (synced_state == nullptr)
+  {
+    PLOG(ERROR) << "Sync buffer allocation error.";
+    return -1;
+  }
+
+  if (header.agent_count > 0)
+  {
+    synced_state->resize(header.agent_count);
+    uint32_t len = header.agent_count * sizeof(sAgentInterface);
+    if (m_socket->recv(synced_state->data(), len) != len)
+    {
+      PLOG(ERROR) << "Sync data receive error: ";
+      return -1;
+    }
+  }
+
+  if (m_global_state != nullptr)
+  {
+    delete m_global_state;
+  }
+  m_global_state = synced_state;
+
+  return 0;
+}
+
+
+int ae::NetAgentGroup::commit()
+{
+  TIMED_FUNC(net_commit_timer);
+
+  if (connect() < 0)
+  {
+    return -1;
+  }
+
+  if (m_agents.size() == 0)
+  {
+    return 0;
+  }
+
+  std::vector<sAgentInterface> commit;
+  commit.reserve(m_agents.size());
+  for (auto &agent : m_agents)
+  {
+    commit.push_back(static_cast<sAgentInterface>(*agent));
+  }
+
+  sCommunicationHeader header;
+  header.session_id = m_session_id;
+  header.opcode = OPCODE_AGENT_COMMIT;
+  header.agent_group_id = m_group_id;
+  header.agent_count = commit.size();
+
+  if (m_socket->exchange(&header, sizeof(header)) != sizeof(header))
+  {
+    PLOG(ERROR) << "Failed header exchange: ";
+    return -1;
+  }
+
+  if (header.opcode != OPCODE_SERVER_ACK)
+  {
+    LOG(ERROR) << "Invalid server reply opcode for OPCODE_AGENT_COMMIT: " << header.opcode;
+    return -1;
+  }
+
+  if (header.agent_count > 0)
+  {
+    uint32_t len = sizeof(sAgentInterface) * header.agent_count;
+    if (m_socket->send(commit.data(), len) != len)
+    {
+      PLOG(ERROR) << "Commit data send error: ";
+      return -1;
+    }
+  }
+
+  return 0;
+}
+
+
+int ae::NetAgentGroup::connect()
+{
+  TIMED_FUNC(disconnect_timer);
+
+  if (!m_socket)
+  {
+    if (config::get.find("server") == config::get.end())
+    {
+      LOG(ERROR) << "Configuration is missing server section.";
+      return -1;
+    }
+    auto server_config = config::get["server"];
+
+    // try to connect using unix socket
+    if (server_config.find("ud_path") != server_config.end() &&
+        server_config["ud_path"].is_string())
+    {
+      const std::string &ud_path = server_config["ud_path"];
+
+      Socket *sock = new Socket(ud_path.data());
+      if (sock == nullptr)
+      {
+        LOG(ERROR) << "Socket allocation error.";
+        return -1;
+      }
+      m_socket = socket_ptr_t(sock);
+    }
+    else
+    {
+      //try to connect using inet socket
+      if (server_config.find("ip") != server_config.end() &&
+          server_config["ip"].is_string() &&
+          server_config.find("port") != server_config.end() &&
+          server_config["port"].is_number_unsigned())
+      {
+        const std::string &ip = server_config["ip"];
+        const int port = server_config["port"];
+
+        Socket *sock = new Socket(ip.data(), port);
+        if (sock == nullptr)
+        {
+          LOG(ERROR) << "Socket allocation error.";
+          return -1;
+        }
+        m_socket = socket_ptr_t(sock);
+      }
+      else
+      {
+        LOG(ERROR) << "No valid server configuration found.";
+        return -1;
+      }
+    }
+  }
+
+  if (!m_socket->valid())
+  {
+    // try to connect
+    if (m_socket->connect() < 0)
+    {
+      LOG(ERROR) << "Failed to connect to server.";
+      return -1;
+    }
+  }
+
+  return 0;
+}
+
+
+int ae::NetAgentGroup::disconnect()
+{
+  if (!m_socket->valid())
+  {
+    // nothing to do
+    return 0;
+  }
+
+  sCommunicationHeader header;
+  header.session_id = m_session_id;
+  header.opcode = OPCODE_DISCONNECT;
+  header.agent_group_id = m_group_id;
+  header.agent_count = 0;
+
+  if (m_socket->send(&header, sizeof(header)) != sizeof(header))
+  {
+    LOG(ERROR) << "Failed to send disconnect request.";
+    return -1;
+  }
+
+  m_socket->close();
+
+  return 0;
 }
