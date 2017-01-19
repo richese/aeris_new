@@ -10,6 +10,7 @@ spawn server
 check_alive
 
 spawn mode_bot
+spawn robot_bridge
 
 #security border
 spawn border
@@ -21,10 +22,10 @@ spawn line
 spawn arena
 
 #ants demo
-spawn pheromone
-spawn base
-spawn food
-spawn ant
+#spawn pheromone
+#spawn base
+#spawn food
+#spawn ant
 
 spawn visualisation
 

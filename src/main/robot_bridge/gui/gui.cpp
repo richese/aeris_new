@@ -241,7 +241,7 @@ void CGUI::run(void (*application_main_func)())
       x_position_chart = new Fl_Chart(x_ofs+10, y_ofs+50 + 0*space, 570, height, (char*)"x position");
       x_position_chart->type(FL_LINE_CHART);
 
-      x_position_chart->bounds(-1.0, 1.0);
+      x_position_chart->bounds(-10.0, 10.0);
       x_position_chart->color(fl_rgb_color(frame_r, frame_g, frame_b));
 
 
@@ -263,7 +263,7 @@ void CGUI::run(void (*application_main_func)())
       y_position_chart = new Fl_Chart(x_ofs+10, y_ofs+50 + 1*space, 570, height, (char*)"y position");
       y_position_chart->type(FL_LINE_CHART);
 
-      y_position_chart->bounds(-1.0, 1.0);
+      y_position_chart->bounds(-10.0, 10.0);
       y_position_chart->color(fl_rgb_color(frame_r, frame_g, frame_b));
 
 
@@ -285,7 +285,7 @@ void CGUI::run(void (*application_main_func)())
       z_position_chart = new Fl_Chart(x_ofs+10, y_ofs+50 + 2*space, 570, height, (char*)"z position");
       z_position_chart->type(FL_LINE_CHART);
 
-      z_position_chart->bounds(-1.0, 1.0);
+      z_position_chart->bounds(-10.0, 10.0);
       z_position_chart->color(fl_rgb_color(frame_r, frame_g, frame_b));
 
 

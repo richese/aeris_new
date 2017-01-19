@@ -16370,7 +16370,7 @@ Source: www.cypressindustries.com</description>
 <part name="FRAME1" library="frames" deviceset="A3L-LOC" device="" value="dsfsd"/>
 <part name="R3" library="resistor" deviceset="R-EU_" device="M1206" value="4k7"/>
 <part name="+3V3" library="supply1" deviceset="+3V3" device=""/>
-<part name="U2" library="stm32f103_lqfp48" deviceset="STM32F103C6T6A" device=""/>
+<part name="U2-STM32F303" library="stm32f103_lqfp48" deviceset="STM32F103C6T6A" device=""/>
 <part name="GND20" library="supply1" deviceset="GND" device=""/>
 <part name="+3V4" library="supply1" deviceset="+3V3" device=""/>
 <part name="R4" library="resistor" deviceset="R-EU_" device="M0805" value="4k7"/>
@@ -16583,7 +16583,7 @@ Source: www.cypressindustries.com</description>
 <instance part="FRAME1" gate="G$1" x="180.34" y="-121.92"/>
 <instance part="R3" gate="G$1" x="220.98" y="-81.28" rot="R270"/>
 <instance part="+3V3" gate="G$1" x="220.98" y="-71.12"/>
-<instance part="U2" gate="A" x="401.32" y="78.74"/>
+<instance part="U2-STM32F303" gate="A" x="401.32" y="78.74"/>
 <instance part="GND20" gate="1" x="373.38" y="38.1"/>
 <instance part="+3V4" gate="G$1" x="373.38" y="129.54"/>
 <instance part="R4" gate="G$1" x="363.22" y="50.8" rot="R270"/>
@@ -16818,17 +16818,17 @@ Source: www.cypressindustries.com</description>
 <wire x1="231.14" y1="-83.82" x2="231.14" y2="-91.44" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="U2" gate="A" pin="VSS_3"/>
+<pinref part="U2-STM32F303" gate="A" pin="VSS_3"/>
 <wire x1="375.92" y1="43.18" x2="373.38" y2="43.18" width="0.1524" layer="91"/>
 <wire x1="373.38" y1="43.18" x2="373.38" y2="45.72" width="0.1524" layer="91"/>
-<pinref part="U2" gate="A" pin="VSSA"/>
+<pinref part="U2-STM32F303" gate="A" pin="VSSA"/>
 <wire x1="373.38" y1="45.72" x2="373.38" y2="48.26" width="0.1524" layer="91"/>
 <wire x1="373.38" y1="48.26" x2="373.38" y2="50.8" width="0.1524" layer="91"/>
 <wire x1="373.38" y1="50.8" x2="375.92" y2="50.8" width="0.1524" layer="91"/>
-<pinref part="U2" gate="A" pin="VSS_1"/>
+<pinref part="U2-STM32F303" gate="A" pin="VSS_1"/>
 <wire x1="375.92" y1="48.26" x2="373.38" y2="48.26" width="0.1524" layer="91"/>
 <junction x="373.38" y="48.26"/>
-<pinref part="U2" gate="A" pin="VSS_2"/>
+<pinref part="U2-STM32F303" gate="A" pin="VSS_2"/>
 <wire x1="373.38" y1="45.72" x2="375.92" y2="45.72" width="0.1524" layer="91"/>
 <junction x="373.38" y="45.72"/>
 <pinref part="GND20" gate="1" pin="GND"/>
@@ -16852,7 +16852,7 @@ Source: www.cypressindustries.com</description>
 <wire x1="414.02" y1="5.08" x2="414.02" y2="7.62" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="U2" gate="A" pin="PB2"/>
+<pinref part="U2-STM32F303" gate="A" pin="PB2"/>
 <pinref part="GND43" gate="1" pin="GND"/>
 <wire x1="426.72" y1="68.58" x2="449.58" y2="68.58" width="0.1524" layer="91"/>
 </segment>
@@ -17139,17 +17139,17 @@ Source: www.cypressindustries.com</description>
 <wire x1="220.98" y1="-76.2" x2="220.98" y2="-73.66" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="U2" gate="A" pin="VDD_3"/>
+<pinref part="U2-STM32F303" gate="A" pin="VDD_3"/>
 <wire x1="375.92" y1="101.6" x2="373.38" y2="101.6" width="0.1524" layer="91"/>
 <wire x1="373.38" y1="101.6" x2="373.38" y2="104.14" width="0.1524" layer="91"/>
-<pinref part="U2" gate="A" pin="VDDA"/>
+<pinref part="U2-STM32F303" gate="A" pin="VDDA"/>
 <wire x1="373.38" y1="104.14" x2="373.38" y2="106.68" width="0.1524" layer="91"/>
 <wire x1="373.38" y1="106.68" x2="373.38" y2="109.22" width="0.1524" layer="91"/>
 <wire x1="373.38" y1="109.22" x2="375.92" y2="109.22" width="0.1524" layer="91"/>
-<pinref part="U2" gate="A" pin="VDD_1"/>
+<pinref part="U2-STM32F303" gate="A" pin="VDD_1"/>
 <wire x1="375.92" y1="106.68" x2="373.38" y2="106.68" width="0.1524" layer="91"/>
 <junction x="373.38" y="106.68"/>
-<pinref part="U2" gate="A" pin="VDD_2"/>
+<pinref part="U2-STM32F303" gate="A" pin="VDD_2"/>
 <wire x1="375.92" y1="104.14" x2="373.38" y2="104.14" width="0.1524" layer="91"/>
 <junction x="373.38" y="104.14"/>
 <pinref part="+3V4" gate="G$1" pin="+3V3"/>
@@ -17316,7 +17316,7 @@ Source: www.cypressindustries.com</description>
 <label x="474.98" y="7.62" size="1.778" layer="95" rot="R180"/>
 </segment>
 <segment>
-<pinref part="U2" gate="A" pin="PB6"/>
+<pinref part="U2-STM32F303" gate="A" pin="PB6"/>
 <wire x1="426.72" y1="58.42" x2="436.88" y2="58.42" width="0.1524" layer="91"/>
 <label x="439.42" y="58.42" size="1.778" layer="95"/>
 </segment>
@@ -17351,7 +17351,7 @@ Source: www.cypressindustries.com</description>
 <label x="474.98" y="10.16" size="1.778" layer="95" rot="R180"/>
 </segment>
 <segment>
-<pinref part="U2" gate="A" pin="PB7"/>
+<pinref part="U2-STM32F303" gate="A" pin="PB7"/>
 <wire x1="426.72" y1="55.88" x2="436.88" y2="55.88" width="0.1524" layer="91"/>
 <label x="439.42" y="55.88" size="1.778" layer="95"/>
 </segment>
@@ -17402,7 +17402,7 @@ Source: www.cypressindustries.com</description>
 <label x="396.24" y="17.78" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="U2" gate="A" pin="PD1-OSC_OUT"/>
+<pinref part="U2-STM32F303" gate="A" pin="PD1-OSC_OUT"/>
 <wire x1="375.92" y1="76.2" x2="370.84" y2="76.2" width="0.1524" layer="91"/>
 <label x="368.3" y="76.2" size="1.778" layer="95" rot="R180"/>
 </segment>
@@ -17414,7 +17414,7 @@ Source: www.cypressindustries.com</description>
 <label x="195.58" y="-76.2" size="1.778" layer="95" rot="R90"/>
 </segment>
 <segment>
-<pinref part="U2" gate="A" pin="PB15"/>
+<pinref part="U2-STM32F303" gate="A" pin="PB15"/>
 <wire x1="426.72" y1="35.56" x2="436.88" y2="35.56" width="0.1524" layer="91"/>
 <label x="439.42" y="35.56" size="1.778" layer="95"/>
 </segment>
@@ -17431,7 +17431,7 @@ Source: www.cypressindustries.com</description>
 <wire x1="220.98" y1="-88.9" x2="215.9" y2="-88.9" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="U2" gate="A" pin="PB9"/>
+<pinref part="U2-STM32F303" gate="A" pin="PB9"/>
 <wire x1="426.72" y1="50.8" x2="436.88" y2="50.8" width="0.1524" layer="91"/>
 <label x="439.42" y="50.8" size="1.778" layer="95"/>
 </segment>
@@ -17447,14 +17447,14 @@ Source: www.cypressindustries.com</description>
 <label x="396.24" y="20.32" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="U2" gate="A" pin="PD0-OSC_IN"/>
+<pinref part="U2-STM32F303" gate="A" pin="PD0-OSC_IN"/>
 <wire x1="375.92" y1="78.74" x2="370.84" y2="78.74" width="0.1524" layer="91"/>
 <label x="368.3" y="78.74" size="1.778" layer="95" rot="R180"/>
 </segment>
 </net>
 <net name="UART_TX" class="0">
 <segment>
-<pinref part="U2" gate="A" pin="PA9"/>
+<pinref part="U2-STM32F303" gate="A" pin="PA9"/>
 <wire x1="426.72" y1="93.98" x2="436.88" y2="93.98" width="0.1524" layer="91"/>
 <label x="439.42" y="93.98" size="1.778" layer="95"/>
 </segment>
@@ -17466,7 +17466,7 @@ Source: www.cypressindustries.com</description>
 </net>
 <net name="UART_RX" class="0">
 <segment>
-<pinref part="U2" gate="A" pin="PA10"/>
+<pinref part="U2-STM32F303" gate="A" pin="PA10"/>
 <wire x1="426.72" y1="91.44" x2="436.88" y2="91.44" width="0.1524" layer="91"/>
 <label x="439.42" y="91.44" size="1.778" layer="95"/>
 </segment>
@@ -17478,7 +17478,7 @@ Source: www.cypressindustries.com</description>
 </net>
 <net name="N$16" class="0">
 <segment>
-<pinref part="U2" gate="A" pin="BOOT0"/>
+<pinref part="U2-STM32F303" gate="A" pin="BOOT0"/>
 <pinref part="R4" gate="G$1" pin="1"/>
 <wire x1="375.92" y1="63.5" x2="363.22" y2="63.5" width="0.1524" layer="91"/>
 <wire x1="363.22" y1="63.5" x2="363.22" y2="55.88" width="0.1524" layer="91"/>
@@ -17491,7 +17491,7 @@ Source: www.cypressindustries.com</description>
 </net>
 <net name="USBDP" class="0">
 <segment>
-<pinref part="U2" gate="A" pin="PA12"/>
+<pinref part="U2-STM32F303" gate="A" pin="PA12"/>
 <wire x1="426.72" y1="86.36" x2="436.88" y2="86.36" width="0.1524" layer="91"/>
 <label x="439.42" y="86.36" size="1.778" layer="95"/>
 </segment>
@@ -17512,14 +17512,14 @@ Source: www.cypressindustries.com</description>
 <wire x1="238.76" y1="2.54" x2="243.84" y2="2.54" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="U2" gate="A" pin="PA11"/>
+<pinref part="U2-STM32F303" gate="A" pin="PA11"/>
 <wire x1="426.72" y1="88.9" x2="436.88" y2="88.9" width="0.1524" layer="91"/>
 <label x="439.42" y="88.9" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="RESET" class="0">
 <segment>
-<pinref part="U2" gate="A" pin="NRST"/>
+<pinref part="U2-STM32F303" gate="A" pin="NRST"/>
 <wire x1="375.92" y1="66.04" x2="370.84" y2="66.04" width="0.1524" layer="91"/>
 <label x="368.3" y="66.04" size="1.778" layer="95" rot="R180"/>
 </segment>
@@ -17572,7 +17572,7 @@ Source: www.cypressindustries.com</description>
 </net>
 <net name="SWCLK" class="0">
 <segment>
-<pinref part="U2" gate="A" pin="PA14"/>
+<pinref part="U2-STM32F303" gate="A" pin="PA14"/>
 <wire x1="426.72" y1="81.28" x2="436.88" y2="81.28" width="0.1524" layer="91"/>
 <label x="439.42" y="81.28" size="1.778" layer="95"/>
 </segment>
@@ -17584,7 +17584,7 @@ Source: www.cypressindustries.com</description>
 </net>
 <net name="SWDIO" class="0">
 <segment>
-<pinref part="U2" gate="A" pin="PA13"/>
+<pinref part="U2-STM32F303" gate="A" pin="PA13"/>
 <wire x1="426.72" y1="83.82" x2="436.88" y2="83.82" width="0.1524" layer="91"/>
 <label x="439.42" y="83.82" size="1.778" layer="95"/>
 </segment>
@@ -17620,7 +17620,7 @@ Source: www.cypressindustries.com</description>
 </net>
 <net name="N$14" class="0">
 <segment>
-<pinref part="U2" gate="A" pin="PB11"/>
+<pinref part="U2-STM32F303" gate="A" pin="PB11"/>
 <pinref part="C32" gate="G$1" pin="1"/>
 <wire x1="426.72" y1="45.72" x2="452.12" y2="45.72" width="0.1524" layer="91"/>
 <wire x1="452.12" y1="45.72" x2="452.12" y2="33.02" width="0.1524" layer="91"/>
@@ -17732,7 +17732,7 @@ Source: www.cypressindustries.com</description>
 <label x="226.06" y="-33.02" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="U2" gate="A" pin="PB0"/>
+<pinref part="U2-STM32F303" gate="A" pin="PB0"/>
 <wire x1="426.72" y1="73.66" x2="436.88" y2="73.66" width="0.1524" layer="91"/>
 <label x="439.42" y="73.66" size="1.778" layer="95"/>
 </segment>
@@ -17747,7 +17747,7 @@ Source: www.cypressindustries.com</description>
 <label x="269.24" y="-43.18" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="U2" gate="A" pin="PA1"/>
+<pinref part="U2-STM32F303" gate="A" pin="PA1"/>
 <wire x1="426.72" y1="114.3" x2="436.88" y2="114.3" width="0.1524" layer="91"/>
 <label x="439.42" y="114.3" size="1.778" layer="95"/>
 </segment>
@@ -17791,7 +17791,7 @@ Source: www.cypressindustries.com</description>
 <label x="497.84" y="114.3" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="U2" gate="A" pin="PA0-WKUP"/>
+<pinref part="U2-STM32F303" gate="A" pin="PA0-WKUP"/>
 <wire x1="426.72" y1="116.84" x2="436.88" y2="116.84" width="0.1524" layer="91"/>
 <label x="439.42" y="116.84" size="1.778" layer="95"/>
 </segment>
@@ -17841,7 +17841,7 @@ Source: www.cypressindustries.com</description>
 </net>
 <net name="SDA0" class="0">
 <segment>
-<pinref part="U2" gate="A" pin="PA4"/>
+<pinref part="U2-STM32F303" gate="A" pin="PA4"/>
 <wire x1="426.72" y1="106.68" x2="436.88" y2="106.68" width="0.1524" layer="91"/>
 <label x="439.42" y="106.68" size="1.778" layer="95"/>
 </segment>
@@ -17858,7 +17858,7 @@ Source: www.cypressindustries.com</description>
 </net>
 <net name="SDA1" class="0">
 <segment>
-<pinref part="U2" gate="A" pin="PA5"/>
+<pinref part="U2-STM32F303" gate="A" pin="PA5"/>
 <wire x1="426.72" y1="104.14" x2="436.88" y2="104.14" width="0.1524" layer="91"/>
 <label x="439.42" y="104.14" size="1.778" layer="95"/>
 </segment>
@@ -17875,7 +17875,7 @@ Source: www.cypressindustries.com</description>
 </net>
 <net name="SDA2" class="0">
 <segment>
-<pinref part="U2" gate="A" pin="PA6"/>
+<pinref part="U2-STM32F303" gate="A" pin="PA6"/>
 <wire x1="426.72" y1="101.6" x2="436.88" y2="101.6" width="0.1524" layer="91"/>
 <label x="439.42" y="101.6" size="1.778" layer="95"/>
 </segment>
@@ -17892,7 +17892,7 @@ Source: www.cypressindustries.com</description>
 </net>
 <net name="SDA3" class="0">
 <segment>
-<pinref part="U2" gate="A" pin="PA7"/>
+<pinref part="U2-STM32F303" gate="A" pin="PA7"/>
 <wire x1="426.72" y1="99.06" x2="436.88" y2="99.06" width="0.1524" layer="91"/>
 <label x="439.42" y="99.06" size="1.778" layer="95"/>
 </segment>
@@ -17934,7 +17934,7 @@ Source: www.cypressindustries.com</description>
 <label x="276.86" y="81.28" size="1.778" layer="95" rot="R90"/>
 </segment>
 <segment>
-<pinref part="U2" gate="A" pin="PC13-TAMPER-RTC"/>
+<pinref part="U2-STM32F303" gate="A" pin="PC13-TAMPER-RTC"/>
 <wire x1="375.92" y1="91.44" x2="370.84" y2="91.44" width="0.1524" layer="91"/>
 <label x="368.3" y="91.44" size="1.778" layer="95" rot="R180"/>
 </segment>
@@ -17954,7 +17954,7 @@ Source: www.cypressindustries.com</description>
 </net>
 <net name="WHITE_ON" class="0">
 <segment>
-<pinref part="U2" gate="A" pin="PA3"/>
+<pinref part="U2-STM32F303" gate="A" pin="PA3"/>
 <wire x1="426.72" y1="109.22" x2="436.88" y2="109.22" width="0.1524" layer="91"/>
 <label x="439.42" y="109.22" size="1.778" layer="95"/>
 </segment>
@@ -18021,7 +18021,7 @@ Source: www.cypressindustries.com</description>
 </net>
 <net name="NC" class="0">
 <segment>
-<pinref part="U2" gate="A" pin="VBAT"/>
+<pinref part="U2-STM32F303" gate="A" pin="VBAT"/>
 <wire x1="375.92" y1="116.84" x2="368.3" y2="116.84" width="0.1524" layer="91"/>
 </segment>
 </net>
@@ -18041,7 +18041,7 @@ Source: www.cypressindustries.com</description>
 </net>
 <net name="SDA4" class="0">
 <segment>
-<pinref part="U2" gate="A" pin="PA8"/>
+<pinref part="U2-STM32F303" gate="A" pin="PA8"/>
 <wire x1="426.72" y1="96.52" x2="436.88" y2="96.52" width="0.1524" layer="91"/>
 <label x="439.42" y="96.52" size="1.778" layer="95"/>
 </segment>
