@@ -294,8 +294,6 @@ void ae::Server::request_handler(std::shared_ptr<ae::Socket> client)
 {
   sCommunicationHeader header;
 
-  LOG(DEBUG) << "Aaa";
-
   if (client->recv(&header, sizeof(header)) != sizeof(header))
   {
     LOG(ERROR) << "Failed to receive header from client: " << *client;
@@ -303,7 +301,6 @@ void ae::Server::request_handler(std::shared_ptr<ae::Socket> client)
     return;
   }
 
-  LOG(DEBUG) << "bbb";
   switch (header.opcode)
   {
     case OPCODE_DISCONNECT:
