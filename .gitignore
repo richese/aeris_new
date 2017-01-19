@@ -29,3 +29,11 @@
 *.app
 *.elf
 *.bin
+
+# Aeris
+main/bin/meson
+main/bin/ninja
+main/bin/*.elf
+main/build
+main/logs
+main/lib

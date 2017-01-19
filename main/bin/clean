@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+## Usage: clean [force]
+
+## Zisti absolutnú cestu ku skriptu a nastav prostredie pomocou `bash-env.sh`.
+## Predpokladá sa, že skript je v podadresári `src/main` gitovského repozitára.
+pushd "$(dirname $0)" > /dev/null
+pushd .. > /dev/null
+export MAIN_ROOT_DIR="$(pwd)"
+popd > /dev/null
+popd > /dev/null
+source ${MAIN_ROOT_DIR}/bin/bash-env.sh
+source ${MAIN_ROOT_DIR}/bin/build-env.sh
+
+## Kompletne zmaž buildovací adresár ak bol skript spustený s argumentom `force`.
+if [ "$1" = "force" ]; then
+  rm -rfv $MAIN_BUILD_DIR
+  rm -rfv $MAIN_LOG_DIR
+  rm -rfv $MAIN_BIN_DIR/*.elf
+  rm -rfv $MAIN_ROOT_DIR/lib
+  exit 0
+fi
+
+## Skontroluj či je vôbec treba niečo mazať.
+if [ ! -f "${MAIN_BUILD_DIR}/build.ninja" ]; then
+  exit 1
+fi
+
+## Vymaž všetky zostavené objekty a binárky.
+ninja -C "$MAIN_BUILD_DIR" clean
+rm -rfv $MAIN_BIN_DIR/*.elf
+rm -rfv $MAIN_ROOT_DIR/lib/*.so

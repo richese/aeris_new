@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+## Usage: build [ninja_arguments]
+
+## Zisti absolutnú cestu ku skriptu a nastav prostredie pomocou `bash-env.sh`.
+## Predpokladá sa, že skript je v podadresári `src/main` gitovského repozitára.
+pushd "$(dirname $0)" > /dev/null
+pushd .. > /dev/null
+export MAIN_ROOT_DIR="$(pwd)"
+popd > /dev/null
+popd > /dev/null
+source ${MAIN_ROOT_DIR}/bin/bash-env.sh
+source ${MAIN_ROOT_DIR}/bin/build-env.sh
+
+
+## Vygeneruj kompilačné pravidlá pri prvej kompilácii.
+if [ ! -f "${MAIN_BUILD_DIR}/build.ninja" ]; then
+  meson --buildtype release --prefix "$MAIN_ROOT_DIR" "$MAIN_ROOT_DIR" "$MAIN_BUILD_DIR"
+  if [ "$?" != "0" ]; then
+    exit 1
+  fi
+fi
+
+## Skompiluj projekt a posuň prípadné argumenty ninjovi
+ninja -C "$MAIN_BUILD_DIR" $@
+## Nakopíruj skompilované binárky do adreasára bin
+if [ "$?" == "0" ]; then
+  ninja -C "$MAIN_BUILD_DIR" install
+else
+  exit 1
+fi

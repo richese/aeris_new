@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+pushd "$(dirname $0)" > /dev/null
+pushd .. > /dev/null
+export MAIN_ROOT_DIR="$(pwd)"
+popd > /dev/null
+popd > /dev/null
+source ${MAIN_ROOT_DIR}/bin/bash-env.sh
+
+clean_logs
+
+spawn server
+sleep 1s
+check_alive
+
+spawn agent-group --name=test1
+sleep 1s
+spawn agent-group --name=test2
+sleep 1s
+spawn agent-group --name=test
+
+stop
+
+sleep 1s
+#print_performance

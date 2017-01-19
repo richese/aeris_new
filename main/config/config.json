@@ -1,0 +1,193 @@
+{
+  "server_list":
+  {
+    "local":
+    {
+      "ip": "127.0.0.1",
+      "port": 2001,
+      "ud_path": "/tmp/aeris.sock"
+    },
+    "grid":
+    {
+      "ip": "158.193.210.195",
+      "port": 20001,
+      "ud_path": null
+    },
+    "ud_test":
+    {
+      "ip": null,
+      "port": null,
+      "ud_path": "/tmp/test.sock"
+    }
+  },
+  "playground_list":
+  {
+    "production":
+    {
+      "size": [121.8, 68.5]
+    },
+    "notebook":
+    {
+      "size": [34.4, 19.3]
+    },
+    "testing":
+    {
+      "size": [50.9, 28.6]
+    }
+  },
+  "agent_list":
+  {
+    "null":
+    {
+      "interface_type": 0,
+      "body": "null"
+    },
+    "visualisation":
+    {
+      "interface_type": 1,
+      "body": "null"
+    },
+    "example_agent":
+    {
+      "interface_type": 2,
+      "body": "sphere"
+    },
+    "line":
+    {
+      "interface_type": 4,
+      "body": "sphere_1cm"
+    }
+  },
+  "body_list":
+  {
+    "null":
+    {
+      "interface_type": 0,
+      "model": null,
+      "scale": 1.0
+    },
+    "sphere":
+    {
+      "interface_type": 1,
+      "model": "models/sphere.obj",
+      "scale": 0.1
+    },
+    "sphere_1cm":
+    {
+      "interface_type": 2,
+      "model": "models/sphere.obj",
+      "scale": 0.5
+    }
+  },
+  "agent_group_list":
+  {
+    "test":
+    {
+      "dt": 100,
+      "njobs": 1,
+      "spawn":
+      [
+        {
+          "plugin": "visualisation",
+          "params":
+          {
+            "fullscreen": true,
+            "draw_grid": true,
+            "resolution": [1920, 1080],
+            "framerate": 30
+          }
+        },
+        {
+          "plugin": "line",
+          "params":
+          {
+            "type": "elipse",
+            "agent_count": 400,
+            "speed": 1.0,
+            "radius": 9,
+            "color": [0.0, 0.7, 0.0]
+          }
+        }
+      ]
+    },
+    "test1":
+    {
+      "dt": 300,
+      "njobs": 1,
+      "spawn":
+      [
+        {
+          "plugin": "example_agent",
+          "count": 2000,
+          "params":
+          {
+            "color": [0.0, 1.0, 0.0]
+          }
+        }
+      ]
+    },
+    "test2":
+    {
+      "dt": 400,
+      "njobs": 1,
+      "spawn":
+      [
+        {
+          "plugin": "example_agent",
+          "count": 2000,
+          "params":
+          {
+            "color": [0.0, 0.0, 1.0]
+          }
+        }
+      ]
+    },
+    "line-demo":
+    {
+      "dt": 100,
+      "njobs": 1,
+      "spawn":
+      [
+        {
+          "plugin": "border",
+          "count": 1,
+          "params": {}
+        },
+        {
+          "plugin": "visualisation",
+          "count": 1,
+          "params":
+          {
+            "fullscreen": true,
+            "draw_grid": true,
+            "resolution": [1280, 720],
+            "framerate": 1,
+            "window_name": "robot visualisation"
+          }
+        },
+        {
+          "plugin": "line",
+          "count": 1,
+          "params":
+          {
+            "type": "wave",
+            "count": 400,
+            "speed": 1.0,
+            "color": [1.0, 0.0, 0.0]
+          }
+        },
+        {
+          "plugin": "line",
+          "count": 1,
+          "params":
+          {
+            "type": "fancy",
+            "count": 400,
+            "speed": 1.0,
+            "color": [0, 0.5, 0]
+          }
+        }
+      ]
+    }
+  }
+}
