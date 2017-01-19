@@ -4,8 +4,7 @@
     "local":
     {
       "ip": "127.0.0.1",
-      "port": 2001,
-      "ud_path": "/tmp/aeris.sock"
+      "port": 2001
     },
     "grid":
     {
@@ -91,9 +90,9 @@
           "plugin": "visualisation",
           "params":
           {
-            "fullscreen": true,
+            "fullscreen": false,
             "draw_grid": true,
-            "resolution": [1920, 1080],
+            "resolution": [800, 600],
             "framerate": 30
           }
         },
@@ -118,7 +117,7 @@
       [
         {
           "plugin": "example_agent",
-          "count": 2000,
+          "count": 20000,
           "params":
           {
             "color": [0.0, 1.0, 0.0]

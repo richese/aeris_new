@@ -27,6 +27,9 @@ ExampleAgent::ExampleAgent(const nlohmann::json &parameters) :
   m_interface.value[2] = 2;
   m_interface.value[3] = 3;
 
+  m_dx = 0.0;
+  m_dy = 0.0;
+
   if (parameters.is_object())
   {
     if (parameters.find("color") != parameters.end() &&
@@ -51,9 +54,27 @@ void ExampleAgent::process(ae::Environment &env)
 
   if (rand() % 100 == 0)
   {
-    m_interface.position.x += ((float)(rand() % 64) - 32) / 512;
-    m_interface.position.y += ((float)(rand() % 64) - 32) / 512;
+    m_dx = ((float)(rand() % 64) - 32) / 512;
+    m_dy = ((float)(rand() % 64) - 32) / 512;
   }
+
+  m_interface.position.x += m_dx;
+  m_interface.position.y += m_dy;
+
+  float size_x = ae::config::get["playground"]["size"][0].get<float>();
+  float size_y = ae::config::get["playground"]["size"][1].get<float>();
+
+  if (m_interface.position.x < (-size_x/2))
+    m_interface.position.x = (-size_x/2);
+
+  if (m_interface.position.x > (size_x/2))
+    m_interface.position.x = (size_x/2);
+
+  if (m_interface.position.y < (-size_y/2))
+    m_interface.position.y = (-size_y/2);
+
+  if (m_interface.position.y > (size_y/2))
+    m_interface.position.y = (size_y/2);
 }
 
 

@@ -8,6 +8,9 @@
 
 class ExampleAgent : public ae::Agent
 {
+  private:
+    float m_dx, m_dy;
+    
   public:
     ExampleAgent(const nlohmann::json &parameters);
     ~ExampleAgent() {}

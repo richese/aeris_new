@@ -102,7 +102,7 @@ int ae::Server::main()
       case Socket::TYPE_ACCEPT:
       {
         m_sockets.del_socket(socket->fd());
-        request_handlers.push_back(std::async(&Server::request_handler, this, socket));
+        request_handlers.push_back(std::async(std::launch::async, &Server::request_handler, this, socket));
         break;
       }
       default:
@@ -294,12 +294,16 @@ void ae::Server::request_handler(std::shared_ptr<ae::Socket> client)
 {
   sCommunicationHeader header;
 
+  LOG(DEBUG) << "Aaa";
+
   if (client->recv(&header, sizeof(header)) != sizeof(header))
   {
     LOG(ERROR) << "Failed to receive header from client: " << *client;
+    client->close();
     return;
   }
 
+  LOG(DEBUG) << "bbb";
   switch (header.opcode)
   {
     case OPCODE_DISCONNECT:

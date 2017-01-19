@@ -9,15 +9,15 @@ source ${MAIN_ROOT_DIR}/bin/bash-env.sh
 
 clean_logs
 
-spawn server
+spawn server -v
 sleep 1s
 check_alive
 
-spawn agent-group --name=test1
+spawn agent-group  --name=test1
 sleep 1s
-spawn agent-group --name=test2
+spawn agent-group  --name=test2
 sleep 1s
-spawn agent-group --name=test
+spawn agent-group  --name=test
 
 stop
 
