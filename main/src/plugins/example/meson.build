@@ -13,5 +13,8 @@ shared_library('example_agent',
   link_with: common_lib,
 
   # Táto knižnica sa má inštalovať do adresára 'lib'
-  install: true
+  install: true,
+
+  # Override install directory because Ubuntu puts libraries into architecture dependent sub directory
+  install_dir: 'lib'
 )

@@ -8,7 +8,8 @@ if vis_glut_dep.found()
     dependencies: [common_deps, vis_glu_dep, vis_glut_dep],
     include_directories: global_inc,
     link_with: common_lib,
-    install: true
+    install: true,
+    install_dir: 'lib'
   )
 
 else
@@ -19,7 +20,8 @@ else
     include_directories: global_inc,
     link_with: common_lib,
     link_args: '-lglut',
-    install: true
+    install: true,
+    install_dir: 'lib'
   )
 
 

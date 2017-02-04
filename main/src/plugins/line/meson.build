@@ -13,5 +13,7 @@ shared_library('line',
   link_with: common_lib,
 
   # Táto knižnica sa má inštalovať do adresára 'lib'
-  install: true
+  install: true,
+
+  install_dir: 'lib'
 )
