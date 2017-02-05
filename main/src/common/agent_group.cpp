@@ -314,6 +314,7 @@ int ae::NetAgentGroup::main()
   while (!signal::exit())
   {
     VLOG(4) << "NetAgentGroup main loop running.";
+    TIMED_SCOPE(main_scope, "main_loop");
 
     if (sync() < 0)
     {
@@ -334,6 +335,8 @@ int ae::NetAgentGroup::main()
     {
       return -1;
     }
+
+    PERFORMANCE_CHECKPOINT(main_scope);
 
     auto time_left = next_update - time::clock::now();
     if (time_left.count() < 0)

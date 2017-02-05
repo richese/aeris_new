@@ -38,16 +38,23 @@ def main():
         # print '\n\n-----';
         strings = expr.findall(line)
         assert(len(strings)>1)
-        if len(strings) == 3:
-            key = strings[1];
-            val = strings[2];
-            vals = val.partition(' ')
-            unit = vals[2]
-        elif len(strings) == 4:
-            key = strings[2] + ':' + strings[1];
-            val = strings[3];
-            vals = val.partition(' ')
-            unit = vals[2]
+        if line.count('Executed'):
+            if len(strings) == 3:
+                key = strings[1];
+                val = strings[2];
+                vals = val.partition(' ')
+                unit = vals[2]
+            elif len(strings) == 4:
+                key = strings[2] + ':' + strings[1];
+                val = strings[3];
+                vals = val.partition(' ')
+                unit = vals[2]
+        elif line.count('Performance checkpoint for block'):
+            if len(strings) == 3:
+                key = strings[1] + ' checkpoint'
+                val = strings[2]
+                vals = val.partition(' ')
+                unit = vals[2]
 
         # brings everything on the same scale (ms)
         num_ms = float(vals[0])
