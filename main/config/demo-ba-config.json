@@ -1,0 +1,115 @@
+{
+  "server_list":
+  {
+    "local":
+    {
+      "ip": "127.0.0.1",
+      "port": 2001
+    }
+  },
+  "playground_list":
+  {
+    "production":
+    {
+      "size": [121.8, 68.5]
+    },
+    "testing":
+    {
+      "size": [50.9, 28.6]
+    }
+  },
+  "agent_list":
+  {
+    "null":
+    {
+      "interface_type": 0,
+      "body": "null"
+    },
+    "visualisation":
+    {
+      "interface_type": 1,
+      "body": "border"
+    },
+    "example_agent":
+    {
+      "interface_type": 2,
+      "body": "sphere"
+    },
+    "line":
+    {
+      "interface_type": 4,
+      "body": "sphere_1cm"
+    }
+  },
+  "body_list":
+  {
+    "null":
+    {
+      "interface_type": 0,
+      "model": null,
+      "scale": 1.0
+    },
+    "sphere":
+    {
+      "interface_type": 1,
+      "model": "models/sphere.obj",
+      "scale": 0.1
+    },
+    "sphere_1cm":
+    {
+      "interface_type": 2,
+      "model": "models/sphere.obj",
+      "scale": 0.5
+    },
+    "border":
+    {
+      "interface_type": 3,
+      "model": "models/border_16-9.obj",
+      "scale": 121.8,
+      "comment": "Mierka okraja je realna sirka monitoru v cm"
+    }
+  },
+  "agent_group_list":
+  {
+    "ba-demo":
+    {
+      "dt": 100,
+      "njobs": 1,
+      "spawn":
+      [
+        {
+          "count": 1,
+          "plugin": "line",
+          "params":
+          {
+            "agent_count": 800,
+            "speed": 1.0,
+            "radius": 25,
+            "color": [1.0, 0.0, 0.0]
+          }
+        },
+        {
+          "count": 1,
+          "plugin": "line",
+          "params":
+          {
+            "agent_count": 600,
+            "speed": 1.5,
+            "radius": 16,
+            "color": [0.0, 1.0, 0.0]
+          }
+        },
+        {
+          "count": 1,
+          "plugin": "visualisation",
+          "params":
+          {
+            "fullscreen": true,
+            "draw_grid": true,
+            "resolution": [1920, 1080]
+          }
+        }
+      ]
+    }
+  }
+}

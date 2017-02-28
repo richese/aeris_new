@@ -51,12 +51,12 @@ VisualisationAgent::VisualisationAgent(const nlohmann::json &parameters) :
   m_interface.body = AgentBody::get_body_type(m_interface.type);
   m_interface.timestamp = time::timestamp();
   m_interface.expires = time::future_timestamp(time::seconds(10));
-  m_interface.position.x = 0;
-  m_interface.position.y = 0;
-  m_interface.position.z = 0;
-  m_interface.color.r = 0;
-  m_interface.color.g = 0;
-  m_interface.color.b = 0;
+  m_interface.position.x = 0.0f;
+  m_interface.position.y = 0.0f;
+  m_interface.position.z = 0.0f;
+  m_interface.color.r = 1.0f;
+  m_interface.color.g = 1.0f;
+  m_interface.color.b = 1.0f;
 
   // load options from parameters
   if (!parameters.is_object())
@@ -100,6 +100,8 @@ VisualisationAgent::VisualisationAgent(const nlohmann::json &parameters) :
 
   if (VLOG_IS_ON(4))
   {
+    VLOG(4) << "Visualisation agent type: "  << m_interface.type;
+    VLOG(4) << "Visualisation body type:" << m_interface.body;
     VLOG(4) << "Visualisation option: " << "fullscreen=" << m_fullscreen;
     VLOG(4) << "Visualisation option: " << "draw_grid=" << m_draw_grid;
     VLOG(4) << "Visualisation option: " << "resolution.x=" << m_resolution.x;
