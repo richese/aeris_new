@@ -218,11 +218,11 @@ void ae::Server::update_global_state(const std::vector<sAgentInterface> &agents)
   {
     for (auto it = agents.begin(); it != agents.end();)
     {
-      while (group_it->first < it->id)
+      while (group_it != m_global_state.end() && group_it->first < it->id)
       {
         group_it = m_global_state.erase(group_it);
       }
-      if (group_it->first == it->id)
+      if (group_it != m_global_state.end() && group_it->first == it->id)
       {
         group_it->second = *it;
         ++it;
