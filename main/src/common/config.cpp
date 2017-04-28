@@ -333,6 +333,12 @@ int ae::config::setup(const char *app_name, int argc, char *argv[])
 
 std::string ae::config::path(const Directory base_dir, const std::string &file)
 {
+  if (!file.empty() && file[0] == '/')
+  {
+    VLOG(6) << "Skipping resolution of absolute path: " << file << ".";
+    return file;
+  }
+
   std::string tmp = get["root"];
 
   switch (base_dir)
