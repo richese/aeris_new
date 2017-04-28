@@ -7,7 +7,7 @@
 #include <vector>
 
 #include "agent.h"
-#include "socket.h"
+#include "agent_client.h"
 #include "timing.h"
 
 
@@ -138,14 +138,6 @@ class AgentGroup
  */
 class NetAgentGroup : public AgentGroup
 {
-  private:
-    using socket_ptr_t = std::unique_ptr<Socket>;
-
-    /** \brief Socket, ktorý sa použije na nadviazanie spojenia so serverom. */
-    socket_ptr_t m_socket;
-
-    uint32_t m_session_id;
-
   public:
     NetAgentGroup(time::milliseconds dt, uint32_t njobs);
     virtual ~NetAgentGroup();
@@ -157,8 +149,10 @@ class NetAgentGroup : public AgentGroup
     int sync();
     int commit();
 
-    int connect();
     int disconnect();
+
+  private:
+    Client m_client;
 };
 
 
