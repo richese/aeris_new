@@ -9,6 +9,7 @@
 #include <thread>
 
 #include "common/agent.h"
+#include "common/agent_body.h"
 #include "common/config.h"
 
 
@@ -56,6 +57,9 @@ class VisualisationAgent : public ae::Agent
     /** \brief Vertices of background grid. */
     std::vector<ae::Point3D> m_grid;
 
+    /** \brief Vertices of border. */
+    std::vector<ae::Point3D> m_border;
+
   public:
     VisualisationAgent(const nlohmann::json &parameters);
     ~VisualisationAgent();
@@ -77,9 +81,11 @@ class VisualisationAgent : public ae::Agent
 
     void draw_scene();
     void draw_grid();
+    void draw_triangles(const std::vector<ae::Point3D> &points);
     void draw_agent(const ae::sAgentInterface &agent);
 
-    void make_grid();
+    void make_grid(); /* TODO */
+    void make_border(const float width);
 };
 
 

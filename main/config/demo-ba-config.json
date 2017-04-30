@@ -28,7 +28,7 @@
     "visualisation":
     {
       "interface_type": 1,
-      "body": "border"
+      "body": "null"
     },
     "example_agent":
     {
@@ -60,13 +60,6 @@
       "interface_type": 2,
       "model": "models/sphere.obj",
       "scale": 0.5
-    },
-    "border":
-    {
-      "interface_type": 3,
-      "model": "models/border_16-9.obj",
-      "scale": 121.8,
-      "comment": "Mierka okraja je realna sirka monitoru v cm"
     }
   },
   "agent_group_list":
@@ -106,7 +99,8 @@
           {
             "fullscreen": true,
             "draw_grid": true,
-            "resolution": [1920, 1080]
+            "resolution": [1920, 1080],
+            "border_width": 4.0
           }
         }
       ]

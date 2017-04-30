@@ -92,8 +92,9 @@
           {
             "fullscreen": false,
             "draw_grid": true,
-            "resolution": [800, 600],
-            "framerate": 30
+            "resolution": [1920, 1080],
+            "framerate": 30,
+            "border_width": 2.0
           }
         },
         {

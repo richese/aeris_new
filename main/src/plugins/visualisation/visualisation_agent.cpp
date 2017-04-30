@@ -7,6 +7,7 @@
 
 
 #include "common/agent.h"
+#include "common/agent_body.h"
 #include "common/config.h"
 #include "common/timing.h"
 #include "common/logging.h"
@@ -44,7 +45,10 @@ VisualisationAgent::VisualisationAgent(const nlohmann::json &parameters) :
   m_running(false),
   m_glut_thread(),
   m_camera_offset(0),
-  m_cm_size(0)
+  m_cm_size(0),
+
+  m_grid(),
+  m_border()
 {
   // initialize agent interface
   m_interface.type = this->assigned_type();
@@ -65,6 +69,8 @@ VisualisationAgent::VisualisationAgent(const nlohmann::json &parameters) :
   }
   else
   {
+    std::string name;
+
     if (parameters.find("fullscreen") != parameters.end() &&
         parameters["fullscreen"].is_boolean())
     {
@@ -91,6 +97,25 @@ VisualisationAgent::VisualisationAgent(const nlohmann::json &parameters) :
         parameters["window_name"].is_string())
     {
       m_window_name = parameters["window_name"];
+    }
+
+    name = "border_width";
+    if (parameters.find(name) != parameters.end())
+    {
+      if (parameters[name].is_number())
+      {
+        float width = parameters[name];
+        if (width > 0.0f)
+        {
+          make_border(width);
+        }
+      }
+      else
+      {
+        LOG(ERROR) << "VisualisationAgent: Invalid setting value for \'" << name
+                   << "\'. Expected " << "number"
+                   << ". Got: " << parameters[name];
+      }
     }
   }
 
@@ -170,7 +195,10 @@ void VisualisationAgent::glut_thread_callback()
   auto frame_period = ae::time::microseconds((int)(1.0 / (double)m_framerate * 1000000.0));
   auto next_frame = ae::time::clock::now();
 
-  make_grid();
+  if (m_draw_grid)
+  {
+    make_grid();
+  }
 
   m_running = true;
   while (m_running)
@@ -178,7 +206,14 @@ void VisualisationAgent::glut_thread_callback()
     draw_scene();
 
     next_frame += frame_period;
-    ae::time::sleep_until(next_frame);
+    if (next_frame > ae::time::clock::now())
+    {
+      ae::time::sleep_until(next_frame);
+    }
+    else
+    {
+      next_frame = ae::time::clock::now();
+    }
   }
 
   if (m_window_handle != -1)
@@ -217,7 +252,17 @@ void VisualisationAgent::draw_scene()
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
   // draw grid
-  draw_grid();
+  if (m_draw_grid)
+  {
+    draw_grid();
+  }
+
+  // draw border
+  if (!m_border.empty())
+  {
+    glColor3f(1.0f, 1.0f, 1.0f);
+    draw_triangles(m_border);
+  }
 
   // draw agents
   if (agents && agents->size() > 0)
@@ -263,35 +308,40 @@ void VisualisationAgent::draw_grid()
 }
 
 
+void VisualisationAgent::draw_triangles(const std::vector<ae::Point3D> &points)
+{
+  glBegin(GL_TRIANGLES);
+  for (const ae::Point3D &point : points)
+  {
+    glVertex3f(point.x, point.y, point.z);
+  }
+  glEnd();
+}
+
+
 void VisualisationAgent::draw_agent(const sAgentInterface &agent)
 {
-    // float cm_size = g_configure.get_cm_size();
-    //
-    // float x_ofs = agent.position.x * cm_size;
-    // float y_ofs = agent.position.y * cm_size;
-    // float z_ofs = agent.position.z * cm_size;
+  glPushMatrix();
 
-    glPushMatrix();
+  glTranslatef(agent.position.x, agent.position.y, agent.position.z);
+  glRotatef(agent.position.roll, 0.0f, 1.0f, 0.0f);
+  glRotatef(agent.position.pitch, 1.0f, 0.0f, 0.0f);
+  glRotatef(agent.position.yaw, 0.0f, 0.0f, 1.0f);
 
-    glTranslatef(agent.position.x, agent.position.y, agent.position.z);
-    glRotatef(agent.position.roll, 0.0f, 1.0f, 0.0f);
-    glRotatef(agent.position.pitch, 1.0f, 0.0f, 0.0f);
-    glRotatef(agent.position.yaw, 0.0f, 0.0f, 1.0f);
+  const AgentBody *body = AgentBody::get_body(agent.body);
+  if (body->vertices().size() > 0)
+  {
+    glColor3f(agent.color.r, agent.color.g, agent.color.b);
 
-    const AgentBody *body = AgentBody::get_body(agent.body);
-    if (body->vertices().size() > 0)
+    glBegin(GL_TRIANGLES);
+    for (const auto &vert : body->vertices())
     {
-      glColor3f(agent.color.r, agent.color.g, agent.color.b);
-
-      glBegin(GL_TRIANGLES);
-      for (const auto &vert : body->vertices())
-      {
-        glVertex3f(vert.x, vert.y, vert.z);
-      }
-      glEnd();
+      glVertex3f(vert.x, vert.y, vert.z);
     }
+    glEnd();
+  }
 
-    glPopMatrix();
+  glPopMatrix();
 }
 
 
@@ -322,4 +372,50 @@ void VisualisationAgent::make_grid()
   }
 
   m_grid = line;
+}
+
+
+void VisualisationAgent::make_border(const float width)
+{
+  m_border.clear();
+
+  const float w = config::get["playground"]["size"][0].get<float>() / 2.0f;
+  const float h = config::get["playground"]["size"][1].get<float>() / 2.0f;
+
+  const float wi = w - width;
+  const float hi = h - width;
+  constexpr float d = 0.0f;
+
+  // top 1
+  m_border.emplace_back(-w, h, d);
+  m_border.emplace_back(w, h, d);
+  m_border.emplace_back(wi, hi, d);
+  // top 2
+  m_border.emplace_back(-w, h, d);
+  m_border.emplace_back(wi, hi, d);
+  m_border.emplace_back(-wi, hi, d);
+  // right 3
+  m_border.emplace_back(w, h, d);
+  m_border.emplace_back(w, -h, d);
+  m_border.emplace_back(wi, hi, d);
+  // right 4
+  m_border.emplace_back(wi, hi, d);
+  m_border.emplace_back(w, -h, d);
+  m_border.emplace_back(wi, -hi, d);
+  // bottom 5
+  m_border.emplace_back(wi, -hi, d);
+  m_border.emplace_back(w, -h, d);
+  m_border.emplace_back(-wi, -hi, d);
+  // bottom 6
+  m_border.emplace_back(-wi, -hi, d);
+  m_border.emplace_back(w, -h, d);
+  m_border.emplace_back(-w, -h, d);
+  // left 7
+  m_border.emplace_back(-w, h, d);
+  m_border.emplace_back(-wi, hi, d);
+  m_border.emplace_back(-wi, -hi, d);
+  // left 8
+  m_border.emplace_back(-w, h, d);
+  m_border.emplace_back(-wi, -hi, d);
+  m_border.emplace_back(-w, -h, d);
 }

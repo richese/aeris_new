@@ -25,6 +25,9 @@ struct Point2D
 
 struct Point3D
 {
+  Point3D() : x(0.0f), y(0.0f), z(0.0f) {}
+  Point3D(float x, float y, float z) : x(x), y(y), z(z) {}
+
   float x, y, z;
 };
 
