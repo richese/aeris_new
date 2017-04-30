@@ -7,6 +7,7 @@
 #define ELPP_THREAD_SAFE
 #define ELPP_FORCE_USE_STD_THREAD
 #define ELPP_NO_DEFAULT_LOG_FILE
+#define ELPP_STL_LOGGING
 
 /* Uncomment to disable all performance tracking */
 // #define ELPP_DISABLE_PERFORMANCE_TRACKING

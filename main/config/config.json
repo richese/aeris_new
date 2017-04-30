@@ -1,33 +1,46 @@
 {
+  "robot_tracking":
+  {
+    "debug": true,
+    "framerate": 30,
+    "stream_": 0,
+    "stream": "data/video/3robots_0.mkv",
+    "playground_corners": [[71, 13], [617, 28], [605, 338], [65, 312]],
+    "segmentation":
+    {
+      "robot_size": 30,
+      "fast_threshold": 70,
+      "response_threshold": 1000,
+      "background_substraction": true
+    },
+    "detector":
+    {
+      "hog_parameters": [40, 8, 4, 4, 9],
+      "svm": "data/model.xml"
+    },
+    "tracking":
+    {
+      "path_length": 50,
+      "path_sample_avg": 3,
+      "match_dist": 30.0,
+      "path_remove_limit": 50,
+      "path_valid_limit": 55
+    }
+  },
   "server_list":
   {
     "local":
     {
       "ip": "127.0.0.1",
-      "port": 2001
-    },
-    "grid":
-    {
-      "ip": "158.193.210.195",
-      "port": 20001,
-      "ud_path": null
-    },
-    "ud_test":
-    {
-      "ip": null,
-      "port": null,
-      "ud_path": "/tmp/test.sock"
+      "port": 2001,
+      "ud_path": "/tmp/aeris.sock"
     }
   },
   "playground_list":
   {
-    "production":
+    "55inch":
     {
       "size": [121.8, 68.5]
-    },
-    "notebook":
-    {
-      "size": [34.4, 19.3]
     },
     "testing":
     {
@@ -87,6 +100,7 @@
       "spawn":
       [
         {
+          "count": 1,
           "plugin": "visualisation",
           "params":
           {
@@ -98,93 +112,40 @@
           }
         },
         {
+          "count": 1,
+          "plugin": "line",
+          "params":
+          {
+            "type": "elipse",
+            "agent_count": 600,
+            "speed": 1.0,
+            "radius": 10,
+            "color": [1.0, 0.0, 0.0]
+          }
+        },
+        {
+          "count": 1,
+          "plugin": "line",
+          "params":
+          {
+            "type": "elipse",
+            "agent_count": 600,
+            "speed": 2.0,
+            "radius": 7,
+            "color": [0.0, 0.7, 0.0]
+          }
+        }
+        ,
+        {
+          "count": 0,
           "plugin": "line",
           "params":
           {
             "type": "elipse",
             "agent_count": 400,
             "speed": 1.0,
-            "radius": 9,
-            "color": [0.0, 0.7, 0.0]
-          }
-        }
-      ]
-    },
-    "test1":
-    {
-      "dt": 300,
-      "njobs": 1,
-      "spawn":
-      [
-        {
-          "plugin": "example_agent",
-          "count": 20000,
-          "params":
-          {
-            "color": [0.0, 1.0, 0.0]
-          }
-        }
-      ]
-    },
-    "test2":
-    {
-      "dt": 400,
-      "njobs": 1,
-      "spawn":
-      [
-        {
-          "plugin": "example_agent",
-          "count": 2000,
-          "params":
-          {
-            "color": [0.0, 0.0, 1.0]
-          }
-        }
-      ]
-    },
-    "line-demo":
-    {
-      "dt": 100,
-      "njobs": 1,
-      "spawn":
-      [
-        {
-          "plugin": "border",
-          "count": 1,
-          "params": {}
-        },
-        {
-          "plugin": "visualisation",
-          "count": 1,
-          "params":
-          {
-            "fullscreen": true,
-            "draw_grid": true,
-            "resolution": [1280, 720],
-            "framerate": 1,
-            "window_name": "robot visualisation"
-          }
-        },
-        {
-          "plugin": "line",
-          "count": 1,
-          "params":
-          {
-            "type": "wave",
-            "count": 400,
-            "speed": 1.0,
-            "color": [1.0, 0.0, 0.0]
-          }
-        },
-        {
-          "plugin": "line",
-          "count": 1,
-          "params":
-          {
-            "type": "fancy",
-            "count": 400,
-            "speed": 1.0,
-            "color": [0, 0.5, 0]
+            "radius": 20,
+            "color": [0.0, 0.0, 0.8]
           }
         }
       ]

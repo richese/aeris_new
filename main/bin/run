@@ -7,19 +7,22 @@ popd > /dev/null
 popd > /dev/null
 source ${MAIN_ROOT_DIR}/bin/bash-env.sh
 
+ARGS=""
+
 clean_logs
 
-spawn server -v
+spawn server $ARGS
 sleep 1s
 check_alive
 
-spawn agent-group  --name=test1
-sleep 1s
-spawn agent-group  --name=test2
-sleep 1s
-spawn agent-group  --name=test
+#spawn agent-group  --name=test1
+#sleep 1s
+#spawn agent-group  --name=test2
+#sleep 1s
+spawn agent-group $ARGS --name=test
 
+#spawn camera
 stop
 
-sleep 1s
+#sleep 1s
 #print_performance
