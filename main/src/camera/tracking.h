@@ -15,7 +15,7 @@
 class Path
 {
 public:
-  Path(cv::Point position, uint64_t id, uint32_t path_length, uint32_t m_path_sample_avg);
+  Path(cv::Point position, uint64_t id, uint16_t type, uint32_t path_length, uint32_t m_path_sample_avg);
 
   void update_position(const cv::Point2f pos, bool is_miss = false);
 
@@ -66,6 +66,7 @@ private:
 
   std::vector<Path> m_tracks;
 
+  uint16_t m_agent_type;
   ae::Client m_aeris_client;
   uint32_t m_agent_group_id;
   uint32_t m_track_counter;

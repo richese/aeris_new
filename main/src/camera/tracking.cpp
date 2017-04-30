@@ -6,6 +6,7 @@
 #include <opencv2/imgproc.hpp>
 
 #include "common/agent.h"
+#include "common/agent_body.h"
 #include "common/agent_client.h"
 #include "common/config.h"
 #include "common/logging.h"
@@ -14,7 +15,7 @@
 #include "tracking.h"
 
 
-Path::Path(cv::Point position, uint64_t id, uint32_t path_length, uint32_t path_sample_avg) :
+Path::Path(cv::Point position, uint64_t id, uint16_t type, uint32_t path_length, uint32_t path_sample_avg) :
   color(cv::theRNG().next() % 255, cv::theRNG().next() % 255, cv::theRNG().next() % 255),
   prediction(position),
   seen_for(1),
@@ -25,8 +26,11 @@ Path::Path(cv::Point position, uint64_t id, uint32_t path_length, uint32_t path_
   m_path_sample_avg(path_sample_avg)
 {
   interface.id = id;
-  interface.type = 0;
-  interface.body = 1;
+  interface.type = type;
+  interface.body = ae::AgentBody::get_body_type(type);
+  interface.color.b = color[0] / 255.0f;
+  interface.color.g = color[1] / 255.0f;
+  interface.color.r = color[2] / 255.0f;
 }
 
 
@@ -76,9 +80,6 @@ void Path::update_position(const cv::Point2f pos, bool is_miss)
   interface.position.x = history.rbegin()->x;
   interface.position.y = history.rbegin()->y;
   interface.position.z = 0.0f;
-  interface.color.b = color[0];
-  interface.color.g = color[1];
-  interface.color.r = color[2];
 }
 
 
@@ -90,6 +91,7 @@ cv::Point2f Path::position() const
 
 Tracking::Tracking() :
   m_tracks(),
+  m_agent_type(0),
   m_aeris_client(),
   m_agent_group_id(0),
   m_track_counter(0),
@@ -188,6 +190,32 @@ void Tracking::loadConfiguration(const nlohmann::json &settings)
     }
   }
 
+  // nastav typ agentov, ktory budu posielany do systemu
+  name = "agent_type";
+  if (settings.find(name) != settings.end())
+  {
+    if (settings[name].is_string())
+    {
+      std::string agent_name = settings[name];
+      const auto &agent_list = ae::config::get["agent_list"];
+      if (agent_list.find(agent_name) != agent_list.end())
+      {
+        m_agent_type = agent_list[agent_name]["interface_type"];
+      }
+      else
+      {
+        LOG(ERROR) << "Tracking: Agent list does not contain agent named: " << agent_name;
+      }
+    }
+    else
+    {
+      LOG(ERROR) << "Tracking: Invalid setting value for \'" << name
+                 << "\'. Expected " << "unsigned integer"
+                 << ". Got: " << settings[name];
+    }
+  }
+
+
   // nastav transformacnu maticu medzi pixelami  v obraze a poziciou v systeme
   // body idu: top left, top right, bottom right, bottom left
   name = "playground_corners";
@@ -205,7 +233,7 @@ void Tracking::loadConfiguration(const nlohmann::json &settings)
     }
     else
     {
-      LOG(ERROR) << "Segmentation: Invalid setting value for \'" << name
+      LOG(ERROR) << "Tracking: Invalid setting value for \'" << name
                  << "\'. Expected " << "array of 4 two element arrays"
                  << ". Got: " << settings[name];
     }
@@ -222,14 +250,15 @@ void Tracking::connectToAeris()
     {
       m_agent_group_id = 0;
       m_track_counter = 0;
-      LOG(INFO) << "Not connected to any Aeris server.";
+      LOG(INFO) << "Tracking: Not connected to any Aeris server.";
     }
     else
     {
       m_agent_group_id = id;
       m_online = true;
       m_aeris_client.opDisconnect();
-      LOG(INFO) << "Connected to Aeris server and received agent group id: " << m_agent_group_id;
+      LOG(INFO) << "Tracking: Connected to Aeris server and received agent group id: " << m_agent_group_id;
+      LOG(INFO) << "Tracking: Using agent interface_type: " << m_agent_type;
     }
   }
 }
@@ -325,7 +354,7 @@ void Tracking::update(const std::vector<cv::Point> &positions)
     if (!used_position[i])
     {
       uint64_t id = (static_cast<uint64_t>(m_agent_group_id)<<32) + m_track_counter++;
-      m_tracks.emplace_back(positions[i], id, m_path_length, m_path_sample_avg);
+      m_tracks.emplace_back(positions[i], id, m_agent_type, m_path_length, m_path_sample_avg);
       VLOG(2) << "Created robot path with id: " << id;
     }
   }

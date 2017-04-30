@@ -24,7 +24,8 @@
       "path_sample_avg": 3,
       "match_dist": 30.0,
       "path_remove_limit": 50,
-      "path_valid_limit": 55
+      "path_valid_limit": 55,
+      "agent_type": "real_robot_agent"
     }
   },
   "server_list":
@@ -67,6 +68,11 @@
     "line":
     {
       "interface_type": 4,
+      "body": "sphere_1cm"
+    },
+    "real_robot_agent":
+    {
+      "interface_type": 5,
       "body": "sphere_1cm"
     }
   },
