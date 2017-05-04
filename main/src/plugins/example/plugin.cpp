@@ -19,7 +19,7 @@ using ae::plugin::plugin_init;
 // forward declarations for plugin functions
 extern "C" plugin_t* example_agent_load();
 int example_agent_init(plugin_init_t &init_data);
-std::vector<Agent*>* example_agent_create(const json &parameters);
+std::vector<Agent*> example_agent_create(const json &parameters);
 
 
 // štruktúra pluginu
@@ -61,21 +61,15 @@ int example_agent_init(plugin_init_t &init_data)
 
 
 // Funkcia, ktorá vytvára agentov na základe predaných parametrov.
-std::vector<Agent*>* example_agent_create(const json &parameters)
+std::vector<Agent*> example_agent_create(const json &parameters)
 {
-  (void)parameters; // unused
+  std::vector<Agent*> arr;
 
-  std::vector<Agent*> *arr = new std::vector<Agent*>();
-  if (arr == nullptr)
-  {
-    return nullptr;
-  }
   ExampleAgent *agent = new ExampleAgent(parameters);
-  if (agent == nullptr)
+  if (agent != nullptr)
   {
-    delete arr;
-    return nullptr;
+    arr.push_back(agent);
   }
-  arr->push_back(agent);
+
   return arr;
 }

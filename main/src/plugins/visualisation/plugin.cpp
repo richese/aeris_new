@@ -19,7 +19,7 @@ using ae::plugin::plugin_init;
 // forward declarations for plugin functions
 extern "C" plugin_t* visualisation_load();
 int visualisation_init(plugin_init_t &init_data);
-std::vector<Agent*>* visualisation_create(const json &parameters);
+std::vector<Agent*> visualisation_create(const json &parameters);
 
 
 // štruktúra pluginu
@@ -61,19 +61,19 @@ int visualisation_init(plugin_init_t &init_data)
 
 
 // Funkcia, ktorá vytvára agentov na základe predaných parametrov.
-std::vector<Agent*>* visualisation_create(const json &parameters)
+std::vector<Agent*> visualisation_create(const json &parameters)
 {
-  std::vector<Agent*> *arr = new std::vector<Agent*>();
-  if (arr == nullptr)
-  {
-    return nullptr;
-  }
+  std::vector<Agent*> agents;
+
   VisualisationAgent *vis = new VisualisationAgent(parameters);
   if (vis == nullptr)
   {
-    delete arr;
-    return nullptr;
+    LOG(ERROR) << "Visualisation agent allocation error.";
   }
-  arr->push_back(vis);
-  return arr;
+  else
+  {
+    agents.push_back(vis);
+  }
+
+  return agents;
 }

@@ -12,7 +12,7 @@
 class ElipseLine : public ae::Agent
 {
   public:
-    static std::vector<ae::Agent*>* spawn_line(const nlohmann::json &parameters);
+    static std::vector<ae::Agent*> spawn_line(const nlohmann::json &parameters);
 
   private:
     ae::Point2D m_initial_position;

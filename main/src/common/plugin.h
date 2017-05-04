@@ -68,7 +68,7 @@ struct plugin_init_t
 struct plugin_t
 {
   int (*init) (plugin_init_t &init_data);
-  std::vector<ae::Agent*>* (*create) (const json &parameters);
+  std::vector<ae::Agent*> (*create) (const json &parameters);
 };
 
 
@@ -108,7 +108,7 @@ class Agent
      * \returns
      *  Pointer na inštanciu agenta alebo nullptr ak nebol plugin ešte načítaný.
      */
-    std::vector<ae::Agent*>* create(const json &parameters);
+    std::vector<ae::Agent*> create(const json &parameters);
 };
 
 

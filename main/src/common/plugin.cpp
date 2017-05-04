@@ -176,16 +176,16 @@ int ae::plugin::Agent::load()
 }
 
 
-std::vector<ae::Agent*>* ae::plugin::Agent::create(const json &parameters)
+std::vector<ae::Agent*> ae::plugin::Agent::create(const json &parameters)
 {
+  std::vector<ae::Agent*> agents;
+
   if (m_plugin != nullptr && m_plugin->create != nullptr)
   {
-    return m_plugin->create(parameters);
+    agents = m_plugin->create(parameters);
   }
-  else
-  {
-    return nullptr;
-  }
+
+  return agents;
 }
 
 
@@ -235,14 +235,8 @@ void ae::plugin::agent_spawner(const nlohmann::json &list, std::vector<ae::Agent
     // spawn agents
     for (int i = 0; i < count; ++i)
     {
-      std::vector<ae::Agent*> *new_agents = plugin.create(params);
-      if (new_agents == nullptr)
-      {
-        LOG(ERROR) << "Failed to spawn agent from plugin " << plugin_name << ". Skipping...";
-        break;
-      }
-      agents.insert(agents.end(), new_agents->begin(), new_agents->end());
-      delete new_agents;
+      std::vector<ae::Agent*> new_agents = plugin.create(params);
+      agents.insert(agents.end(), new_agents.begin(), new_agents.end());
     }
   }
 }

@@ -13,7 +13,7 @@ using namespace ae;
 using nlohmann::json;
 
 
-std::vector<Agent*>* ElipseLine::spawn_line(const json &parameters)
+std::vector<Agent*> ElipseLine::spawn_line(const json &parameters)
 {
   int agent_count = 400;
   float speed = 1.0;
@@ -52,12 +52,7 @@ std::vector<Agent*>* ElipseLine::spawn_line(const json &parameters)
     VLOG(1) << "Line option: color=" << color.r << " " << color.g << " " << color.b;
   }
 
-  std::vector<Agent*> *agents = new std::vector<Agent*>();
-  if (agents == nullptr)
-  {
-    LOG(ERROR) << "Allocation error.";
-    return nullptr;
-  }
+  std::vector<Agent*> agents;
 
   bool error = false;
   for (int i = 0; i < agent_count; i++)
@@ -65,22 +60,12 @@ std::vector<Agent*>* ElipseLine::spawn_line(const json &parameters)
     ElipseLine *agent = new ElipseLine(i, agent_count, radius, speed, color);
     if (agent == nullptr)
     {
-      LOG(ERROR) << "Agent allocation error";
-      error = true;
-      break;
+      LOG(ERROR) << "ElipseLine agent allocation error.";
     }
-    agents->push_back(agent);
-  }
-
-  if (error)
-  {
-    for (auto it = agents->begin(); it != agents->end(); ++it)
+    else
     {
-      delete *it;
-      *it = nullptr;
+      agents.push_back(agent);
     }
-    delete agents;
-    agents = nullptr;
   }
 
   return agents;

@@ -17,7 +17,7 @@ using ae::plugin::plugin_init;
 
 extern "C" plugin_t* line_load();
 int line_plugin_init(plugin_init_t &init_data);
-std::vector<Agent*>* line_plugin_create(const json &parameters);
+std::vector<Agent*> line_plugin_create(const json &parameters);
 
 
 static plugin_t line_plugin = {
@@ -49,12 +49,14 @@ int line_plugin_init(plugin_init_t &init_data)
 }
 
 
-std::vector<Agent*>* line_plugin_create(const json &parameters)
+std::vector<Agent*> line_plugin_create(const json &parameters)
 {
+  std::vector<Agent*> agents;
+
   if (!parameters.is_object())
   {
     LOG(ERROR) << "Invalid parameters for line agent creation.";
-    return nullptr;
+    return agents;
   }
 
   std::string line_type = "elipse";
@@ -66,14 +68,13 @@ std::vector<Agent*>* line_plugin_create(const json &parameters)
 
   if (line_type.compare("elipse") == 0)
   {
-    return ElipseLine::spawn_line(parameters);
+    agents = ElipseLine::spawn_line(parameters);
   }
-  // other line types
-  // if (line_type.compare("blabol"))
-  // {
-  //   return ;
-  // }
+  // other line types go here
+  else
+  {
+    LOG(ERROR) << "Invalid type of line: " << line_type;
+  }
 
-  LOG(ERROR) << "Invalid type of line: " << line_type;
-  return nullptr;
+  return agents;
 }
