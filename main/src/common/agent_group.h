@@ -126,7 +126,7 @@ class AgentGroup
     void apply_agent_requests(Environment &env);
 
     /** \brief Funkcia na spracovanie daného rozsahu agentov v samostatnom vlákne. */
-    Environment* process_range(agents_iter_t start, agents_iter_t end);
+    Environment process_range(agents_iter_t start, agents_iter_t end);
 };
 
 

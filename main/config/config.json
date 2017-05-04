@@ -102,7 +102,7 @@
     "test":
     {
       "dt": 100,
-      "njobs": 1,
+      "njobs": 2,
       "spawn":
       [
         {

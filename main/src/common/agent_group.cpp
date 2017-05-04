@@ -145,33 +145,44 @@ int ae::AgentGroup::process()
     return 0;
   }
 
+  // split agent processing into m_njobs threads with near equal count of agents
   if (m_njobs <= 1)
   {
-    Environment *env = process_range(m_agents.begin(), m_agents.end());
-    apply_agent_requests(*env);
-    delete env;
+    Environment env = process_range(m_agents.begin(), m_agents.end());
+    apply_agent_requests(env);
   }
   else
   {
-    std::vector<std::future<Environment*>> envs;
-    auto part_size = (m_agents.size() / m_njobs) + 1;
-    auto last = m_agents.begin();
+    std::vector<std::future<Environment>> envs;
 
-    while(last != m_agents.end())
+    const size_t part_size = m_agents.size() / m_njobs;
+    size_t part_reminder = m_agents.size() - (part_size * m_njobs);
+
+    auto last = m_agents.begin();
+    while (last != m_agents.end())
     {
       auto first = last;
-      std::advance(last, part_size);
-      envs.push_back(std::async(&AgentGroup::process_range, this, first, last));
+      last += part_size;
+      if (part_reminder != 0)
+      {
+        last += 1;
+        --part_reminder;
+      }
+
+      envs.push_back(std::async(std::launch::async, &AgentGroup::process_range, this, first, last));
     }
+
+    // wait for all threads to finish before modifying global state
     for (auto &future : envs)
     {
       future.wait();
     }
+
+    // apply requested changes
     for (auto &future : envs)
     {
-      Environment *env = future.get();
-      apply_agent_requests(*env);
-      delete env;
+      Environment env = future.get();
+      apply_agent_requests(env);
     }
   }
 
@@ -258,13 +269,15 @@ void ae::AgentGroup::apply_agent_requests(Environment &env)
 }
 
 
-ae::Environment* ae::AgentGroup::process_range(agents_iter_t start, agents_iter_t end)
+ae::Environment ae::AgentGroup::process_range(agents_iter_t start, agents_iter_t end)
 {
-  Environment *env = new Environment(m_group_id, *m_global_state);
+  Environment env(m_group_id, *m_global_state);
+
+  VLOG(9) << "Processing agent range starting at " << (*start)->id() << " with " << std::distance(start, end) << " agents.";
 
   for (auto it = start; it != end; ++it)
   {
-    (*it)->process(*env);
+    (*it)->process(env);
   }
 
   return env;
