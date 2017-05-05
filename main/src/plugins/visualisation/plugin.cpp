@@ -7,6 +7,8 @@
 #include "visualisation_agent.h"
 
 
+INITIALIZE_EASYLOGGINGPP
+
 // mená, ktoré používame
 using json = nlohmann::json;
 using el::base::type::StoragePointer;

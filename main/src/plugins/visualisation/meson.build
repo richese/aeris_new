@@ -28,4 +28,6 @@ if vis_is_build == true
     install: true,
     install_dir: 'lib'
   )
+else
+  message('Disabling visualisation plugin because of missing dependencies (glu, freeglut).')
 endif

@@ -9,6 +9,8 @@
 #include "robot_tracking.h"
 
 
+INITIALIZE_EASYLOGGINGPP
+
 int main(int argc, char *argv[])
 {
   using tracking_ptr = std::unique_ptr<RobotTracking>;

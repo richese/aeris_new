@@ -6,6 +6,9 @@
 #include "common/timing.h"
 
 
+INITIALIZE_EASYLOGGINGPP
+
+
 using namespace ae;
 
 

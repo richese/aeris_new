@@ -18,9 +18,6 @@
 using json = nlohmann::json;
 
 
-INITIALIZE_EASYLOGGINGPP
-
-
 namespace
 {
 

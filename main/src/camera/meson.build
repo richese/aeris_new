@@ -29,5 +29,5 @@ if opencv_dep.found()
   )
 
 else
-  message('OpenCV not found. Disabling robot tracking.')
+  message('Disabling robot tracking becaue of missing dependencies (opencv).')
 endif

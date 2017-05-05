@@ -6,6 +6,7 @@
 
 #include "elipse_line.h"
 
+INITIALIZE_EASYLOGGINGPP
 
 using json = nlohmann::json;
 using el::base::type::StoragePointer;

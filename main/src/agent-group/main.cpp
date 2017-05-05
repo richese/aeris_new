@@ -6,7 +6,12 @@
 #include "common/agent_body.h"
 #include "common/plugin.h"
 
+
+INITIALIZE_EASYLOGGINGPP
+
+
 using namespace ae;
+
 
 int main(int argc, char *argv[])
 {
