@@ -115,10 +115,17 @@ class Agent
 void agent_spawner(const nlohmann::json &list, std::vector<ae::Agent*> &agents);
 
 
+/** RTLD_LAZY RTLD_NOW */
+#define PLUGIN_RTLD_POLICY RTLD_NOW
+
+
 /** \brief Stará sa o dynamické otváranie a zatváranie zdieľaných knižníc
  * s pluginmi.
  *
- * Na otváranie pluginov sú určené statické metódy triedy.
+ * Na otváranie pluginov sú určené statické metódy tejto triedy.
+ *
+ * Detailnejší popis dynamických C++ knižníc v linuxe je na:
+ * http://www.linuxjournal.com/article/3687
  *
  * Neotvárať pluginy vo vnútri iných pluginov!
  */

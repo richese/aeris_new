@@ -42,7 +42,7 @@ ae::plugin::plugin_t* ae::plugin::PluginStorage::open_plugin(const std::string &
 
     // otvor zdieľanú knižnicu
     void *handle = nullptr;
-    if ((handle = dlopen(libname.c_str(), RTLD_LAZY)) == nullptr)
+    if ((handle = dlopen(libname.c_str(), PLUGIN_RTLD_POLICY)) == nullptr)
     {
       LOG(ERROR) << "Failed to open plugin " << name << " (" << libname << "): " << dlerror();
       return nullptr;
