@@ -60,6 +60,8 @@ def main():
         num_ms = float(vals[0])
         if unit=='mis':
             num_ms = num_ms/1000.0
+        if unit=='seconds':
+            num_ms = num_ms*1000.0
 
         # append time to dictionary entry
         if key in data:
