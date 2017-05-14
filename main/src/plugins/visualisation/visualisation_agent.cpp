@@ -257,13 +257,6 @@ void VisualisationAgent::draw_scene()
     draw_grid();
   }
 
-  // draw border
-  if (!m_border.empty())
-  {
-    glColor3f(1.0f, 1.0f, 1.0f);
-    draw_triangles(m_border);
-  }
-
   // draw agents
   if (agents && agents->size() > 0)
   {
@@ -271,6 +264,13 @@ void VisualisationAgent::draw_scene()
     {
       draw_agent(agent);
     }
+  }
+
+  // draw border
+  if (!m_border.empty())
+  {
+    glColor3f(1.0f, 1.0f, 1.0f);
+    draw_triangles(m_border);
   }
 
   glutSwapBuffers();
