@@ -53,23 +53,17 @@ int main(int argc, char *argv[])
 
   // spawn agents
   {
-    std::vector<Agent*> *spawned_agents = new std::vector<Agent*>();
-    if (spawned_agents == nullptr)
-    {
-      LOG(ERROR) << "Allocation error.";
-      return 1;
-    }
+    std::vector<Agent*> spawned_agents;
+
     if (group_config.find("spawn") != group_config.end() &&
         group_config["spawn"].is_array())
     {
-      plugin::agent_spawner(group_config["spawn"], *spawned_agents);
+      plugin::agent_spawner(group_config["spawn"], spawned_agents);
     }
-    for (auto a : *spawned_agents)
+    for (auto a : spawned_agents)
     {
       agent_group.push_back(a);
     }
-    delete spawned_agents;
-    spawned_agents = nullptr;
   }
 
   // start agent group main loop
