@@ -19,7 +19,7 @@ namespace ae
 class Server
 {
   private:
-    using interface_buffer_t = std::shared_ptr<std::vector<sAgentInterface>>;
+    using interface_buffer_t = std::shared_ptr<std::vector<AgentInterface>>;
 
     /** \brief Identifikátor tohto servera náhodne vygenerovaný pri jeho
      * štarte.
@@ -37,7 +37,7 @@ class Server
      *
      *
      */
-    std::map<uint64_t, sAgentInterface> m_global_state;
+    std::map<uint64_t, AgentInterface> m_global_state;
 
     /** \brief Kópia aktuálneho stavu prostredia, ktorá sa posúva agent grupám.
      *
@@ -96,7 +96,7 @@ class Server
      *   true               |  false       | Removes this agent interface from global state
      *
      */
-    void update_global_state(const std::vector<sAgentInterface> &agents);
+    void update_global_state(const std::vector<AgentInterface> &agents);
 
     /** \brief Checks global state for expired agents and removes them. */
     void expired_agent_check();

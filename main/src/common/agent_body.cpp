@@ -42,7 +42,7 @@ const ae::AgentBody* ae::AgentBody::get_body(const uint16_t body_id)
 }
 
 
-const ae::AgentBody* ae::AgentBody::get_body(const sAgentInterface &agent)
+const ae::AgentBody* ae::AgentBody::get_body(const AgentInterface &agent)
 {
   return get_body(agent.body);
 }

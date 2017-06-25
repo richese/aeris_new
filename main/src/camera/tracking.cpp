@@ -364,7 +364,7 @@ void ae::tracking::Tracking::update(const std::vector<cv::Point> &positions)
 
   if (m_online)
   {
-    std::vector<ae::sAgentInterface> data;
+    std::vector<ae::AgentInterface> data;
 
     for (auto &path : m_tracks)
     {

@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "logging.h"
+#include "types.h"
 
 
 namespace ae
@@ -14,22 +15,10 @@ namespace ae
 
 
 /* Forward declaration. Defined in agent.h */
-struct sAgentInterface;
+struct AgentInterface;
 
 
-struct Point2D
-{
-  float x, y;
-};
 
-
-struct Point3D
-{
-  Point3D() : x(0.0f), y(0.0f), z(0.0f) {}
-  Point3D(float x, float y, float z) : x(x), y(y), z(z) {}
-
-  float x, y, z;
-};
 
 
 class AgentBody
@@ -37,7 +26,7 @@ class AgentBody
   public:
     /** Vrati objekt tela agenta ak poznáme interface id tohto tela. */
     static const AgentBody* get_body(const uint16_t body_id);
-    static const AgentBody* get_body(const sAgentInterface &agent);
+    static const AgentBody* get_body(const AgentInterface &agent);
 
     /** Zisti aky typ tela prislucha agentovi s typom agent_type. */
     static uint16_t get_body_type(const uint16_t agent_type);

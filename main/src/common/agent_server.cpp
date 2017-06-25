@@ -190,7 +190,7 @@ const ae::Server::interface_buffer_t ae::Server::get_read_buffer()
 }
 
 
-void ae::Server::update_global_state(const std::vector<sAgentInterface> &agents)
+void ae::Server::update_global_state(const std::vector<AgentInterface> &agents)
 {
   TIMED_FUNC(global_update_timer);
 
@@ -273,7 +273,7 @@ void ae::Server::update_read_buffer()
 {
   TIMED_FUNC(buffer_update_timer);
 
-  std::vector<sAgentInterface> *read_buffer = new std::vector<sAgentInterface>();
+  std::vector<AgentInterface> *read_buffer = new std::vector<AgentInterface>();
   if (read_buffer == nullptr)
   {
     LOG(ERROR) << "Error while creating new read buffer.";
@@ -374,7 +374,7 @@ void ae::Server::request_agent_sync_all(std::shared_ptr<Socket> client, sCommuni
   }
   if (reply.agent_count > 0)
   {
-    ssize_t data_len = reply.agent_count * sizeof(sAgentInterface);
+    ssize_t data_len = reply.agent_count * sizeof(AgentInterface);
     if (client->send(agents->data(), data_len) != data_len)
     {
       LOG(ERROR) << "Error while sending agent data.";
@@ -404,10 +404,10 @@ void ae::Server::request_agent_commit(std::shared_ptr<Socket> client, sCommunica
 
   VLOG(4) << "Commiting " << header.agent_count << " agents from client " << *client;
   if (header.agent_count > 0) {
-    std::vector<sAgentInterface> client_agents;
+    std::vector<AgentInterface> client_agents;
     client_agents.resize(header.agent_count);
 
-    ssize_t data_len = header.agent_count * sizeof(sAgentInterface);
+    ssize_t data_len = header.agent_count * sizeof(AgentInterface);
     if (client->recv(client_agents.data(), data_len) != data_len)
     {
       LOG(ERROR) << "Error while receiving client agent data." << *client;

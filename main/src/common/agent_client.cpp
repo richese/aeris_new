@@ -83,7 +83,7 @@ int ae::Client::opDisconnect()
 }
 
 
-std::vector<ae::sAgentInterface>* ae::Client::opAgentSyncAll()
+std::vector<ae::AgentInterface>* ae::Client::opAgentSyncAll()
 {
   TIMED_FUNC(net_sync_timer);
 
@@ -110,7 +110,7 @@ std::vector<ae::sAgentInterface>* ae::Client::opAgentSyncAll()
     return nullptr;
   }
 
-  std::vector<sAgentInterface>* synced_state = new std::vector<sAgentInterface>();
+  std::vector<AgentInterface>* synced_state = new std::vector<AgentInterface>();
   if (synced_state == nullptr)
   {
     PLOG(ERROR) << "Sync buffer allocation error.";
@@ -120,7 +120,7 @@ std::vector<ae::sAgentInterface>* ae::Client::opAgentSyncAll()
   if (header.agent_count > 0)
   {
     synced_state->resize(header.agent_count);
-    uint32_t len = header.agent_count * sizeof(sAgentInterface);
+    uint32_t len = header.agent_count * sizeof(AgentInterface);
     if (m_socket->recv(synced_state->data(), len) != len)
     {
       PLOG(ERROR) << "Sync data receive error: ";
@@ -132,7 +132,7 @@ std::vector<ae::sAgentInterface>* ae::Client::opAgentSyncAll()
 }
 
 
-int ae::Client::opAgentCommit(std::vector<sAgentInterface> &agents)
+int ae::Client::opAgentCommit(std::vector<AgentInterface> &agents)
 {
   TIMED_FUNC(net_commit_timer);
 
@@ -166,7 +166,7 @@ int ae::Client::opAgentCommit(std::vector<sAgentInterface> &agents)
 
   if (header.agent_count > 0)
   {
-    uint32_t len = sizeof(sAgentInterface) * header.agent_count;
+    uint32_t len = sizeof(AgentInterface) * header.agent_count;
     if (m_socket->send(agents.data(), len) != len)
     {
       PLOG(ERROR) << "Commit data send error: ";

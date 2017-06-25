@@ -36,10 +36,10 @@ using seconds = std::chrono::seconds;
 using milliseconds = std::chrono::milliseconds;
 using microseconds = std::chrono::microseconds;
 
-/** \brief Typ používaný na uchovávanie timestampov v sAgentInterface */
+/** \brief Typ používaný na uchovávanie timestampov v AgentInterface */
 using agent_time_t = uint64_t;
 
-/** \brief Časová jednotka timestampov sAgentInterface
+/** \brief Časová jednotka timestampov AgentInterface
  *
  * Hodnota agent_time_t je počet týchto periód od epochy.
  *

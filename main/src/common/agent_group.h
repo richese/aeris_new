@@ -58,12 +58,12 @@ class AgentGroup
      * grúp.
      *
      * Agenti sú reprezentovaný pomocou zjednodušeného modelu tvoreného
-     * štruktúrou sAgentInterface.
+     * štruktúrou AgentInterface.
      * Toto je jediný zdroj informácii o prostredí agenta.
      *
      * Pointer na pole, nech sa dá jednoducho vymeniť za nové čo príde zo serveru.
      */
-    std::vector<sAgentInterface> *m_global_state;
+    std::vector<AgentInterface> *m_global_state;
 
     /** \brief Pole všetkých agentov obsluhovaných touto grupou. */
     std::vector<Agent*> m_agents;

@@ -26,7 +26,7 @@ class VisualisationAgent : public ae::Agent
     static const std::string kDefaultWindowName; /* "robot visualisation" */
 
   private:
-    using agent_buffer_t = std::shared_ptr<std::vector<ae::sAgentInterface>>;
+    using agent_buffer_t = std::shared_ptr<std::vector<ae::AgentInterface>>;
 
 
   private:
@@ -82,7 +82,7 @@ class VisualisationAgent : public ae::Agent
     void draw_scene();
     void draw_grid();
     void draw_triangles(const std::vector<ae::Point3D> &points);
-    void draw_agent(const ae::sAgentInterface &agent);
+    void draw_agent(const ae::AgentInterface &agent);
 
     void make_grid(); /* TODO */
     void make_border(const float width);

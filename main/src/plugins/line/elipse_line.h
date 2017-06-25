@@ -20,7 +20,7 @@ class ElipseLine : public ae::Agent
     float m_phase;
 
   public:
-    ElipseLine(int index, int agent_count, float radius, float speed, const ae::sColor &color);
+    ElipseLine(int index, int agent_count, float radius, float speed, const ae::Color &color);
     ~ElipseLine() {}
 
     void process(ae::Environment &env);

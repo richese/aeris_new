@@ -154,7 +154,7 @@ VisualisationAgent::~VisualisationAgent()
 
 void VisualisationAgent::process(Environment &env)
 {
-  agent_buffer_t new_data = agent_buffer_t(new std::vector<sAgentInterface>(env.global_state()));
+  agent_buffer_t new_data = agent_buffer_t(new std::vector<AgentInterface>(env.global_state()));
 
   m_lock_buffer.lock();
   m_buffer = new_data;
@@ -260,7 +260,7 @@ void VisualisationAgent::draw_scene()
   // draw agents
   if (agents && agents->size() > 0)
   {
-    for (const sAgentInterface &agent : *agents)
+    for (const AgentInterface &agent : *agents)
     {
       draw_agent(agent);
     }
@@ -319,7 +319,7 @@ void VisualisationAgent::draw_triangles(const std::vector<ae::Point3D> &points)
 }
 
 
-void VisualisationAgent::draw_agent(const sAgentInterface &agent)
+void VisualisationAgent::draw_agent(const AgentInterface &agent)
 {
   glPushMatrix();
 

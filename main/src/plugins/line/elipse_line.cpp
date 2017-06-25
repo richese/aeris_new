@@ -18,7 +18,7 @@ std::vector<Agent*> ElipseLine::spawn_line(const json &parameters)
   int agent_count = 400;
   float speed = 1.0;
   float radius = config::get["playground"]["size"][1].get<float>() * 0.31f;
-  sColor color = { 1.0f, 0.0f, 0.0f};
+  Color color = { 1.0f, 0.0f, 0.0f};
 
   if (parameters.find("agent_count") != parameters.end() &&
       parameters["agent_count"].is_number_unsigned())
@@ -71,7 +71,7 @@ std::vector<Agent*> ElipseLine::spawn_line(const json &parameters)
 }
 
 
-ElipseLine::ElipseLine(int index, int agent_count, float radius, float speed, const sColor &color) :
+ElipseLine::ElipseLine(int index, int agent_count, float radius, float speed, const Color &color) :
   Agent()
 {
   // deforms circle in elipse to fit widescreen monitors

@@ -23,7 +23,7 @@ ae::AgentGroup::AgentGroup(std::chrono::milliseconds dt, uint32_t njobs) :
   m_global_state(nullptr),
   m_agents()
 {
-  m_global_state = new std::vector<sAgentInterface>();
+  m_global_state = new std::vector<AgentInterface>();
 }
 
 
@@ -206,7 +206,7 @@ int ae::AgentGroup::commit()
   for (Agent *agent: m_agents)
   {
     // explicitne pretypovanie
-    *it++ = static_cast<sAgentInterface>(*agent);
+    *it++ = static_cast<AgentInterface>(*agent);
   }
 
   return 0;
@@ -408,11 +408,11 @@ int ae::NetAgentGroup::commit()
 {
   TIMED_FUNC(net_commit_timer);
 
-  std::vector<sAgentInterface> commit;
+  std::vector<AgentInterface> commit;
   commit.reserve(m_agents.size());
   for (auto &agent : m_agents)
   {
-    commit.push_back(static_cast<sAgentInterface>(*agent));
+    commit.push_back(static_cast<AgentInterface>(*agent));
   }
 
   return m_client.opAgentCommit(commit);

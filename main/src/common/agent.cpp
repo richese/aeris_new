@@ -42,7 +42,7 @@ void ae::Agent::init(uint64_t id)
 }
 
 
-ae::Environment::Environment(uint32_t group_id, std::vector<sAgentInterface> &global_state) :
+ae::Environment::Environment(uint32_t group_id, std::vector<AgentInterface> &global_state) :
   m_this_group_id(group_id),
   m_global_state(global_state),
   m_add_agents(),
@@ -59,7 +59,7 @@ ae::Environment::~Environment()
 }
 
 
-const ae::AgentBody* ae::Environment::body_of_agent(const sAgentInterface &agent)
+const ae::AgentBody* ae::Environment::body_of_agent(const AgentInterface &agent)
 {
   return AgentBody::get_body(agent.body);
 }

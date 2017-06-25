@@ -24,8 +24,8 @@ class Client
 
     int64_t opRequestGroupId();
     int opDisconnect();
-    std::vector<sAgentInterface>* opAgentSyncAll();
-    int opAgentCommit(std::vector<sAgentInterface> &agents);
+    std::vector<AgentInterface>* opAgentSyncAll();
+    int opAgentCommit(std::vector<AgentInterface> &agents);
 
   private:
 

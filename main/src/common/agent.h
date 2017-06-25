@@ -6,9 +6,7 @@
 
 #include "agent_body.h"
 #include "timing.h"
-
-
-using ae::time::agent_time_t;
+#include "types.h"
 
 
 namespace ae
@@ -16,84 +14,6 @@ namespace ae
 
 
 class Environment;
-
-
-struct sAgentPosition
-{
-  float x, y, z;
-  float roll, pitch, yaw;
-};
-
-
-struct sColor
-{
-  float r, g, b;
-};
-
-
-/** \brief Štruktúra popisujúca stav agenta v prostredí.
- *
- * Takto agenti vidia všetkých ostatných agentov v prostredí.
- *
- * \var sAgentInterface::id
- *   Unikátny identifikátor agenta v prostredí.
- *   Hodnotu priraďuje AgentGroup pri registrácii agenta do prostredia
- *   agent ju nesmie meniť.
- *
- * \var sAgentInterface::type
- *   Identifikátor typu agenta podľa jeho úlohy.
- *
- * \var sAgentInterface::body
- *   Identifikátor typu tela agenta pre vizualizáciu a výpočet kolízii.
- *
- * \var sAgentInterface::timestamp
- *   Čas poslednej aktualizácie tohto agenta.
- *   Hodnota je absolútny čas v mikrosekundách od počiatku unixovej epochy.
- *   Preto je potrebné aby čas na všetkých strojoch bol synchronizovaný
- *   pomocou NTP protokolu.
- *
- * \var sAgentInterface::expires
- *   Absolútny čas, po ktorom možno agenta považovať za zombie.
- *   Hodnota <= 0 značí, že agent neexpiruje.
- *
- * \var sAgentInterface::position
- *   X, Y, Z koordináty agenta v prostredí. Koordináty sú v cm.
- *   Roll, Pitch, Yaw rotácia agneta v prostredí v ???.
- *   Veľkosť hracej plochy v cm určí konfiguračný súbor podľa rozlíšenia
- *   a uhlopriečky reálnej hracej plochy na LED paneli.
- *
- * \var sAgentInterface::color
- *   R, G, B komponenty farby robota vo vizualizácii avšak môže značiť aj stav
- *   agenta pre iných agentov.
- *   Hodnoty sú v rozsahu 0.0f až 1.0f.
- *
- * \var sAgentInterface::value
- *   Toto pole obsahuje ďalšie stavové informácie o agentovi.
- *   To ako sú tieto hodnoty interpretované (typ, hodnota) ja na agentoch.
- */
-struct sAgentInterface
-{
-  uint64_t id;
-  uint16_t type;
-  uint16_t body;
-
-  agent_time_t timestamp;
-  agent_time_t expires;
-
-  sAgentPosition position;
-  sColor color;
-
-  uint16_t value[4];
-
-
-  operator bool() const { return id != 0; }
-
-  /* Porovnávanie agentov na základe id. */
-  bool operator ==(const sAgentInterface &b) const { return id == b.id; }
-  bool operator !=(const sAgentInterface &b) const { return id != b.id; }
-  bool operator  <(const sAgentInterface &b) const { return id  < b.id; }
-  bool operator  >(const sAgentInterface &b) const { return id  > b.id; }
-};
 
 
 /** \brief Základná trieda, z ktorej dedia všetci agenti.
@@ -105,7 +25,7 @@ struct sAgentInterface
 class Agent
 {
   protected:
-    sAgentInterface m_interface;
+    AgentInterface m_interface;
 
   public:
     /** \brief default constructor. Resents all values in agents interface. */
@@ -143,8 +63,8 @@ class Agent
     /* Pretypovanie na bool vráti to, či má agent nenulové id. */
     operator bool() const { return m_interface; }
 
-    /* Pretypovanie na sAgentInterface vráti hodnotu agentovho interface. */
-    operator sAgentInterface() const { return m_interface; }
+    /* Pretypovanie na AgentInterface vráti hodnotu agentovho interface. */
+    operator AgentInterface() const { return m_interface; }
 };
 
 
@@ -160,7 +80,7 @@ class Environment
     const uint32_t m_this_group_id;
 
     /** \brief Aktuálny globálny stav prostredia. */
-    const std::vector<sAgentInterface> &m_global_state;
+    const std::vector<AgentInterface> &m_global_state;
 
     /** \brief Zoznam žiadostí agentov o pridanie nových agentov do grupy. */
     std::vector<Agent*> m_add_agents;
@@ -169,7 +89,7 @@ class Environment
     std::vector<uint64_t> m_delete_agents;
 
   public:
-    Environment(uint32_t group_id, std::vector<sAgentInterface> &global_state);
+    Environment(uint32_t group_id, std::vector<AgentInterface> &global_state);
     ~Environment();
 
     /** Vráti agentovi číslo grupy, ktorej je súčasťou. */
@@ -180,10 +100,10 @@ class Environment
      * Ak si agent chce uchovať tento stav musí si urobiť jeho kópiu!
      * Po skončení metódy process bude toto pole dealokované.
      */
-    const std::vector<sAgentInterface>& global_state() const { return m_global_state; }
+    const std::vector<AgentInterface>& global_state() const { return m_global_state; }
 
     /** Poskytne agentovi informácie o tele ľubovolného agenta v prostredí */
-    const AgentBody* body_of_agent(const sAgentInterface &agent);
+    const AgentBody* body_of_agent(const AgentInterface &agent);
 
     /** Požiada o zaradenie novej inštancie agenta do tejto grupy.
      *

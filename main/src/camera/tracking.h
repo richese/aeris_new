@@ -94,7 +94,7 @@ public:
   std::vector<cv::Point2f> history;
 
   /** \brief Agent interface that is send to Aeris agent server. */
-  ae::sAgentInterface interface;
+  ae::AgentInterface interface;
 
 private:
   /** \brief Maximum length of past robot positions. */
