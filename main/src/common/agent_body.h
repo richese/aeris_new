@@ -14,13 +14,6 @@ namespace ae
 {
 
 
-/* Forward declaration. Defined in agent.h */
-struct AgentInterface;
-
-
-
-
-
 class AgentBody
 {
   public:
@@ -57,19 +50,22 @@ namespace helpers
 {
 
 
-typedef std::map<uint16_t, AgentBody*> body_map_t;
-
-class body_storage_t
+class BodyStorage
 {
-  public:
-    body_map_t bodies;
-    std::mutex lock;
+private:
+  static BodyStorage local_storage;
+  static BodyStorage *active_storage;
 
-    body_storage_t() : bodies(), lock() {}
+public:
+  static BodyStorage* get() { return active_storage; }
+  static void set(BodyStorage* storage);
+
+public:
+  std::map<uint16_t, AgentBody*> bodies;
+  std::mutex lock;
+
+  BodyStorage() : bodies(), lock() {}
 };
-
-body_storage_t* get_body_storage();
-void set_body_storage(body_storage_t *storage);
 
 
 } /* namespace helpers */

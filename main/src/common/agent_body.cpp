@@ -10,35 +10,53 @@
 #include "logging.h"
 
 
-namespace ae
-{
-namespace helpers
-{
+namespace ae {
 
-body_storage_t local_body_storage;
+namespace helpers {
 
-body_storage_t *active_body_storage = &local_body_storage;
+
+BodyStorage BodyStorage::local_storage;
+
+BodyStorage* BodyStorage::active_storage = &BodyStorage::local_storage;
+
 
 } /* namespace helpers */
+
 } /* namespace ae */
+
+
+void ae::helpers::BodyStorage::set(BodyStorage *storage)
+{
+  if (storage != nullptr)
+  {
+    active_storage = storage;
+  }
+  else
+  {
+    active_storage = &local_storage;
+  }
+}
 
 
 const ae::AgentBody* ae::AgentBody::get_body(const uint16_t body_id)
 {
-  helpers::body_storage_t &storage = *helpers::get_body_storage();
-  std::lock_guard<std::mutex> lock(storage.lock);
+  AgentBody* body = nullptr;
 
-  auto body = storage.bodies.find(body_id);
-  if (body != storage.bodies.end())
+  auto *body_storage = helpers::BodyStorage::get();
+  std::lock_guard<std::mutex> lock(body_storage->lock);
+
+  auto body_item = body_storage->bodies.find(body_id);
+  if (body_item != body_storage->bodies.end())
   {
-    return body->second;
+    body = body_item->second;
   }
   else
   {
-    return load_body(body_id);
+    body = load_body(body_id);
+    body_storage->bodies[body_id] = body;
   }
 
-  return nullptr;
+  return body;
 }
 
 
@@ -68,7 +86,7 @@ ae::AgentBody* ae::AgentBody::load_body(const uint16_t body_id)
   std::string model_filename = "";
   float model_scale = 1.0;
 
-  // chacks
+  // checks
   if (config::get.find("body_list") == config::get.end())
   {
     LOG(ERROR) << "Config file is missing \"body_list\" section.";
@@ -124,7 +142,6 @@ ae::AgentBody* ae::AgentBody::load_body(const uint16_t body_id)
   }
 
   VLOG(3) << "Loaded AgentBody(id=" << body_id << ", vert="<< body->vertices().size() << ", file=\"" << model_filename << "\")";
-  helpers::active_body_storage->bodies[body_id] = body;
   return body;
 }
 
@@ -263,25 +280,4 @@ int ae::AgentBody::load_obj(const std::string &filename, const float scale)
 
 
   return 0;
-}
-
-
-ae::helpers::body_storage_t* ae::helpers::get_body_storage()
-{
-  if (active_body_storage == nullptr)
-  {
-    LOG(ERROR) << "Corrupted body storage.";
-  }
-  return active_body_storage;
-}
-
-
-void ae::helpers::set_body_storage(ae::helpers::body_storage_t *storage)
-{
-  if (storage == nullptr)
-  {
-    return;
-  }
-
-  active_body_storage = storage;
 }

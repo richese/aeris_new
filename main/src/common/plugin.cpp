@@ -79,7 +79,7 @@ ae::plugin::plugin_t* ae::plugin::PluginStorage::open_plugin(const std::string &
     {
       plugin_init_t init_data;
       init_data.log_storage = el::Helpers::storage();
-      init_data.body_storage = ae::helpers::get_body_storage();
+      init_data.body_storage = ae::helpers::BodyStorage::get();
 
       if (plugin->init(init_data) != 0)
       {

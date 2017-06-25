@@ -32,7 +32,7 @@ struct plugin_init_t
 {
   const json &conf_storage;
   el::base::type::StoragePointer log_storage;
-  ae::helpers::body_storage_t *body_storage;
+  ae::helpers::BodyStorage *body_storage;
 
   plugin_init_t() : conf_storage(config::get) {}
 };
