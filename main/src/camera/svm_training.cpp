@@ -18,14 +18,15 @@
 #include "common/timing.h"
 #include "common/signals.h"
 
+#include "svm_training.h"
+
 
 using namespace cv;
+using namespace ae::tracking::svm;
 using std::cout;
 using std::cerr;
 using std::endl;
 
-
-using test_vector = std::vector<std::tuple<int, std::string>>;
 
 
 // parametre hog deskriptora
@@ -37,18 +38,6 @@ const int kBins = 9;
 
 HOGDescriptor hog(kWindowSize, kBlockSize, kBlockStride, kCellSize, kBins);
 
-
-Mat get_hogdescriptor_visu(const Mat &color_origImg, std::vector<float> &descriptorValues, const Size &size);
-
-
-void usage(char *name);
-std::vector<std::string> readFilenames(const std::string &filename);
-test_vector readTestFilenames(const std::string &filename);
-Mat loadSample(const std::string &filename);
-
-void extract(const std::string &file_list, const std::string &descriptor_file);
-void training(const std::string &pos_file, const std::string &neg_file, const std::string &svm_file);
-void classTest(const std::string &svm_file, const std::string &sample_file);
 
 
 int main(int argc, char *argv[])
@@ -131,7 +120,7 @@ int main(int argc, char *argv[])
 }
 
 
-void usage(char *name)
+void ae::tracking::svm::usage(char *name)
 {
   cerr << "usage:" << endl;
   cerr << name << " extract|e FILE_LIST_FILE DESCRIPTOR_FILE" << endl;
@@ -140,7 +129,7 @@ void usage(char *name)
 }
 
 
-std::vector<std::string> readFilenames(const std::string &filename)
+std::vector<std::string> ae::tracking::svm::readFilenames(const std::string &filename)
 {
   FILE * f = fopen(filename.c_str(), "r");
   if (f == nullptr)
@@ -163,7 +152,7 @@ std::vector<std::string> readFilenames(const std::string &filename)
 }
 
 
-test_vector readTestFilenames(const std::string &filename)
+test_vector ae::tracking::svm::readTestFilenames(const std::string &filename)
 {
   FILE * f = fopen(filename.c_str(), "r");
   if (f == nullptr)
@@ -190,7 +179,7 @@ test_vector readTestFilenames(const std::string &filename)
 }
 
 
-Mat loadSample(const std::string &filename)
+Mat ae::tracking::svm::loadSample(const std::string &filename)
 {
   Mat img = imread(filename, IMREAD_GRAYSCALE);
   if (img.empty())
@@ -218,7 +207,7 @@ Mat loadSample(const std::string &filename)
 }
 
 
-void extract(const std::string &file_list, const std::string &descriptor_file)
+void ae::tracking::svm::extract(const std::string &file_list, const std::string &descriptor_file)
 {
   std::vector<std::string> files = readFilenames(file_list);
   Mat img;
@@ -257,7 +246,7 @@ void extract(const std::string &file_list, const std::string &descriptor_file)
 }
 
 
-void training(const std::string &pos_file, const std::string &neg_file, const std::string &svm_file)
+void ae::tracking::svm::training(const std::string &pos_file, const std::string &neg_file, const std::string &svm_file)
 {
   Mat training_descriptors;
   Mat training_labels;
@@ -299,7 +288,7 @@ void training(const std::string &pos_file, const std::string &neg_file, const st
 }
 
 
-void classTest(const std::string &svm_file, const std::string &sample_file)
+void ae::tracking::svm::classTest(const std::string &svm_file, const std::string &sample_file)
 {
   Ptr<ml::SVM> svm = ml::SVM::load(svm_file);
   test_vector test_cases = readTestFilenames(sample_file);
@@ -342,7 +331,7 @@ void classTest(const std::string &svm_file, const std::string &sample_file)
 }
 
 
-Mat get_hogdescriptor_visu(const Mat& color_origImg, std::vector<float>& descriptorValues, const Size & size )
+Mat ae::tracking::svm::get_hogdescriptor_visu(const Mat& color_origImg, std::vector<float>& descriptorValues, const Size & size )
 {
     const int DIMX = size.width;
     const int DIMY = size.height;

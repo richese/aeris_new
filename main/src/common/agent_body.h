@@ -61,7 +61,9 @@ class AgentBody
 };
 
 
-/* Pomocne triedy a funkcie tykajuce sa memory managmentu nacitanych tiel */
+/** \brief Contains internal objects that manage shared resources between
+ * application and plugins.
+ */
 namespace helpers
 {
 

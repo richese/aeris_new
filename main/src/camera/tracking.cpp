@@ -15,7 +15,8 @@
 #include "tracking.h"
 
 
-Path::Path(cv::Point position, uint64_t id, uint16_t type, uint32_t path_length, uint32_t path_sample_avg) :
+ae::tracking::Path::Path(cv::Point position, uint64_t id, uint16_t type,
+                         uint32_t path_length, uint32_t path_sample_avg) :
   color(cv::theRNG().next() % 255, cv::theRNG().next() % 255, cv::theRNG().next() % 255),
   prediction(position),
   seen_for(1),
@@ -34,7 +35,7 @@ Path::Path(cv::Point position, uint64_t id, uint16_t type, uint32_t path_length,
 }
 
 
-void Path::update_position(const cv::Point2f pos, bool is_miss)
+void ae::tracking::Path::update_position(const cv::Point2f pos, bool is_miss)
 {
   // smooth and add new robot position
   cv::Point2f new_position = pos;
@@ -83,30 +84,30 @@ void Path::update_position(const cv::Point2f pos, bool is_miss)
 }
 
 
-cv::Point2f Path::position() const
+cv::Point2f ae::tracking::Path::position() const
 {
   return *history.rbegin();
 }
 
 
-Tracking::Tracking() :
+ae::tracking::Tracking::Tracking() :
+  m_path_length(kDefaultPathLength),
+  m_path_sample_avg(kDefaultPathSampleAvg),
+  m_match_dist(kDefaultMatchDist),
+  m_path_remove_limit(kDefaultPathRemoveLimit),
+  m_path_valid_limit(kDefaultPathValidLimit),
   m_tracks(),
   m_agent_type(0),
   m_aeris_client(),
   m_agent_group_id(0),
   m_track_counter(0),
-  m_online(false),
-  m_path_length(kDefaultPathLength),
-  m_path_sample_avg(kDefaultPathSampleAvg),
-  m_match_dist(kDefaultMatchDist),
-  m_path_remove_limit(kDefaultPathRemoveLimit),
-  m_path_valid_limit(kDefaultPathValidLimit)
+  m_online(false)
 {
 
 }
 
 
-void Tracking::loadConfiguration(const nlohmann::json &settings)
+void ae::tracking::Tracking::loadConfiguration(const nlohmann::json &settings)
 {
   std::string name;
 
@@ -204,7 +205,8 @@ void Tracking::loadConfiguration(const nlohmann::json &settings)
       }
       else
       {
-        LOG(ERROR) << "Tracking: Agent list does not contain agent named: " << agent_name;
+        LOG(ERROR) << "Tracking: Agent list does not contain agent named: "
+                   << agent_name;
       }
     }
     else
@@ -241,7 +243,7 @@ void Tracking::loadConfiguration(const nlohmann::json &settings)
 }
 
 
-void Tracking::connectToAeris()
+void ae::tracking::Tracking::connectToAeris()
 {
   if (!m_online)
   {
@@ -257,14 +259,15 @@ void Tracking::connectToAeris()
       m_agent_group_id = id;
       m_online = true;
       m_aeris_client.opDisconnect();
-      LOG(INFO) << "Tracking: Connected to Aeris server and received agent group id: " << m_agent_group_id;
+      LOG(INFO) << "Tracking: Connected to Aeris server and received agent group id: "
+                << m_agent_group_id;
       LOG(INFO) << "Tracking: Using agent interface_type: " << m_agent_type;
     }
   }
 }
 
 
-void Tracking::setPerspTransform(const std::vector<cv::Point2f> &frame_corners)
+void ae::tracking::Tracking::setPerspTransform(const std::vector<cv::Point2f> &frame_corners)
 {
   cv::Point2f real_size;
   real_size.x = ae::config::get["playground"]["size"][0];
@@ -280,7 +283,7 @@ void Tracking::setPerspTransform(const std::vector<cv::Point2f> &frame_corners)
 }
 
 
-void Tracking::setPerspTransform(const std::vector<cv::Point> &frame_corners)
+void ae::tracking::Tracking::setPerspTransform(const std::vector<cv::Point> &frame_corners)
 {
   std::vector<cv::Point2f> corners;
   for (const auto &c : frame_corners)
@@ -291,7 +294,7 @@ void Tracking::setPerspTransform(const std::vector<cv::Point> &frame_corners)
 }
 
 
-cv::Point2f Tracking::getRealPosition(const cv::Point2f &frame_pos)
+cv::Point2f ae::tracking::Tracking::getRealPosition(const cv::Point2f &frame_pos)
 {
   std::vector<cv::Point2f> input, output;
   input.push_back(frame_pos);
@@ -301,7 +304,7 @@ cv::Point2f Tracking::getRealPosition(const cv::Point2f &frame_pos)
 }
 
 
-void Tracking::update(const std::vector<cv::Point> &positions)
+void ae::tracking::Tracking::update(const std::vector<cv::Point> &positions)
 {
   std::vector<bool> used_position(positions.size(), false);
 
@@ -381,6 +384,7 @@ void Tracking::update(const std::vector<cv::Point> &positions)
       m_online = false;
       LOG(ERROR) << "Failed to connect to Aeris server: disabling.";
     }
+    else
     {
       m_aeris_client.opDisconnect();
     }

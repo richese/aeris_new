@@ -6,6 +6,8 @@
 
 namespace ae
 {
+
+/** \brief Handling of signals and terminal exit conditions. */
 namespace signal
 {
 

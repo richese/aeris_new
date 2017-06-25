@@ -8,6 +8,8 @@
 
 namespace ae
 {
+
+/** \brief Namespace contains functions related to time and timestamps. */
 namespace time
 {
 

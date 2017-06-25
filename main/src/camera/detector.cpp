@@ -11,7 +11,7 @@
 #include "detector.h"
 
 
-Detector::Detector() :
+ae::tracking::Detector::Detector() :
   m_hog(cv::Size(40, 40), cv::Size(10, 10), cv::Size(5, 5), cv::Size(5, 5), 9),
   m_svm()
 {
@@ -19,21 +19,19 @@ Detector::Detector() :
 }
 
 
-std::vector<cv::Point> Detector::detect(const cv::Mat &frame, const std::vector<cv::Point> &roi)
+std::vector<cv::Point> ae::tracking::Detector::detect(const cv::Mat &frame, const std::vector<cv::Point> &roi)
 {
   // TIMED_FUNC(detect_timer);
 
   const cv::Point shift(m_hog.winSize.width / 2, m_hog.winSize.height / 2);
   std::vector<cv::Point> detections;
 
-
   for (const cv::Point &center : roi)
   {
-    std::vector<float> descriptors;
     cv::Rect area(center - shift, center + shift);
-    cv::Mat prediction;
-
     cv::Mat cutout;
+    std::vector<float> descriptors;
+    cv::Mat prediction;
 
     try
     {
@@ -47,15 +45,17 @@ std::vector<cv::Point> Detector::detect(const cv::Mat &frame, const std::vector<
     }
 
     {
+      // extract HOG descriptors from selected area
       TIMED_SCOPE(hog_timer, "HOG extraction");
       m_hog.compute(cutout, descriptors);
     }
     {
+      // classify extracted descriptors
       TIMED_SCOPE(svm_timer, "SVM classification");
       m_svm->predict(descriptors, prediction);
     }
 
-
+    // add positive detections to output array
     if (prediction.at<float>() == 1)
     {
       detections.push_back(center);
@@ -66,13 +66,13 @@ std::vector<cv::Point> Detector::detect(const cv::Mat &frame, const std::vector<
 }
 
 
-void Detector::setHog(cv::Size win_size, cv::Size block_size, cv::Size block_stride, cv::Size cell_size, int nbins)
+void ae::tracking::Detector::setHog(cv::Size win_size, cv::Size block_size, cv::Size block_stride, cv::Size cell_size, int nbins)
 {
   m_hog = cv::HOGDescriptor(win_size, block_size, block_stride, cell_size, nbins);
 }
 
 
-void Detector::setSvm(const std::string &filename)
+void ae::tracking::Detector::setSvm(const std::string &filename)
 {
   m_svm = cv::ml::SVM::load(filename);
   if (m_svm.empty())
@@ -82,7 +82,7 @@ void Detector::setSvm(const std::string &filename)
 }
 
 
-void Detector::loadConfiguration(const nlohmann::json &settings)
+void ae::tracking::Detector::loadConfiguration(const nlohmann::json &settings)
 {
   std::string name;
 

@@ -16,7 +16,7 @@
 #include "segmentation.h"
 
 
-Segmentation::Segmentation(cv::Size input_size) :
+ae::tracking::Segmentation::Segmentation(cv::Size input_size) :
   m_input_size(input_size),
   m_playground_mask(),
   m_robot_size(kDefaultRobotSize),
@@ -25,17 +25,17 @@ Segmentation::Segmentation(cv::Size input_size) :
   m_background_sub(kDefaultBackgroundSubstraction),
   m_mask(),
   m_keypoints(),
+  m_centroid_count(kMinCentroids),
+  m_centroids(),
   m_bgsub(cv::bgsegm::createBackgroundSubtractorMOG(200, 3)),
   // m_bgsub(cv::bgsegm::createBackgroundSubtractorGMG()),
-  m_features(cv::FastFeatureDetector::create(80)),
-  m_centroid_count(kMinCentroids),
-  m_centroids()
+  m_features(cv::FastFeatureDetector::create(80))
 {
 
 }
 
 
-void Segmentation::setPlaygroundCorners(const std::vector<cv::Point> &corners)
+void ae::tracking::Segmentation::setPlaygroundCorners(const std::vector<cv::Point> &corners)
 {
   if (corners.size() != 4)
   {
@@ -56,7 +56,7 @@ void Segmentation::setPlaygroundCorners(const std::vector<cv::Point> &corners)
 }
 
 
-void Segmentation::loadConfiguration(const nlohmann::json &settings)
+void ae::tracking::Segmentation::loadConfiguration(const nlohmann::json &settings)
 {
   std::string name;
 
@@ -152,21 +152,21 @@ void Segmentation::loadConfiguration(const nlohmann::json &settings)
 }
 
 
-void Segmentation::createFastTrackbar(const std::string &window_name)
+void ae::tracking::Segmentation::createFastTrackbar(const std::string &window_name)
 {
   const std::string kTrackbarName = "FAST Threshold";
   cv::createTrackbar(kTrackbarName, window_name, &this->m_fast_threshold, kMaxFastThreshold);
 }
 
 
-void Segmentation::createResponseTrackbar(const std::string &window_name)
+void ae::tracking::Segmentation::createResponseTrackbar(const std::string &window_name)
 {
   const std::string kTrackbarName = "Response Threshold";
   cv::createTrackbar(kTrackbarName, window_name, &this->m_response_threshold, kMaxResponseThreshold);
 }
 
 
-std::vector<cv::Point> Segmentation::compute(const cv::Mat &frame)
+std::vector<cv::Point> ae::tracking::Segmentation::compute(const cv::Mat &frame)
 {
   std::vector<cv::KeyPoint> keypoints = computeKeypoints(frame);
 
@@ -181,7 +181,7 @@ std::vector<cv::Point> Segmentation::compute(const cv::Mat &frame)
 }
 
 
-std::vector<cv::KeyPoint> Segmentation::computeKeypoints(const cv::Mat &frame)
+std::vector<cv::KeyPoint> ae::tracking::Segmentation::computeKeypoints(const cv::Mat &frame)
 {
   std::vector<cv::KeyPoint> keypoints;
 
@@ -217,7 +217,7 @@ std::vector<cv::KeyPoint> Segmentation::computeKeypoints(const cv::Mat &frame)
 }
 
 
-std::vector<cv::Point> Segmentation::findCentroids(const std::vector<cv::Point3f> &points)
+std::vector<cv::Point> ae::tracking::Segmentation::findCentroids(const std::vector<cv::Point3f> &points)
 {
   TIMED_SCOPE(kmeans_timer, "Clustering");
 
@@ -288,16 +288,18 @@ std::vector<cv::Point> Segmentation::findCentroids(const std::vector<cv::Point3f
     }
   }
 
-  // set centroid count for next iteration
+  // calculate centroid count for next iteration
   const size_t merged_centroids = m_centroid_count - centroids.size();
   if (merged_centroids == 0)
   {
+    // add more centroids if no centroids were merged
     m_centroid_count += 2;
     VLOG(7) << "Segmentation: Increasing centroid count to " << m_centroid_count;
   }
   else
   {
-    if (merged_centroids > 3 && m_centroid_count > kMinCentroids)
+    // decrease count of centroids of more than 3 centroids were merged
+    if (merged_centroids > kRequiredOverlap && m_centroid_count > kMinCentroids)
     {
       m_centroid_count -= 1;
       VLOG(7) << "Segmentation: Decreasing centroid count to " << m_centroid_count;

@@ -9,8 +9,25 @@
 #include "robot_tracking.h"
 
 
+/** \addtogroup robot-tracking Robot Tracking
+ *  \brief Application for detection of robot movement on Aeris playground.
+ *
+
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *  @{
+ */
+
+
 int main(int argc, char *argv[])
 {
+  using ae::tracking::RobotTracking;
   using tracking_ptr = std::unique_ptr<RobotTracking>;
   tracking_ptr tracker;
 
@@ -61,3 +78,6 @@ int main(int argc, char *argv[])
 
   return 0;
 }
+
+
+/** @} */

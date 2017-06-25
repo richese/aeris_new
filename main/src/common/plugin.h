@@ -17,8 +17,15 @@ using json = nlohmann::json;
 
 namespace ae
 {
+
+/** \brief Namespace contains functionality of plugins and dynamic library
+ * handling.
+ */
 namespace plugin
 {
+
+
+// struct SharedPluginData
 
 
 struct plugin_init_t
@@ -62,8 +69,8 @@ struct plugin_init_t
  *
  * V prípade potreby nových druhov pluginov sa rozšíri táto štruktúra.
  *
- * \seealso example_agent.cpp
- * \seealso example_agent.h
+ * \see example_agent.cpp
+ * \see example_agent.h
  */
 struct plugin_t
 {

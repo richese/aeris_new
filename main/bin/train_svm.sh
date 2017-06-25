@@ -17,12 +17,15 @@ SVM="$MAIN_ROOT_DIR/data/model.xml"
 rm -vf "${POS}.txt" "${POS}.xml" "${NEG}.txt" "${NEG}.xml" "${TEST}" "${TEST2}"
 
 
-# set file lists for SVM training and self test
+# Add paths to all png images from directories data/image/neg & data/image/neg/slices
+# to one text file.
+# Usage of MAIN_ROOT_DIR variable automatically means that paths are absolute.
 for f in $MAIN_ROOT_DIR/data/image/neg/*.png $MAIN_ROOT_DIR/data/image/neg/slices/*.png; do
   echo "$f" >> $NEG.txt
   echo "0 $f" >> $TEST
 done
 
+# The same for positive samples
 for f in $MAIN_ROOT_DIR/data/image/pos/*.png; do
   echo "$f" >> $POS.txt
   echo "1 $f" >> $TEST

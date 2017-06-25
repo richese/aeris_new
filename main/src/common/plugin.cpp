@@ -210,10 +210,16 @@ void ae::plugin::agent_spawner(const nlohmann::json &list, std::vector<ae::Agent
 
     // get agent spawn count
     int count = 1;
-    if (item.find("count") != item.end() &&
-        item["count"].is_number_unsigned())
+    if (item.find("count") != item.end())
     {
-      count = item["count"];
+      if (item["count"].is_number_unsigned())
+      {
+        count = item["count"];
+      }
+      else
+      {
+        LOG(WARNING) << "Invalid type for spawn count given: " << item["count"];
+      }
     }
 
     // get agent parameters

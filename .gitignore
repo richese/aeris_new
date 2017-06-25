@@ -35,5 +35,6 @@ main/bin/meson
 main/bin/ninja
 main/bin/*.elf
 main/build
+main/doc/html
 main/logs
 main/lib
