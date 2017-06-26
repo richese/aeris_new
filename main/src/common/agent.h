@@ -103,7 +103,7 @@ class Environment
     const std::vector<AgentInterface>& global_state() const { return m_global_state; }
 
     /** Poskytne agentovi informácie o tele ľubovolného agenta v prostredí */
-    const AgentBody* body_of_agent(const AgentInterface &agent);
+    const AgentBodyPtr body_of_agent(const AgentInterface &agent);
 
     /** Požiada o zaradenie novej inštancie agenta do tejto grupy.
      *

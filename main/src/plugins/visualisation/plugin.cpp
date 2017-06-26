@@ -2,7 +2,7 @@
 
 #include "common/agent.h"  // pre ae::Agent
 #include "common/logging.h"
-#include "common/plugin.h" // pre ae::plugin::plugin_t, ae::plugin::plugin_init, nlohmann::json, el::base::type::StoragePointer
+#include "common/plugin.h" // pre ae::plugin::PluginAPI, nlohmann::json, el::base::type::StoragePointer
 
 #include "visualisation_agent.h"
 
@@ -11,36 +11,35 @@
 using json = nlohmann::json;
 using el::base::type::StoragePointer;
 using namespace ae;
-using ae::plugin::plugin_t;
-using ae::plugin::plugin_init_t;
-using ae::plugin::plugin_init;
+using ae::plugin::PluginAPI;
+using ae::plugin::SharedData;
 
 
 // forward declarations for plugin functions
-extern "C" plugin_t* visualisation_load();
-int visualisation_init(plugin_init_t &init_data);
+extern "C" PluginAPI* visualisation_load();
+int visualisation_init(SharedData &init_data);
 std::vector<Agent*> visualisation_create(const json &parameters);
 
 
 // štruktúra pluginu
-static plugin_t visualisation_plugin = {
+static PluginAPI visualisation_plugin = {
   visualisation_init, // or just ae::plugin::plugin_init
   visualisation_create
 };
 
 
 // plugin load function
-extern "C" plugin_t* visualisation_load()
+extern "C" PluginAPI* visualisation_load()
 {
   return &visualisation_plugin;
 }
 
 
 // Inicializuje plugin a vypíše správu do logu.
-int visualisation_init(plugin_init_t &init_data)
+int visualisation_init(SharedData &init_data)
 {
   // nastav globálne premenné
-  plugin_init(init_data);
+  ae::plugin::setPluginStorage(init_data);
 
   // tu si plugin môže robiť svoje veci
 

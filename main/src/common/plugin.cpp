@@ -11,47 +11,41 @@
 #include "plugin.h"
 
 
-namespace ae
+ae::plugin::PluginPtr ae::plugin::Plugin::get(const std::string &name)
 {
-namespace plugin
-{
+  PluginPtr plugin = nullptr;
 
-PluginStorage::handle_map_t PluginStorage::loaded_plugins = PluginStorage::handle_map_t();
+  auto *plugin_storage = ae::helpers::PluginStorage::get();
+  std::lock_guard<std::mutex> lock_plugin_storage(plugin_storage->lock);
 
-std::mutex PluginStorage::lock_loaded_plugins;
-
-} /* namespace plugin */
-} /* namespace ae */
-
-
-ae::plugin::plugin_t* ae::plugin::PluginStorage::open_plugin(const std::string &name)
-{
-  std::lock_guard<std::mutex> plugin_guard(lock_loaded_plugins);
-  plugin_t *plugin = nullptr;
-
-  if ((plugin = find_plugin(name)) != nullptr)
+  // check if this plugin is already loaded
+  if (plugin_storage->data.find(name) != plugin_storage->data.end())
   {
-    return plugin;
+    plugin = plugin_storage->data[name];
   }
-  else
+
+  // try to load the plugin
+  if (plugin == nullptr)
   {
+    LOG(INFO) << "Loading plugin: " << name;
+
     std::string libname = "lib";
     libname += name;
     libname += ".so";
     libname = config::path(config::DIR_LIB, libname);
 
-    // otvor zdieľanú knižnicu
+    // try to open the shared library
     void *handle = nullptr;
-    if ((handle = dlopen(libname.c_str(), PLUGIN_RTLD_POLICY)) == nullptr)
+    if ((handle = dlopen(libname.c_str(), RTLD_NOW)) == nullptr)
     {
       LOG(ERROR) << "Failed to open plugin " << name << " (" << libname << "): " << dlerror();
       return nullptr;
     }
 
-    // zisti adresu load funkcie ${NAME}_load
+    // get pointer to load function: ${NAME}_load
     std::string load_func_name = name + "_load";
     char *err = dlerror();
-    plugin_t* (*load_func)() = (plugin_t*(*)()) dlsym(handle, load_func_name.c_str());
+    PluginAPI* (*load_func)() = (PluginAPI*(*)()) dlsym(handle, load_func_name.c_str());
     if ((err = dlerror()) != nullptr)
     {
       LOG(ERROR) << "Plugin load function symbol failed in " << name << " (" << libname << "): " << err;
@@ -65,23 +59,20 @@ ae::plugin::plugin_t* ae::plugin::PluginStorage::open_plugin(const std::string &
       return nullptr;
     }
 
-    // získaj štruktúru s informáciami o plugine od load funkcie
-    plugin = load_func();
-    if (plugin == nullptr)
+    // get pointer to plugin api by calling load function
+    PluginAPI *api = load_func();
+    if (api == nullptr)
     {
       LOG(ERROR) << "Plugin " << name << " (" << libname << ") load error.";
       dlclose(handle);
       return nullptr;
     }
 
-    // inicializuj globálne premenné v kóde zdieľanej knižnice
-    if (plugin->init != nullptr)
+    // initialize plugin global storage
+    if (api->init != nullptr)
     {
-      plugin_init_t init_data;
-      init_data.log_storage = el::Helpers::storage();
-      init_data.body_storage = ae::helpers::BodyStorage::get();
-
-      if (plugin->init(init_data) != 0)
+      SharedData storages;
+      if (api->init(storages) != 0)
       {
         LOG(ERROR) << "Plugin initialization failed: " << name << " (" << libname << ")";
         return nullptr;
@@ -94,102 +85,54 @@ ae::plugin::plugin_t* ae::plugin::PluginStorage::open_plugin(const std::string &
       return nullptr;
     }
 
-    // pridaj plugin do mapy pluginov aby sa automaticky zatvorila zdieľaná
-    // knižnica pri ukončení programu
-    register_plugin(name, handle, plugin);
+    // create plugin instance
+    plugin = PluginPtr(new Plugin(handle, api));
+    if (!plugin)
+    {
+      LOG(ERROR) << "Failed to allocate plugin: " << name << " (" << libname << ")";
+    }
 
-    return plugin;
+    // save opened plugin to storage
+    plugin_storage->data[name] = plugin;
   }
+
+  return plugin;
 }
 
 
-void ae::plugin::PluginStorage::register_plugin(const std::string &name, void *handle, plugin_t *plugin)
+ae::plugin::Plugin::Plugin(void *handle, PluginAPI *api) :
+  m_so_handle(handle),
+  m_api(api)
 {
-  loaded_plugins[name] = std::unique_ptr<PluginStorage>(new PluginStorage(handle, plugin));
+
 }
 
 
-ae::plugin::plugin_t* ae::plugin::PluginStorage::find_plugin(const std::string &name)
+ae::plugin::Plugin::~Plugin()
 {
-  auto has_plugin = loaded_plugins.find(name);
-  if (has_plugin != loaded_plugins.end())
+  if (m_so_handle != nullptr)
   {
-    return has_plugin->second->plugin;
-  }
-  else
-  {
-    return nullptr;
+    dlclose(m_so_handle);
+    m_so_handle = nullptr;
+    m_api = nullptr;
   }
 }
 
 
-ae::plugin::PluginStorage::PluginStorage(void *handle, plugin_t *plugin):
-  handle(handle),
-  plugin(plugin)
-{
-
-}
-
-
-ae::plugin::PluginStorage::~PluginStorage()
-{
-  if (handle != nullptr)
-  {
-    dlclose(handle);
-    handle = nullptr;
-    plugin = nullptr;
-  }
-}
-
-
-ae::plugin::Agent::Agent(const char *agent_name) :
-  m_plugin_name(agent_name),
-  m_plugin(nullptr)
-{
-
-}
-
-
-ae::plugin::Agent::~Agent()
-{
-
-}
-
-
-int ae::plugin::Agent::load()
-{
-  m_plugin = PluginStorage::open_plugin(m_plugin_name);
-  if (m_plugin == nullptr)
-  {
-    return -1;
-  }
-
-  // over, že plugin obsahuje funkciu na vytváranie agentov
-  if (m_plugin->create == nullptr)
-  {
-    LOG(ERROR) << "Plugin " << m_plugin_name << " is not an Agent plugin.";
-    m_plugin = nullptr;
-    return -1;
-  }
-
-  return 0;
-}
-
-
-std::vector<ae::Agent*> ae::plugin::Agent::create(const json &parameters)
+std::vector<ae::Agent*> ae::plugin::Plugin::createAgents(const nlohmann::json &parameters)
 {
   std::vector<ae::Agent*> agents;
 
-  if (m_plugin != nullptr && m_plugin->create != nullptr)
+  if (m_api != nullptr && m_api->create != nullptr)
   {
-    agents = m_plugin->create(parameters);
+    agents = m_api->create(parameters);
   }
 
   return agents;
 }
 
 
-void ae::plugin::agent_spawner(const nlohmann::json &list, std::vector<ae::Agent*> &agents)
+void ae::plugin::agentSpawner(const nlohmann::json &list, std::vector<ae::Agent*> &agents)
 {
   for (const auto &item : list)
   {
@@ -231,8 +174,8 @@ void ae::plugin::agent_spawner(const nlohmann::json &list, std::vector<ae::Agent
     }
 
     // open plugin
-    ae::plugin::Agent plugin(plugin_name.data());
-    if (plugin.load() < 0)
+    PluginPtr plugin = Plugin::get(plugin_name);
+    if (!plugin)
     {
       LOG(ERROR) << "Failed to open plugin " << plugin_name << ". Skipping...";
       continue;
@@ -241,7 +184,7 @@ void ae::plugin::agent_spawner(const nlohmann::json &list, std::vector<ae::Agent
     // spawn agents
     for (int i = 0; i < count; ++i)
     {
-      std::vector<ae::Agent*> new_agents = plugin.create(params);
+      std::vector<ae::Agent*> new_agents = plugin->createAgents(params);
       agents.insert(agents.end(), new_agents.begin(), new_agents.end());
     }
   }

@@ -1,7 +1,9 @@
 #ifndef _TYPES_H_
 #define _TYPES_H_
 
+#include <mutex>
 
+#include "logging.h"
 #include "timing.h"
 
 
@@ -102,6 +104,77 @@ struct AgentInterface
   bool operator  <(const AgentInterface &b) const { return id  < b.id; }
   bool operator  >(const AgentInterface &b) const { return id  > b.id; }
 };
+
+
+/** \brief Contains internal objects for memory managment between application
+ * and plugins.
+ */
+namespace helpers {
+
+
+/** \brief Template providing unified interface for sharing data between main
+ * application and plugins.
+ */
+template <typename T>
+struct SharedStorage
+{
+private: /* static member variables */
+  static SharedStorage<T> local_storage;
+
+  /** \brief The storage that is currently being used.
+   *
+   * For main application it is always equal to local_storage.
+   *
+   * Plugins set this variable to storage provided on plugin initialization.
+   * This results in all plugins having the same storage as the main application.
+   *
+   * \see ae::plugin::SharedData
+   * \see ae::plugin::plugin_init
+   */
+  static SharedStorage<T>* active_storage;
+
+public: /* static functions */
+  static SharedStorage<T>* get()
+  {
+    return active_storage;
+  }
+
+  static void set(SharedStorage<T>* new_storage)
+  {
+    // LOG(DEBUG) << "Local: " << &local_storage << " Active: " << active_storage << " New: " << new_storage;
+
+    if (new_storage != nullptr)
+    {
+      if (new_storage != active_storage)
+      {
+        active_storage = new_storage;
+      }
+      // else
+      // {
+      //   LOG(WARNING) << "SharedStorage: Active storage already set.";
+      // }
+    }
+    else
+    {
+      active_storage = &local_storage;
+    }
+  }
+
+  SharedStorage<T>() : data(), lock() {}
+
+public: /* member variables */
+  T data;
+  std::mutex lock;
+};
+
+template <typename T>
+SharedStorage<T> SharedStorage<T>::local_storage;
+
+template <typename T>
+SharedStorage<T>* SharedStorage<T>::active_storage = &SharedStorage<T>::local_storage;
+
+
+} /* namespace helpers */
 
 
 } /* namespace ae */

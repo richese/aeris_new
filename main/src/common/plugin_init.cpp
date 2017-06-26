@@ -1,12 +1,20 @@
 #include "plugin.h"
 
-// toto je v oddelenej kompilačnej jednotke aby sa agenti nemuseli linkovať s -ldl
 
-int ae::plugin::plugin_init(ae::plugin::plugin_init_t &init_data)
+ae::plugin::SharedData::SharedData() :
+  conf_storage(ae::config::get),
+  log_storage(el::Helpers::storage()),
+  plugin_storage(ae::helpers::PluginStorage::get()),
+  body_storage(ae::helpers::BodyStorage::get())
 {
-  el::Helpers::setStorage(init_data.log_storage);
-  ae::config::set_configuration(init_data.conf_storage);
-  ae::helpers::BodyStorage::set(init_data.body_storage);
 
-  return 0;
+}
+
+
+void ae::plugin::setPluginStorage(SharedData &data)
+{
+  el::Helpers::setStorage(data.log_storage);
+  ae::config::set_configuration(data.conf_storage);
+  ae::helpers::PluginStorage::set(data.plugin_storage);
+  ae::helpers::BodyStorage::set(data.body_storage);
 }

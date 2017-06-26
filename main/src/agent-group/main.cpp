@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
     if (group_config.find("spawn") != group_config.end() &&
         group_config["spawn"].is_array())
     {
-      plugin::agent_spawner(group_config["spawn"], spawned_agents);
+      plugin::agentSpawner(group_config["spawn"], spawned_agents);
     }
     for (auto a : spawned_agents)
     {

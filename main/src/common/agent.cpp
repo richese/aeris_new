@@ -35,7 +35,7 @@ void ae::Agent::init(uint64_t id)
 {
   m_interface.id = id;
   m_interface.type = this->assigned_type();
-  m_interface.body = AgentBody::get_body_type(this->assigned_type());
+  m_interface.body = AgentBody::getBodyType(this->assigned_type());
   m_interface.timestamp = time::timestamp();
   m_interface.expires = time::future_timestamp(time::seconds(3));
   m_interface.expires = 0;
@@ -59,7 +59,7 @@ ae::Environment::~Environment()
 }
 
 
-const ae::AgentBody* ae::Environment::body_of_agent(const AgentInterface &agent)
+const ae::AgentBodyPtr ae::Environment::body_of_agent(const AgentInterface &agent)
 {
-  return AgentBody::get_body(agent.body);
+  return AgentBody::getBody(agent.body);
 }

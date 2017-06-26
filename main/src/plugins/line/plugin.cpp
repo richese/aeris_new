@@ -10,31 +10,30 @@
 using json = nlohmann::json;
 using el::base::type::StoragePointer;
 using namespace ae;
-using ae::plugin::plugin_t;
-using ae::plugin::plugin_init_t;
-using ae::plugin::plugin_init;
+using ae::plugin::PluginAPI;
+using ae::plugin::SharedData;
 
 
-extern "C" plugin_t* line_load();
-int line_plugin_init(plugin_init_t &init_data);
+extern "C" PluginAPI* line_load();
+int line_plugin_init(SharedData &init_data);
 std::vector<Agent*> line_plugin_create(const json &parameters);
 
 
-static plugin_t line_plugin = {
+static PluginAPI line_plugin = {
   line_plugin_init, // or just ae::plugin::plugin_init
   line_plugin_create
 };
 
 
-extern "C" plugin_t* line_load()
+extern "C" PluginAPI* line_load()
 {
   return &line_plugin;
 }
 
 
-int line_plugin_init(plugin_init_t &init_data)
+int line_plugin_init(SharedData &init_data)
 {
-  plugin_init(init_data);
+  ae::plugin::setPluginStorage(init_data);
 
   // check configuration
   const auto &agent_list = config::get["agent_list"];

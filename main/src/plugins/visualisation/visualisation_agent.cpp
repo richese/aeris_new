@@ -52,7 +52,7 @@ VisualisationAgent::VisualisationAgent(const nlohmann::json &parameters) :
 {
   // initialize agent interface
   m_interface.type = this->assigned_type();
-  m_interface.body = AgentBody::get_body_type(m_interface.type);
+  m_interface.body = AgentBody::getBodyType(m_interface.type);
   m_interface.timestamp = time::timestamp();
   m_interface.expires = time::future_timestamp(time::seconds(10));
   m_interface.position.x = 0.0f;
@@ -328,7 +328,7 @@ void VisualisationAgent::draw_agent(const AgentInterface &agent)
   glRotatef(agent.position.pitch, 1.0f, 0.0f, 0.0f);
   glRotatef(agent.position.yaw, 0.0f, 0.0f, 1.0f);
 
-  const AgentBody *body = AgentBody::get_body(agent.body);
+  const auto body = AgentBody::getBody(agent.body);
   if (body->vertices().size() > 0)
   {
     glColor3f(agent.color.r, agent.color.g, agent.color.b);

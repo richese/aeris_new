@@ -10,63 +10,35 @@
 #include "logging.h"
 
 
-namespace ae {
-
-namespace helpers {
-
-
-BodyStorage BodyStorage::local_storage;
-
-BodyStorage* BodyStorage::active_storage = &BodyStorage::local_storage;
-
-
-} /* namespace helpers */
-
-} /* namespace ae */
-
-
-void ae::helpers::BodyStorage::set(BodyStorage *storage)
+const ae::AgentBodyPtr ae::AgentBody::getBody(const uint16_t body_id)
 {
-  if (storage != nullptr)
-  {
-    active_storage = storage;
-  }
-  else
-  {
-    active_storage = &local_storage;
-  }
-}
-
-
-const ae::AgentBody* ae::AgentBody::get_body(const uint16_t body_id)
-{
-  AgentBody* body = nullptr;
+  AgentBodyPtr body;
 
   auto *body_storage = helpers::BodyStorage::get();
   std::lock_guard<std::mutex> lock(body_storage->lock);
 
-  auto body_item = body_storage->bodies.find(body_id);
-  if (body_item != body_storage->bodies.end())
+  auto body_item = body_storage->data.find(body_id);
+  if (body_item != body_storage->data.end())
   {
     body = body_item->second;
   }
   else
   {
-    body = load_body(body_id);
-    body_storage->bodies[body_id] = body;
+    body = AgentBodyPtr(loadBody(body_id));
+    body_storage->data[body_id] = body;
   }
 
   return body;
 }
 
 
-const ae::AgentBody* ae::AgentBody::get_body(const AgentInterface &agent)
+const ae::AgentBodyPtr ae::AgentBody::getBody(const AgentInterface &agent)
 {
-  return get_body(agent.body);
+  return getBody(agent.body);
 }
 
 
-uint16_t ae::AgentBody::get_body_type(const uint16_t agent_type)
+uint16_t ae::AgentBody::getBodyType(const uint16_t agent_type)
 {
   for (const auto &agent : config::get["agent_list"])
   {
@@ -81,7 +53,7 @@ uint16_t ae::AgentBody::get_body_type(const uint16_t agent_type)
 }
 
 
-ae::AgentBody* ae::AgentBody::load_body(const uint16_t body_id)
+ae::AgentBody* ae::AgentBody::loadBody(const uint16_t body_id)
 {
   std::string model_filename = "";
   float model_scale = 1.0;
@@ -133,7 +105,7 @@ ae::AgentBody* ae::AgentBody::load_body(const uint16_t body_id)
   // do not load model if no filename is provided => agent has empty model
   if (model_filename.size() != 0)
   {
-    if (body->load_obj(config::path(config::DIR_ROOT, model_filename), model_scale) != 0)
+    if (body->loadObj(config::path(config::DIR_ROOT, model_filename), model_scale) != 0)
     {
       delete body;
       LOG(ERROR) << "Failed to load body from file " << model_filename;
@@ -159,7 +131,7 @@ ae::AgentBody::~AgentBody()
 }
 
 
-int ae::AgentBody::load_obj(const std::string &filename, const float scale)
+int ae::AgentBody::loadObj(const std::string &filename, const float scale)
 {
   std::vector< unsigned int > vertexIndices, uvIndices, normalIndices;
   std::vector< struct Point3D > temp_vertices;

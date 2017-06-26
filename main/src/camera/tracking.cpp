@@ -28,7 +28,7 @@ ae::tracking::Path::Path(cv::Point position, uint64_t id, uint16_t type,
 {
   interface.id = id;
   interface.type = type;
-  interface.body = ae::AgentBody::get_body_type(type);
+  interface.body = ae::AgentBody::getBodyType(type);
   interface.color.b = color[0] / 255.0f;
   interface.color.g = color[1] / 255.0f;
   interface.color.r = color[2] / 255.0f;

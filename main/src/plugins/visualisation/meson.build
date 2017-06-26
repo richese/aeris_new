@@ -1,4 +1,4 @@
-vis_glu_dep = dependency('glu')
+vis_glu_dep = dependency('glu', reguired: false)
 vis_glut_dep = dependency('freeglut', required: false)
 
 if vis_glut_dep.found()
@@ -12,7 +12,8 @@ if vis_glut_dep.found()
     install_dir: 'lib'
   )
 
-else
+elif vis_glu_dep.found()
+
   # Ubuntu for some reason does not provide pkg-config file for glut
   shared_library('visualisation',
     ['plugin.cpp', 'visualisation_agent.cpp'],
@@ -23,6 +24,5 @@ else
     install: true,
     install_dir: 'lib'
   )
-
 
 endif

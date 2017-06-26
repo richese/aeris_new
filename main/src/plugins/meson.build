@@ -1,5 +1,6 @@
 # zoznam všetkých agentov, čo sa majú skompilovať
 
-subdir('example')
+#subdir('example')
 subdir('visualisation')
 subdir('line')
+#subdir('lawn')
